@@ -1,3 +1,4 @@
 /Users/mgraaf/Documents/webserve/cmake-build-debug/CMakeFiles/webserve.dir
+/Users/mgraaf/Documents/webserve/cmake-build-debug/CMakeFiles/client.dir
 /Users/mgraaf/Documents/webserve/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/mgraaf/Documents/webserve/cmake-build-debug/CMakeFiles/rebuild_cache.dir
