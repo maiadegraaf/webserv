@@ -84,14 +84,15 @@ communicating between two computers using file descriptors.
 
 ### Socket()
 socket() creates an endpoint for communication and returns a file
-descriptor that refers to that endpoint.
+descriptor that refers to that endpoint. Socket is basically the 
+same as open but then for the server endpoint itself. 
 ```asm
 int socket(int domain, int type, int protocol);
 ```
 
 
 ### Bind()
-bind() is used to associate the socket with a port on your local machine.
+bind() is used to associate the socket in your program with a port, server address or IPv4/6 address.
 ```asm
 int bind(int sockfd, struct sockaddr *my_addr, int addrlen)
 ```
@@ -100,6 +101,7 @@ information about your address, namely, port and IP address. addrlen is the leng
 
 ### Listen()
 if you don’t want to connect to a remote host, you must proceed in two steps; first you listen() then accept().
+Listen is there to monitor a response from the server. 
 ```asm
  int listen(int sockfd, int backlog); 
 ```
@@ -109,20 +111,22 @@ The accept() system call is used with connection-based socket
 types (SOCK_STREAM, SOCK_SEQPACKET).  It extracts the first
 connection request on the queue of pending connections for the
 listening socket, sockfd, creates a new connected socket, and
-returns a new file descriptor referring to that socket.
+returns a new file descriptor referring to that socket. Accept is similar function but then to
+create a fd from the client side.
 ```asm
 int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
 ```
 
 ### Send()
 The send() function is used to transmit a message to another socket. The send() call can only be used when
-the socket is in connected state.
+the socket is in connected state. Send is in the end write operation to the socket fd
 ```asm
 ssize_t send(int sockfd, const void *buf, size_t len, int flags);
 ```
 
 ### Recv()
-Calls from the function recv() are used to receive messages from a socket.
+Calls from the function recv() are used to receive messages from a socket. 
+Recieve is in the end a read operation on a socket fd.
 ```asm
 ssize_t recv(int sockfd, void *buf, size_t len, int flags);
 ```
