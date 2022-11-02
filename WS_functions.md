@@ -1,5 +1,23 @@
 # Webserv Functions
-
+<!-- TOC -->
+* [Webserv Functions](#webserv-functions)
+  * [H2N & N2H](#h2n--n2h)
+  * [Multiplexing: Poll & Kqueue](#multiplexing--poll--kqueue)
+    * [Select()](#select--)
+    * [Poll()](#poll--)
+    * [Kqueue()](#kqueue--)
+  * [Sockets](#sockets)
+    * [Socket()](#socket--)
+    * [Bind()](#bind--)
+    * [Listen()](#listen--)
+    * [Accept()](#accept--)
+    * [Send()](#send--)
+    * [Recv()](#recv--)
+    * [Setsockopt()](#setsockopt--)
+    * [Getprotobyname()](#getprotobyname--)
+    * [Getsockname()](#getsockname--)
+    * [Fcntl()](#fcntl--)
+<!-- TOC -->
 ## H2N & N2H
 Network byte order defines the bit-order of network addresses as they pass through the network. 
 </br> htons() (host to network short 16 bytes) & htonl() (host to network long 32 bytes) 
