@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
         exit(0);
     }
     int port = atoi(argv[1]);
+    char msg[1500];
 
-    pollfd fds[];
     sockaddr_in servAddr;
     bzero((char*)&servAddr, sizeof(servAddr));
     servAddr.sin_family = AF_INET;
@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
     cout << "Waiting for a client to connect..." << endl;
     listen(serverSd, 5);
     sockaddr_in newSockAddr;
-    poll()
     socklen_t newSockAddrSize = sizeof(newSockAddr);
     int newSd = accept(serverSd, (sockaddr *)&newSockAddr, &newSockAddrSize);
     if(newSd < 0)
@@ -57,15 +56,14 @@ int main(int argc, char *argv[])
     }
     cout << "Connected with client!" << endl;
     int read = open("www/index.html", O_RDONLY);
-    while(1)
-    {
-        off_t len = 10000;
-        cout << "Awaiting client response..." << endl;
-        memset(&msg, 0, sizeof(msg));
-        recv(newSd, (char*)&msg, sizeof(msg), 0);
-        std::cout << msg << std::endl;
-        sendfile(read, newSd, 0, &len, NULL, 0);
-    }
+    std::string str = "HTTP/1.1 200 OK\r\n\r\n";
+    off_t len = 1000;
+    cout << "Awaiting client response..." << endl;
+    memset(&msg, 0, sizeof(msg));
+    recv(newSd, (char*)&msg, sizeof(msg), 0);
+    std::cout << msg << std::endl;
+    send(newSd, str.c_str(), str.length(), 0);
+    sendfile(read, newSd, 0, &len, NULL, 0);
     close(newSd);
     close(serverSd);
     return 0;
