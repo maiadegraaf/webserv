@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/mgraaf/Documents/webserve/cmake-build-debug"
+			"value" : "/Users/mgraaf/Documents/webserv/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -515,7 +515,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/Users/mgraaf/Documents/webserve"
+			"value" : "/Users/mgraaf/Documents/webserv"
 		},
 		{
 			"name" : "CMAKE_INSTALL_NAME_TOOL",
@@ -795,7 +795,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "webserve"
+			"value" : "webserv"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1078,7 +1078,7 @@
 			"value" : "FALSE"
 		},
 		{
-			"name" : "webserve_BINARY_DIR",
+			"name" : "webserv_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1087,10 +1087,10 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/mgraaf/Documents/webserve/cmake-build-debug"
+			"value" : "/Users/mgraaf/Documents/webserv/cmake-build-debug"
 		},
 		{
-			"name" : "webserve_IS_TOP_LEVEL",
+			"name" : "webserv_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1102,7 +1102,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "webserve_SOURCE_DIR",
+			"name" : "webserv_SOURCE_DIR",
 			"properties" : 
 			[
 				{
@@ -1111,7 +1111,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/Users/mgraaf/Documents/webserve"
+			"value" : "/Users/mgraaf/Documents/webserv"
 		}
 	],
 	"kind" : "cache",

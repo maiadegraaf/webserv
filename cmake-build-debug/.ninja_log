@@ -1,4 +1,6 @@
 # ninja log v5
 396	431	1667236906000000000	webserve	dc30929fe02bdbd3
-1	396	1667236906000000000	CMakeFiles/webserve.dir/main.cpp.o	4ca4b480536f3507
-0	284	1667392912000000000	build.ninja	5a21c51ae0f5b23c
+0	284	1667407413000000000	build.ninja	5a21c51ae0f5b23c
+1	455	1667407422000000000	CMakeFiles/webserv.dir/src/parser.cpp.o	b52c198bcdf30460
+0	477	1667407422000000000	CMakeFiles/webserv.dir/src/main.cpp.o	983fcf3c24259f1d
+1	514	1667407423000000000	CMakeFiles/webserv.dir/src/location.cpp.o	cafbdcdffded3876

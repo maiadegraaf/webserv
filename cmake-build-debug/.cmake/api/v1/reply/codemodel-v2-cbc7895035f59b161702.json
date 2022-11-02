@@ -15,8 +15,7 @@
 					"source" : ".",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -28,11 +27,10 @@
 					[
 						0
 					],
-					"name" : "webserve",
+					"name" : "webserv",
 					"targetIndexes" : 
 					[
-						0,
-						1
+						0
 					]
 				}
 			],
@@ -40,16 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "client::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-client-Debug-9c185e8a9aaf40677e50.json",
-					"name" : "client",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "webserve::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-webserve-Debug-8a06c0b2fd8d0a030c9a.json",
-					"name" : "webserve",
+					"id" : "webserv::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-webserv-Debug-b66044aff850a9da9c83.json",
+					"name" : "webserv",
 					"projectIndex" : 0
 				}
 			]
@@ -58,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/mgraaf/Documents/webserve/cmake-build-debug",
-		"source" : "/Users/mgraaf/Documents/webserve"
+		"build" : "/Users/mgraaf/Documents/webserv/cmake-build-debug",
+		"source" : "/Users/mgraaf/Documents/webserv"
 	},
 	"version" : 
 	{

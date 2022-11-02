@@ -150,8 +150,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/Users/mgraaf/Documents/webserve/cmake-build-debug",
-		"source" : "/Users/mgraaf/Documents/webserve"
+		"build" : "/Users/mgraaf/Documents/webserv/cmake-build-debug",
+		"source" : "/Users/mgraaf/Documents/webserv"
 	},
 	"version" : 
 	{

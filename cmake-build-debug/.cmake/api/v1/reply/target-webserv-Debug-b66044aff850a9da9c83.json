@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "webserve"
+			"path" : "webserv"
 		}
 	],
 	"backtrace" : 1,
@@ -43,16 +43,13 @@
 			[
 				{
 					"fragment" : "-g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14"
-				},
-				{
-					"fragment" : "-std=gnu++14"
 				}
 			],
 			"includes" : 
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/Users/mgraaf/Documents/webserve/."
+					"path" : "/Users/mgraaf/Documents/webserv/."
 				}
 			],
 			"language" : "CXX",
@@ -62,15 +59,18 @@
 				[
 					1
 				],
-				"standard" : "14"
+				"standard" : "98"
 			},
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1,
+				6,
+				7
 			]
 		}
 	],
-	"id" : "webserve::@6890427a1f51a3e7e1df",
+	"id" : "webserv::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -86,8 +86,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "webserve",
-	"nameOnDisk" : "webserve",
+	"name" : "webserv",
+	"nameOnDisk" : "webserv",
 	"paths" : 
 	{
 		"build" : ".",
@@ -99,7 +99,20 @@
 			"name" : "Source Files",
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1,
+				6,
+				7
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				2,
+				3,
+				4,
+				5
 			]
 		}
 	],
@@ -108,7 +121,45 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "main.cpp",
+			"path" : "src/main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/parser.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/parser.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/webserv.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/location.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "includes/config.hpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/location.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/config.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

@@ -8,7 +8,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: webserve
+# Project: webserv
 # Configurations: Debug
 # =============================================================================
 
@@ -36,77 +36,66 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/mgraaf/Documents/webserve/cmake-build-debug/
+cmake_ninja_workdir = /Users/mgraaf/Documents/webserv/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target webserve
+# Object build statements for EXECUTABLE target webserv
 
 
 #############################################
-# Order-only phony target for webserve
+# Order-only phony target for webserv
 
-build cmake_object_order_depends_target_webserve: phony || CMakeFiles/webserve.dir
+build cmake_object_order_depends_target_webserv: phony || CMakeFiles/webserv.dir
 
-build CMakeFiles/webserve.dir/main.cpp.o: CXX_COMPILER__webserve_Debug /Users/mgraaf/Documents/webserve/main.cpp || cmake_object_order_depends_target_webserve
-  DEP_FILE = CMakeFiles/webserve.dir/main.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++14
-  INCLUDES = -I/Users/mgraaf/Documents/webserve/.
-  OBJECT_DIR = CMakeFiles/webserve.dir
-  OBJECT_FILE_DIR = CMakeFiles/webserve.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target webserve
-
-
-#############################################
-# Link the executable webserve
-
-build webserve: CXX_EXECUTABLE_LINKER__webserve_Debug CMakeFiles/webserve.dir/main.cpp.o
+build CMakeFiles/webserv.dir/src/main.cpp.o: CXX_COMPILER__webserv_Debug /Users/mgraaf/Documents/webserv/src/main.cpp || cmake_object_order_depends_target_webserv
+  DEP_FILE = CMakeFiles/webserv.dir/src/main.cpp.o.d
   FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  OBJECT_DIR = CMakeFiles/webserve.dir
+  INCLUDES = -I/Users/mgraaf/Documents/webserv/.
+  OBJECT_DIR = CMakeFiles/webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src
+
+build CMakeFiles/webserv.dir/src/parser.cpp.o: CXX_COMPILER__webserv_Debug /Users/mgraaf/Documents/webserv/src/parser.cpp || cmake_object_order_depends_target_webserv
+  DEP_FILE = CMakeFiles/webserv.dir/src/parser.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
+  INCLUDES = -I/Users/mgraaf/Documents/webserv/.
+  OBJECT_DIR = CMakeFiles/webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src
+
+build CMakeFiles/webserv.dir/src/location.cpp.o: CXX_COMPILER__webserv_Debug /Users/mgraaf/Documents/webserv/src/location.cpp || cmake_object_order_depends_target_webserv
+  DEP_FILE = CMakeFiles/webserv.dir/src/location.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
+  INCLUDES = -I/Users/mgraaf/Documents/webserv/.
+  OBJECT_DIR = CMakeFiles/webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src
+
+build CMakeFiles/webserv.dir/src/config.cpp.o: CXX_COMPILER__webserv_Debug /Users/mgraaf/Documents/webserv/src/config.cpp || cmake_object_order_depends_target_webserv
+  DEP_FILE = CMakeFiles/webserv.dir/src/config.cpp.o.d
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
+  INCLUDES = -I/Users/mgraaf/Documents/webserv/.
+  OBJECT_DIR = CMakeFiles/webserv.dir
+  OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target webserv
+
+
+#############################################
+# Link the executable webserv
+
+build webserv: CXX_EXECUTABLE_LINKER__webserv_Debug CMakeFiles/webserv.dir/src/main.cpp.o CMakeFiles/webserv.dir/src/parser.cpp.o CMakeFiles/webserv.dir/src/location.cpp.o CMakeFiles/webserv.dir/src/config.cpp.o
+  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
+  OBJECT_DIR = CMakeFiles/webserv.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = webserve
-  TARGET_PDB = webserve.dbg
-
-# =============================================================================
-# Object build statements for EXECUTABLE target client
-
-
-#############################################
-# Order-only phony target for client
-
-build cmake_object_order_depends_target_client: phony || CMakeFiles/client.dir
-
-build CMakeFiles/client.dir/client.cpp.o: CXX_COMPILER__client_Debug /Users/mgraaf/Documents/webserve/client.cpp || cmake_object_order_depends_target_client
-  DEP_FILE = CMakeFiles/client.dir/client.cpp.o.d
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14 -std=gnu++14
-  INCLUDES = -I/Users/mgraaf/Documents/webserve/.
-  OBJECT_DIR = CMakeFiles/client.dir
-  OBJECT_FILE_DIR = CMakeFiles/client.dir
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target client
-
-
-#############################################
-# Link the executable client
-
-build client: CXX_EXECUTABLE_LINKER__client_Debug CMakeFiles/client.dir/client.cpp.o
-  FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  OBJECT_DIR = CMakeFiles/client.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = client
-  TARGET_PDB = client.dbg
+  TARGET_FILE = webserv
+  TARGET_PDB = webserv.dbg
 
 
 #############################################
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/mgraaf/Documents/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/mgraaf/Documents/webserv/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -117,7 +106,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/mgraaf/Documents/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/mgraaf/Documents/webserve -B/Users/mgraaf/Documents/webserve/cmake-build-debug
+  COMMAND = cd /Users/mgraaf/Documents/webserv/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/mgraaf/Documents/webserv -B/Users/mgraaf/Documents/webserv/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -133,9 +122,9 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/mgraaf/Documents/webserve/cmake-build-debug
+# Folder: /Users/mgraaf/Documents/webserv/cmake-build-debug
 
-build all: phony webserve client
+build all: phony webserv
 
 # =============================================================================
 # Built-in targets
