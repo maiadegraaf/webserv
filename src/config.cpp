@@ -11,10 +11,10 @@ config::config( const config& rhs)
 	*this = rhs;
 }
 
-config::config(int newAddress, std::vector<std::string> newServer_name, std::string newRoot, unsigned long long newMax_size, location newLocation, std::string newCgi)
-	: _address(newAddress), _server_name(newServer_name), _root(newRoot), _max_size(newMax_size), _location(newLocation), _cgi(newCgi)
+config::config(int newAddress, std::string newServer_name, std::string newRoot, unsigned long long newMax_size, location newLocation, std::string newCgi)
+	: _address(newAddress), _root(newRoot), _max_size(newMax_size), _cgi(newCgi)
 {
-
+	_server_name.push_back(newServer_name);
 }
 
 config::~config()

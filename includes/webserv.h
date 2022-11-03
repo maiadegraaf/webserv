@@ -8,10 +8,13 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 
-#include "parser.h"
+#include "config_parser.h"
 
 #define BUFF_SIZE 300000
 #define PORT 8080
+
+void failure(const char *message);
 
 #endif //WEBSERVE_WEBSERV_H

@@ -1,6 +1,16 @@
 # ninja log v5
 396	431	1667236906000000000	webserve	dc30929fe02bdbd3
-0	284	1667407413000000000	build.ninja	5a21c51ae0f5b23c
-1	455	1667407422000000000	CMakeFiles/webserv.dir/src/parser.cpp.o	b52c198bcdf30460
-0	477	1667407422000000000	CMakeFiles/webserv.dir/src/main.cpp.o	983fcf3c24259f1d
 1	514	1667407423000000000	CMakeFiles/webserv.dir/src/location.cpp.o	cafbdcdffded3876
+0	284	1667484398000000000	build.ninja	5a21c51ae0f5b23c
+0	477	1667407422000000000	CMakeFiles/webserv.dir/src/main.cpp.o	983fcf3c24259f1d
+1	750	1667484400000000000	CMakeFiles/webserv.dir/src/main.cpp.o	983fcf3c24259f1d
+2	766	1667484400000000000	CMakeFiles/webserv.dir/src/location.cpp.o	cafbdcdffded3876
+2	777	1667484400000000000	CMakeFiles/webserv.dir/src/config_parser.cpp.o	1202b8a4b1dbb465
+2	513	1667484463000000000	CMakeFiles/webserv.dir/src/config.cpp.o	8d8a75e79732e885
+513	586	1667484463000000000	webserv	b994d398c2b1dc53
+2	492	1667485172000000000	CMakeFiles/webserv.dir/src/config_parser.cpp.o	1202b8a4b1dbb465
+493	587	1667485172000000000	webserv	b994d398c2b1dc53
+1	477	1667485275000000000	CMakeFiles/webserv.dir/src/config_parser.cpp.o	1202b8a4b1dbb465
+477	533	1667485276000000000	webserv	b994d398c2b1dc53
+1	427	1667485286000000000	CMakeFiles/webserv.dir/src/config_parser.cpp.o	1202b8a4b1dbb465
+427	481	1667485286000000000	webserv	b994d398c2b1dc53

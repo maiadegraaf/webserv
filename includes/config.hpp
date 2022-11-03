@@ -20,12 +20,12 @@ public:
 // Constructor 
 	config(); 
 	config( const config &rhs); 
-	config(int newAddress, std::vector<std::string> newServer_name, std::string newRoot, unsigned long long newMax_size, location newLocation, std::string newCgi);
+	config(int newAddress, std::string newServer_name, std::string newRoot, unsigned long long newMax_size, location newLocation, std::string newCgi);
 	~config(); 
 	config& operator=( const config &rhs); 
 // Getters 
 	int getAddress(); 
-	std::vector<std::string> getServer_name();
+//	std::vector<std::string> getServer_name();
 	std::string getRoot(); 
 	unsigned long long getMax_size();
     std::vector<location> getLocation();

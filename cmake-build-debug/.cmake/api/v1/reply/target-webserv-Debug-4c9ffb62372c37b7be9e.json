@@ -127,12 +127,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/parser.cpp",
+			"path" : "src/config_parser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "includes/parser.h",
+			"path" : "includes/config_parser.h",
 			"sourceGroupIndex" : 1
 		},
 		{
