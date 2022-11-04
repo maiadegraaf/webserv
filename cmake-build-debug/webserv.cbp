@@ -85,10 +85,10 @@
 		<Unit filename="/Users/maiadegraaf/webserve/includes/config.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/maiadegraaf/webserve/includes/location.hpp">
+		<Unit filename="/Users/maiadegraaf/webserve/includes/configParser.hpp">
 			<Option target="webserv"/>
 		</Unit>
-		<Unit filename="/Users/maiadegraaf/webserve/includes/parser.h">
+		<Unit filename="/Users/maiadegraaf/webserve/includes/location.hpp">
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/maiadegraaf/webserve/includes/webserv.h">
@@ -97,13 +97,13 @@
 		<Unit filename="/Users/maiadegraaf/webserve/src/config.cpp">
 			<Option target="webserv"/>
 		</Unit>
+		<Unit filename="/Users/maiadegraaf/webserve/src/configParser.cpp">
+			<Option target="webserv"/>
+		</Unit>
 		<Unit filename="/Users/maiadegraaf/webserve/src/location.cpp">
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/maiadegraaf/webserve/src/main.cpp">
-			<Option target="webserv"/>
-		</Unit>
-		<Unit filename="/Users/maiadegraaf/webserve/src/parser.cpp">
 			<Option target="webserv"/>
 		</Unit>
 		<Unit filename="/Users/maiadegraaf/webserve/CMakeLists.txt">

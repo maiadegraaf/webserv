@@ -153,6 +153,30 @@ src/config.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/config.cpp.s
 .PHONY : src/config.cpp.s
 
+src/configParser.o: src/configParser.cpp.o
+.PHONY : src/configParser.o
+
+# target to build an object file
+src/configParser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/configParser.cpp.o
+.PHONY : src/configParser.cpp.o
+
+src/configParser.i: src/configParser.cpp.i
+.PHONY : src/configParser.i
+
+# target to preprocess a source file
+src/configParser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/configParser.cpp.i
+.PHONY : src/configParser.cpp.i
+
+src/configParser.s: src/configParser.cpp.s
+.PHONY : src/configParser.s
+
+# target to generate assembly for a file
+src/configParser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/configParser.cpp.s
+.PHONY : src/configParser.cpp.s
+
 src/location.o: src/location.cpp.o
 .PHONY : src/location.o
 
@@ -201,30 +225,6 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/parser.o: src/parser.cpp.o
-.PHONY : src/parser.o
-
-# target to build an object file
-src/parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/parser.cpp.o
-.PHONY : src/parser.cpp.o
-
-src/parser.i: src/parser.cpp.i
-.PHONY : src/parser.i
-
-# target to preprocess a source file
-src/parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/parser.cpp.i
-.PHONY : src/parser.cpp.i
-
-src/parser.s: src/parser.cpp.s
-.PHONY : src/parser.s
-
-# target to generate assembly for a file
-src/parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/parser.cpp.s
-.PHONY : src/parser.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -237,15 +237,15 @@ help:
 	@echo "... src/config.o"
 	@echo "... src/config.i"
 	@echo "... src/config.s"
+	@echo "... src/configParser.o"
+	@echo "... src/configParser.i"
+	@echo "... src/configParser.s"
 	@echo "... src/location.o"
 	@echo "... src/location.i"
 	@echo "... src/location.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/parser.o"
-	@echo "... src/parser.i"
-	@echo "... src/parser.s"
 .PHONY : help
 
 

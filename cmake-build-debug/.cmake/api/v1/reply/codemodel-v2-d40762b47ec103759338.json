@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "webserv::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-webserv-Debug-4c9ffb62372c37b7be9e.json",
+					"jsonFile" : "target-webserv-Debug-a74db1e40952ac733745.json",
 					"name" : "webserv",
 					"projectIndex" : 0
 				}
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/mgraaf/Documents/webserv/cmake-build-debug",
-		"source" : "/Users/mgraaf/Documents/webserv"
+		"build" : "/Users/maiadegraaf/webserve/cmake-build-debug",
+		"source" : "/Users/maiadegraaf/webserve"
 	},
 	"version" : 
 	{

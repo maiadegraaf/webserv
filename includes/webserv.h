@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <fstream>
 
-#include "config_parser.h"
+#include "configParser.hpp"
 
 #define BUFF_SIZE 300000
 #define PORT 8080
