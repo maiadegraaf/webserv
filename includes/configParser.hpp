@@ -2,6 +2,7 @@
 #define CONFIGPARSER_H
 #include <iostream>
 #include <string>
+#include <vector>
 #include "webserv.h"
 
 // Class definition
@@ -20,6 +21,8 @@ public:
 	configParser& operator=( const configParser &rhs);
 
     int	openFile(std::string filename);
+	void	output(void);
+
 };
 
 

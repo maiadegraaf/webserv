@@ -27,12 +27,9 @@ configParser&	configParser::operator=( const configParser& rhs )
 	return *this;
 }
 
-int check_file_type(std::string filename)
+void	configParser::output(void)
 {
-    if (filename.substr(filename.find_last_of(".") + 1) == "conf")
-        return (EXIT_SUCCESS);
-    failure("Incorrect file type.  Only .conf files are accepted.");
-    return (EXIT_FAILURE);
+	std::for_each(_server_content.begin(), _server_content.end(), printStr);
 }
 
 int	configParser::openFile(std::string filename)
@@ -49,5 +46,6 @@ int	configParser::openFile(std::string filename)
     else
         failure("File could not be opened.");
     _config_file.close();
+	output();
     return (EXIT_SUCCESS);
 }

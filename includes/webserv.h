@@ -9,12 +9,11 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
-
 #include "configParser.hpp"
 
-#define BUFF_SIZE 300000
-#define PORT 8080
-
+//utils
 void failure(const char *message);
+int check_file_type(std::string filename);
+void	printStr(const std::string str);
 
 #endif //WEBSERVE_WEBSERV_H
