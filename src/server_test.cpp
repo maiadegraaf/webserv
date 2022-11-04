@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
     int    len, on = 1;
     struct pollfd fds[200];
     bool   end_server = FALSE;
-    char   buffer[80];
+    char   buffer[800];
     int    close_conn;
+    char    header[2000] = "HTTP/1.1 200 OK\r\n\r\n";
 
 
     if(argc != 2)
@@ -68,7 +69,6 @@ int main(int argc, char *argv[])
         cerr << "Error accepting request from client!" << endl;
         exit(1);
     }
-    int read = open("www/index.html", O_RDONLY);
     memset(fds, 0 , sizeof(fds));
     fds[0].fd = newSd;
     fds[0].events = POLLIN;
@@ -85,14 +85,14 @@ int main(int argc, char *argv[])
         int current_size = nfds;
         for (int i = 0; i < current_size; i++)
         {
-            if(fds[i].revents == 0)
+            if(fds[i].revents == 0) {
                 continue;
+            }
             if(fds[i].revents != POLLIN)
             {
                 printf("  Error! revents = %d\n", fds[i].revents);
                 end_server = TRUE;
                 break;
-
             }
             if (fds[i].fd == serverSd)
             {
@@ -102,11 +102,8 @@ int main(int argc, char *argv[])
                     newSd = accept(serverSd, NULL, NULL);
                     if (newSd < 0)
                     {
-                        if (errno != EWOULDBLOCK)
-                        {
-                            perror("  accept() failed");
-                            end_server = TRUE;
-                        }
+                        std::cout << "error accept()" << std::endl;
+                        end_server = TRUE;
                         break;
                     }
                     printf("  New incoming connection - %d\n", newSd);
@@ -117,7 +114,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                do
+                while(1)
                 {
                     rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
                     if (rc < 0)
@@ -137,14 +134,19 @@ int main(int argc, char *argv[])
                     }
                     len = rc;
                     printf("  %d bytes received\n", len);
-                    rc = send(fds[i].fd, buffer, len, 0);
+//                    rc = send(fds[i].fd, buffer, len, 0);
+                    off_t len = 0;
+                    int read = open("www/index.html", O_RDONLY);
+//                    rc += send(fds[i].fd, &header, sizeof(header), 0);
+                    sendfile(read, fds[i].fd, 0, &len, NULL, 0);
+                    rc += len;
                     if (rc < 0)
                     {
                         perror("  send() failed");
                         close_conn = TRUE;
                         break;
                     }
-                } while(TRUE);
+                }
                 if (close_conn)
                 {
                     close(fds[i].fd);
@@ -153,11 +155,6 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        off_t len = 10000;
-//        memset(&msg, 0, sizeof(msg));
-//        recv(newSd, (char*)&msg, sizeof(msg), 0);
-//        std::cout << msg << std::endl;
-//        sendfile(read, newSd, 0, &len, NULL, 0);
     }  while (end_server == FALSE);
     close(newSd);
     close(serverSd);
