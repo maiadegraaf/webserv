@@ -1,7 +1,7 @@
 #include "Request.hpp"
 // Constructor initializes attributes to 0 by default 
 Request::Request()
-	: _method(NULL), _dir(NULL), _protocol(NULL) {}
+	: _method(""), _dir(""), _protocol(""), _file("") {}
  
 Request::Request( const Request& rhs ) {
 	*this = rhs;
@@ -16,6 +16,7 @@ Request&	Request::operator=( const Request& rhs )
 	this->_protocol = rhs._protocol;
 	this->_content = rhs._content;
 	this->_input = rhs._input;
+	this->_file = rhs._file;
 	return *this;
 }
 
@@ -25,30 +26,13 @@ Request::Request(string input) {
 	setContent();
 }
 
-// Getters 
-string Request::getMethod() { return _method; }
-string Request::getDir() { return _dir; }
-string Request::getProtocol() { return _protocol; }
-string Request::getContentValue(string key) { return _content[key]; }
-
-// Setters 
-void Request::setMethod(string new_method) { _method = new_method; }
-void Request::setDir(string new_dir) { _dir = new_dir; }
-void Request::setProtocol(string new_protocol) { _protocol = new_protocol; }
-void Request::setContentValue(string key, string value) { _content[key] = value; }
-
+// Setters
 void Request::setInput(string input) {
 	string vecPush;
-	size_t start = 0;
-	size_t findNL = input.find('\n', start);
+	stringstream ss(input);
 
-	while (findNL != string::npos)
-	{
-		vecPush = input.substr(start, findNL - start);
-//		cout << vecPush << "-- test --" << endl;
+	while (getline(ss, vecPush, '\n')) {
 		_input.push_back(vecPush);
-		start = findNL + 1;
-		findNL = input.find('\n', start);
 	}
 }
 
@@ -66,14 +50,26 @@ void Request::setAttributes() {
 }
 
 void Request::setContent() {
-	string key;
-	string value;
-	size_t idx;
-	for (size_t i = 1; i < _input.size(); i++) {
+	string	key;
+	string	value;
+	size_t	idx;
+	size_t	i = 1;
+	size_t	size = _input.size();
+
+	while (i < size && _input[i].compare(0, 1,"")) {
 		idx = _input[i].find(':', 0);
 		key = _input[i].substr(0, idx);
 		value = _input[i].substr(idx + 2, _input[i].size());
 		setContentValue(key, value);
+		i++;
+	}
+	if (i == size)	{
+		_file.clear();
+		return ;
+	}
+	for (size_t j = i; j < size; j++) {
+		_file.append(_input[j]);
+		_file.append("\n");
 	}
 }
 

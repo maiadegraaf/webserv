@@ -10,35 +10,43 @@ using namespace std;
 
 class Request
 {
+	// (Con/De)structors
 	public:
-	// (Con/De)structor
 		Request();
 		Request( const Request &rhs );
 		~Request();
 		Request& operator=( const Request &rhs );
 		Request(string input);
 
+	// Attributes
 	private:
 		string				_method;
 		string				_protocol;
 		string				_dir;
 		vector<string>		_input;
 		map<string, string> _content;
+		string 				_file;
 
-	public:
     // Getters
-		string	getMethod();
-		string	getDir();
-		string	getProtocol();
-		string	getContentValue(string key);
-    // Setters
+	public:
+		string			getMethod()							{ return _method; }
+		string			getDir() 							{ return _dir; }
+		string			getProtocol()						{ return _protocol; }
+		string			getContentValue(string key)			{ return _content[key]; }
+		vector<string>	getInput()							{ return _input; }
+		string 			getFile()							{ return _file; }
+
+	// Setters
+	public:
+		void	setMethod(string new_method)				{ _method = new_method; }
+		void	setDir(string new_dir)						{ _dir = new_dir; }
+		void	setProtocol(string new_protocol)			{ _protocol = new_protocol; }
+		void	setContentValue(string key, string value)	{ _content[key] = value; }
+
 		void	setInput(string input);
 		void	setAttributes();
 		void	setContent();
-        void	setMethod(string _method);
-        void	setDir(string _dir);
-        void	setProtocol(string _protocol);
-        void	setContentValue(string key, string value);
+
     // Output
         void	output();
 };
