@@ -1,6 +1,7 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 #include <iostream>
+
 #include <string>
 #include <map>
 #include <vector>
@@ -21,8 +22,8 @@ class Request
 	// Attributes
 	private:
 		string				_method;
-		string				_protocol;
 		string				_dir;
+		string				_protocol;
 		vector<string>		_input;
 		map<string, string> _content;
 		string 				_file;
