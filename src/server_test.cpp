@@ -15,18 +15,22 @@
 #include <fcntl.h>
 #include <fstream>
 #include <poll.h>
+#include <sys/ioctl.h>
+
 #define TRUE             1
 #define FALSE            0
 
 using namespace std;
 int main(int argc, char *argv[])
 {
-    int    len, on = 1;
+    int    rc, len = 0, on = 1, nfds = 16, newSd = -1;
     struct pollfd fds[200];
-    bool   end_server = FALSE;
-    char   buffer[800];
-    int    close_conn;
-    char    header[2000] = "HTTP/1.1 200 OK\r\n\r\n";
+    char   buffer[80];
+    int serverSd = -1;
+    string sBuf;
+    int    close_conn, compress_array = FALSE, end_server = FALSE;
+    char    header[] = "HTTP/1.1 200 OK\r\n\r\n";
+    sockaddr_in servAddr;
 
 
     if(argc != 2)
@@ -35,47 +39,50 @@ int main(int argc, char *argv[])
         exit(0);
     }
     int port = atoi(argv[1]);
-
-    char msg[1500];
-    sockaddr_in servAddr;
+    serverSd = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSd < 0)
+    {
+        perror("socket() failed");
+        exit(-1);
+    }
+    rc = setsockopt(serverSd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on));
+    if (rc < 0)
+    {
+        perror("setsockopt() failed");
+        close(serverSd);
+        exit(-1);
+    }
+    rc = ioctl(serverSd, FIONBIO, (char *)&on);
+    if (rc < 0)
+    {
+        perror("ioctl() failed");
+        close(serverSd);
+        exit(-1);
+    }
     bzero((char*)&servAddr, sizeof(servAddr));
     servAddr.sin_family = AF_INET;
     servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servAddr.sin_port = htons(port);
-    int serverSd = socket(AF_INET, SOCK_STREAM, 0);
-    if(serverSd < 0)
-    {
-        cerr << "Error establishing the server socket" << endl;
-        exit(0);
-    }
-    int bindStatus = bind(serverSd, (struct sockaddr*) &servAddr, sizeof(servAddr));
-    if(bindStatus < 0)
+    rc = bind(serverSd, (struct sockaddr*) &servAddr, sizeof(servAddr));
+    if(rc < 0)
     {
         cerr << "Error binding socket to local address" << endl;
-        exit(0);
+        close(serverSd);
+        exit(-1);
     }
-    int rc = listen(serverSd, 32);
+    rc = listen(serverSd, 32);
     if (rc < 0)
     {
         perror("listen() failed");
         close(serverSd);
         exit(0);
     }
-    sockaddr_in newSockAddr;
-    socklen_t newSockAddrSize = sizeof(newSockAddr);
-    int newSd = accept(serverSd, (sockaddr *)&newSockAddr, &newSockAddrSize);
-    if(newSd < 0)
-    {
-        cerr << "Error accepting request from client!" << endl;
-        exit(1);
-    }
     memset(fds, 0 , sizeof(fds));
-    fds[0].fd = newSd;
+    fds[0].fd = serverSd;
     fds[0].events = POLLIN;
     int timeout = (3 * 60 * 1000);
-    int nfds = 1;
     do  {
-        cout << "Awaiting client response..." << endl;
+        cout << "waiting poll..." << endl;
         rc = poll(fds, nfds, timeout);
         if (rc == 0)
         {
@@ -83,27 +90,25 @@ int main(int argc, char *argv[])
             break;
         }
         int current_size = nfds;
-        for (int i = 0; i < current_size; i++)
-        {
-            if(fds[i].revents == 0) {
+        for (int i = 0; i < current_size; i++) {
+            if (fds[i].revents == 0) {
                 continue;
             }
-            if(fds[i].revents != POLLIN)
-            {
-                printf("  Error! revents = %d\n", fds[i].revents);
-                end_server = TRUE;
-                break;
-            }
-            if (fds[i].fd == serverSd)
-            {
+//            if (fds[i].revents != POLLIN) {
+//                printf("  Error! revents = %d\n", fds[i].revents);
+//                end_server = TRUE;
+//                break;
+//            }
+            if (fds[i].fd == serverSd) {
                 printf("  Listening socket is readable\n");
-                do
-                {
-                    newSd = accept(serverSd, NULL, NULL);
-                    if (newSd < 0)
-                    {
-                        std::cout << "error accept()" << std::endl;
-                        end_server = TRUE;
+                do {
+                    newSd = accept(serverSd , NULL, NULL);
+                    if (newSd < 0) {
+                        if (errno != EWOULDBLOCK)
+                        {
+                            perror("  accept() failed");
+                            end_server = TRUE;
+                        }
                         break;
                     }
                     printf("  New incoming connection - %d\n", newSd);
@@ -111,23 +116,19 @@ int main(int argc, char *argv[])
                     fds[nfds].events = POLLIN;
                     nfds++;
                 } while (newSd != -1);
-            }
-            else
-            {
-                while(1)
-                {
+            } else {
+                printf("  Descriptor %d is readable\n", fds[i].fd);
+                close_conn = FALSE;
+                while (1) {
                     rc = recv(fds[i].fd, buffer, sizeof(buffer), 0);
-                    if (rc < 0)
-                    {
-                        if (errno != EWOULDBLOCK)
-                        {
+                    if (rc < 0) {
+                        if (errno != EWOULDBLOCK) {
                             perror("  recv() failed");
                             close_conn = TRUE;
                         }
                         break;
                     }
-                    if (rc == 0)
-                    {
+                    if (rc == 0) {
                         printf("  Connection closed\n");
                         close_conn = TRUE;
                         break;
@@ -135,28 +136,39 @@ int main(int argc, char *argv[])
                     len = rc;
                     printf("  %d bytes received\n", len);
 //                    rc = send(fds[i].fd, buffer, len, 0);
-                    off_t len = 0;
-                    int read = open("www/index.html", O_RDONLY);
-//                    rc += send(fds[i].fd, &header, sizeof(header), 0);
-                    sendfile(read, fds[i].fd, 0, &len, NULL, 0);
-                    rc += len;
-                    if (rc < 0)
-                    {
-                        perror("  send() failed");
-                        close_conn = TRUE;
-                        break;
-                    }
                 }
-                if (close_conn)
-                {
+                int read = open("www/index.html", O_RDONLY);
+                off_t len = 0;
+                send(fds[i].fd, header, len, 0);
+                rc = sendfile(read, fds[i].fd, 0, &len, NULL, 0);
+                if (rc < 0) {
+                    perror("  send() failed");
+                    close_conn = TRUE;
+                    break;
+                }
+                if (close_conn) {
                     close(fds[i].fd);
                     fds[i].fd = -1;
-                    int compress_array = TRUE;
+                    compress_array = TRUE;
+                }
+            }
+            if (compress_array) {
+                compress_array = FALSE;
+                for (int i = 0; i < nfds; i++) {
+                    if (fds[i].fd == -1) {
+                        for (int j = i; j < nfds; j++) {
+                            fds[j].fd = fds[j + 1].fd;
+                        }
+                        i--;
+                        nfds--;
+                    }
                 }
             }
         }
-    }  while (end_server == FALSE);
-    close(newSd);
-    close(serverSd);
+        } while (end_server == FALSE); /* End of serving running.    */
+        for (int i = 0; i < nfds; i++) {
+            if (fds[i].fd >= 0)
+                close(fds[i].fd);
+        }
     return 0;
 }
