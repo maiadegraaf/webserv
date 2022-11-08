@@ -21,24 +21,19 @@
 #define FALSE            0
 
 using namespace std;
-int main(int argc, char *argv[])
+
+std::ifstream::pos_type filesize(const char* filename)
 {
-    int    rc, len = 0, on = 1, nfds = 16, newSd = -1;
-    struct pollfd fds[200];
-    char   buffer[80];
-    int serverSd = -1;
-    string sBuf;
-    int    close_conn, compress_array = FALSE, end_server = FALSE;
-    char    header[] = "HTTP/1.1 200 OK\r\n\r\n";
+    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+    return in.tellg();
+}
+
+int createSocket(int port)
+{
+    int rc, on;
     sockaddr_in servAddr;
+    int serverSd = -1;
 
-
-    if(argc != 2)
-    {
-        cerr << "Usage: port" << endl;
-        exit(0);
-    }
-    int port = atoi(argv[1]);
     serverSd = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSd < 0)
     {
@@ -77,6 +72,17 @@ int main(int argc, char *argv[])
         close(serverSd);
         exit(0);
     }
+    return serverSd;
+}
+
+void createPoll(int serverSd)
+{
+    int     rc, len, nfds = 1, newSd = -1;
+    char    buffer[80];
+    struct  pollfd fds[200];
+    int     close_conn, end_server = FALSE;
+
+
     memset(fds, 0 , sizeof(fds));
     fds[0].fd = serverSd;
     fds[0].events = POLLIN;
@@ -94,11 +100,11 @@ int main(int argc, char *argv[])
             if (fds[i].revents == 0) {
                 continue;
             }
-//            if (fds[i].revents != POLLIN) {
-//                printf("  Error! revents = %d\n", fds[i].revents);
-//                end_server = TRUE;
-//                break;
-//            }
+            if (fds[i].revents != POLLIN) {
+                printf("  Error! revents = %d\n", fds[i].revents);
+                end_server = TRUE;
+                break;
+            }
             if (fds[i].fd == serverSd) {
                 printf("  Listening socket is readable\n");
                 do {
@@ -135,11 +141,11 @@ int main(int argc, char *argv[])
                     }
                     len = rc;
                     printf("  %d bytes received\n", len);
-//                    rc = send(fds[i].fd, buffer, len, 0);
+                    rc = send(fds[i].fd, buffer, len, 0);
                 }
                 int read = open("www/index.html", O_RDONLY);
-                off_t len = 0;
-                send(fds[i].fd, header, len, 0);
+                off_t len = filesize("www/index.html");
+                len++;
                 rc = sendfile(read, fds[i].fd, 0, &len, NULL, 0);
                 if (rc < 0) {
                     perror("  send() failed");
@@ -149,26 +155,28 @@ int main(int argc, char *argv[])
                 if (close_conn) {
                     close(fds[i].fd);
                     fds[i].fd = -1;
-                    compress_array = TRUE;
-                }
-            }
-            if (compress_array) {
-                compress_array = FALSE;
-                for (int i = 0; i < nfds; i++) {
-                    if (fds[i].fd == -1) {
-                        for (int j = i; j < nfds; j++) {
-                            fds[j].fd = fds[j + 1].fd;
-                        }
-                        i--;
-                        nfds--;
-                    }
                 }
             }
         }
-        } while (end_server == FALSE); /* End of serving running.    */
-        for (int i = 0; i < nfds; i++) {
-            if (fds[i].fd >= 0)
-                close(fds[i].fd);
-        }
+    } while (end_server == FALSE); /* End of serving running.    */
+    for (int i = 0; i < nfds; i++) {
+        if (fds[i].fd >= 0)
+            close(fds[i].fd);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    int     serverSd;
+
+
+    if(argc != 2)
+    {
+        cerr << "Usage: port" << endl;
+        exit(0);
+    }
+    int port = atoi(argv[1]);
+    serverSd = createSocket(port);
+    createPoll(serverSd);
     return 0;
 }
