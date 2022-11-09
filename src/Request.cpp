@@ -67,6 +67,8 @@ void Request::setContent() {
 
 	while (i < size && _input[i].compare(0, 1,"")) {
 		idx = _input[i].find(':', 0);
+		if (idx == string::npos)
+			throw BadRequestException();
 		key = _input[i].substr(0, idx);
 		value = _input[i].substr(idx + 2, _input[i].size());
 		if (idx + 2 > _input[i].size())
