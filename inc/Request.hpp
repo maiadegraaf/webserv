@@ -1,11 +1,12 @@
 #ifndef REQUEST_H
 #define REQUEST_H
-#include <iostream>
 
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 #include <sstream>
+#include <exception>
 
 using namespace std;
 
@@ -50,6 +51,14 @@ class Request
 
     // Output
         void	output();
+
+	// Exceptions
+	class BadRequestException : public exception {
+		public:
+			const char	*what() const throw() {
+				return "400 Bad Request";
+			};
+	};
 };
  
 #endif

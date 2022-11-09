@@ -42,10 +42,19 @@ void Request::setAttributes() {
 	string 			tmp;
 
 	getline(ss, tmp, ' ');
+	if (!tmp.compare(0, 1, "") && \
+	!tmp.compare(0, 4, "GET") && tmp.compare(0, 5, "POST") \
+	&& tmp.compare(0, 7, "DELETE")) {
+		throw BadRequestException();
+	}
 	setMethod(tmp);
 	getline(ss, tmp, ' ');
+	if (!tmp.compare(0, 1, ""))
+		throw BadRequestException();
 	setDir(tmp);
 	getline(ss, tmp);
+	if (!tmp.compare(0, 1, ""))
+		throw BadRequestException();
 	setProtocol(tmp);
 }
 
@@ -60,13 +69,16 @@ void Request::setContent() {
 		idx = _input[i].find(':', 0);
 		key = _input[i].substr(0, idx);
 		value = _input[i].substr(idx + 2, _input[i].size());
+		if (idx + 2 > _input[i].size())
+			throw BadRequestException();
 		setContentValue(key, value);
 		i++;
 	}
-	if (i == size)	{
-		_file.clear();
+	_file.clear();
+	if (i == size)
 		return ;
-	}
+	if (_input[i].compare(0, 1, ""))
+		throw BadRequestException();
 	for (size_t j = i; j < size; j++) {
 		_file.append(_input[j]);
 		_file.append("\n");

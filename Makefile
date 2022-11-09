@@ -6,9 +6,11 @@ CPP_FLAGS		:=	-Wall -Wextra -Werror -g
 
 GPP				:=	g++
 
-INC				:=	-I inc/
+INC_DIR			:=	inc
+INC				:=	-I $(INC_DIR)/
 
-INCLUDES		:=	Request.hpp
+INCLUDES		=	Request.hpp
+INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
 SRC_DIR			:=	src
 
@@ -22,12 +24,10 @@ OBJ				:=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
 all : $(NAME)
 
-$(OBJ) : $(INCLUDES)
-
 $(NAME) : $(OBJ)
 	$(GPP) $(CPP_FLAGS) $(INC) $^ -o $(NAME)
 
-$(OBJ_DIR)/%.o : %.cpp
+$(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 	mkdir -p $(dir $@)
 	$(GPP) $(CPP_FLAGS) $(INC) -c $< -o $@
 
