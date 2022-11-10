@@ -1,18 +1,32 @@
 #include "Response.hpp"
 // Constructor initializes attributes to 0 by default
-Response::Response(string errorMessage, int newSockFD)
-	: _sockFD(newSockFD) {
+Response::Response(const char *errorMessage, int newSockFD)
+	: _sockFD(newSockFD), _filePath("../../www/error/"), _head("HTTP/1.1 ") {
+	stringstream	ss(errorMessage);
+	string			tmp;
 
+	getline(ss, tmp, ' ');
+	_filePath.append(tmp);
+	_filePath.append(".html");
 
-	_head.append("HTTP/1.1 ");
-	_head.append(errorMessagemessage);
-	_head.append("\r\n\r");
-
+	ifstream		file(_filePath, ios::binary);
+	file.seekg(0, ios::end);
+	setFileSize((size_t)file.tellg());
+	string size = to_string(getFileSize());
+	appendToHead(errorMessage);
+	appendToHead("\n");
+	appendToHead("Content-Type: ");
+	appendToHead(gContentType["html"]);
+	appendToHead("\n");
+	appendToHead("Content-Length: ");
+	appendToHead(size);
+	appendToHead("\n");
+	appendToHead("\r\n\r");
 }
 
-Response::Response(string file, string message, int newSockFD)
-	: _sockFD(newSockFD) {
-	(void)file, (void)messsage;
+Response::Response(string filePath, string message, string contentType, int newSockFD)
+	: _sockFD(newSockFD), _filePath(filePath) {
+	(void)file, (void)messsage, (void)contentType;
 }
 
 Response&	Response::operator=( const Response& rhs )
@@ -34,7 +48,10 @@ void Response::output() {
 
 // functionality
 void Response::sendResponse() {
-
+	int fd = open(getFilePath().c_str, O_RDONLY);
+	send(_sockFD, fd, _header.size(), 0);
+	sendfile(_sockFD, _file, NULL, getFileSize());
+	close(fd);
 }
 
 
