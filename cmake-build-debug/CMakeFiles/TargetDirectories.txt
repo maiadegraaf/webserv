@@ -1,3 +1,2 @@
-/Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug/CMakeFiles/webserve.dir
 /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug/CMakeFiles/rebuild_cache.dir
