@@ -38,7 +38,8 @@ public:
 	void setLocation(std::vector<location> _location);
 	void setCgi(std::string _cgi); 
 // Output 
-	void output(); 
-}; 
+	void output();
+
+};
  
 #endif

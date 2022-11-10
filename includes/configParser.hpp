@@ -23,6 +23,8 @@ public:
     int	openFile(std::string filename);
 	void	output(void);
 
+//    int checkLineForBracket(std::string s);
+    int configParser::findClosingBracket(int i)
 };
 
 

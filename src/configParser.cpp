@@ -49,3 +49,21 @@ int	configParser::openFile(std::string filename)
 	output();
     return (EXIT_SUCCESS);
 }
+
+//int configParser::checkLineForBracket(std::string s)
+//{
+//    if (s.find())
+//}
+
+int configParser::findClosingBracket(iterator i)
+{
+    for(i; _server_content[i] != _server_content.end(); i++)
+    {
+        if (_server_content[i].find("}"))
+            findClosingBracket(i);
+        else if(_server_content[i].find("{"))
+            return (EXIT_SUCCESS);
+    }
+    failure("Could not find closing bracket.");
+    return (EXIT_FAILURE);
+}

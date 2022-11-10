@@ -53,4 +53,6 @@ void config::output()
 //  _location.output();
   std::cout << "cgi : " << _cgi << std::endl;
 }
+
+
  
