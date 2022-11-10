@@ -46,10 +46,10 @@ int Server::setup()
     }
 }
 
-void Server::setAddr()
+void Server::setAddr(config conf)
 {
     bzero((char*)&_servAddr, sizeof(_servAddr));
     _servAddr.sin_family = AF_INET;
     _servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    _servAddr.sin_port = htons(_port);
+    _servAddr.sin_port = htons(conf._address);
 }
