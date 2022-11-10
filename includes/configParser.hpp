@@ -1,32 +1,33 @@
 #ifndef CONFIGPARSER_H
 #define CONFIGPARSER_H
-#include <iostream>
-#include <string>
-#include <vector>
 #include "webserv.h"
 
 // Class definition
 class configParser
 {
 private: 
-	std::ifstream _config_file;
-	std::vector<std::string> _server_content;
+	ifstream _config_file;
+	vector<string> _server_content;
  
 public: 
 // Constructor 
 	configParser(); 
-	configParser( const configParser &rhs); 
-//	configParser(std::ifstream newConfig_file, std::vector<std::string> newServer_content);
+	configParser( const configParser &rhs);
+	configParser(const string& filename);
 	~configParser(); 
 	configParser& operator=( const configParser &rhs);
 
-    int	openFile(std::string filename);
 	void	output(void);
 
-//    int checkLineForBracket(std::string s);
-    int configParser::findClosingBracket(int i)
+	int findClosingBracket(int i, size_t pos, int tab);
+
+	string&	operator[](int i);
+
+	size_t getSize();
+
+	string findFirstWord(int i);
+
+	int findServer();
 };
 
-
- 
 #endif

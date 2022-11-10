@@ -1,45 +1,57 @@
 #ifndef CONFIG_H
 #define CONFIG_H
-#include <iostream>
-#include <string>
-#include <vector>
-#include "location.hpp"
- 
-// Class definition 
+#include "webserv.h"
+
+class location;
+class configParser;
+// Class definition
 class config
 {
-private: 
+private:
 	int _address;
-	std::vector<std::string> _server_name;
-	std::string _root;
-	unsigned long long _max_size;
-	std::vector<location> _location;
-	std::string _cgi;
- 
-public: 
-// Constructor 
-	config(); 
-	config( const config &rhs); 
-	config(int newAddress, std::string newServer_name, std::string newRoot, unsigned long long newMax_size, location newLocation, std::string newCgi);
-	~config(); 
-	config& operator=( const config &rhs); 
-// Getters 
-	int getAddress(); 
-//	std::vector<std::string> getServer_name();
-	std::string getRoot(); 
+	vector<string> _serverName;
+	string _root;
+	string _errorPage;
+	unsigned long long _maxSize;
+	vector<location> _location;
+	string _cgi;
+
+public:
+// Constructor
+	config();
+	config( const config &rhs );
+	config(const string& filename);
+	~config();
+	config& operator=( const config &rhs);
+// Getters
+	int getAddress();
+//	vector<string> getServer_name();
+	string getRoot();
 	unsigned long long getMax_size();
-    std::vector<location> getLocation();
-	std::string getCgi(); 
-// Setters 
-	void setAddress(int _address); 
-	void setServer_name(std::vector<std::string> _server_name);
-	void setRoot(std::string _root); 
-	void setMax_size(unsigned long long _max_size); 
-	void setLocation(std::vector<location> _location);
-	void setCgi(std::string _cgi); 
-// Output 
+    vector<location> getLocation();
+	string getCgi();
+// Setters
+//	void setAddress(int _address);
+//	void setServer_name(vector<string> _serverName);
+//	void setRoot(string _root);
+//	void setMaxSize(unsigned long long _maxSize);
+//	void setLocation(vector<location> _location);
+//	void setCgi(string _cgi);
+
+	void setAddress(const string &line);
+	void setServer_name(const string &line);
+	void setRoot(const string &line);
+	void setMaxSize(const string &line);
+	void setLocation(const string &line);
+	void setCgi(const string &line);
+	void setErrorPage(const string &line);
+// Output
 	void output();
 
+	void determineCase(const string &word, const string& line);
+
+	typedef void (config::* MemFuncPtr)(const string &line);
 };
- 
+
+
 #endif

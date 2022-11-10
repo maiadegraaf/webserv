@@ -11,7 +11,7 @@ location::location( const location& rhs)
 	*this = rhs;
 }
  
-location::location(std::string newIndex) 
+location::location(string newIndex)
 	: _index(newIndex)
 {
 
@@ -28,14 +28,14 @@ location&	location::operator=( const location& rhs )
 }
 
 // Getters 
-std::string location::getIndex() { return _index; }
+string location::getIndex() { return _index; }
  
 // Setters 
-void location::setIndex(std::string newIndex) { _index = newIndex; }
+void location::setIndex(string newIndex) { _index = newIndex; }
  
 // Output
 void location::output()
 {
-  std::cout << "index : " << _index << std::endl; 
+  cout << "index : " << _index << endl;
 }
  

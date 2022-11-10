@@ -1,5 +1,5 @@
-#ifndef WEBSERVE_WEBSERV_H
-#define WEBSERVE_WEBSERV_H
+#ifndef WEBSERV_H
+#define WEBSERV_H
 #include <netinet/in.h>
 #include <cstdio>
 #include <cstdlib>
@@ -8,12 +8,19 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <iterator>
 #include <fstream>
+#include <vector>
+using namespace std;
+
+#include "location.hpp"
 #include "configParser.hpp"
+#include "config.hpp"
 
 //utils
-void failure(const char *message);
-int check_file_type(std::string filename);
-void	printStr(const std::string str);
+void	failure(const char *message);
+int 	check_file_type(string filename);
+void	printStr(const string str);
+string	findNextWord(const string &line, size_t pos);
 
-#endif //WEBSERVE_WEBSERV_H
+#endif //WEBSERV_H
