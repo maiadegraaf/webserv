@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(config *conf)
-    : _fd(0), _conf(conf), _nfds(1), _newFd(-1)
+    : _fd(-1), _conf(conf), _nfds(1), _newFd(-1)
 {
 
 }
@@ -28,7 +28,7 @@ std::ifstream::pos_type Server::filesize(const char* filename)
 
 void Server::setup()
 {
-    int on;
+    int on = 1;
 
     _fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_fd < 0)
@@ -37,6 +37,12 @@ void Server::setup()
         exit(-1);
     }
     //makes the socket non blocking
+    if (setsockopt(_fd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0)
+    {
+        perror("setsockopt() failed");
+        close(_fd);
+        exit(-1);
+    }
     if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
     {
         std::cerr << "ioctl failed: to make the socket unblocking" << std::endl;
