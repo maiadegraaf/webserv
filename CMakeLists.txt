@@ -6,4 +6,4 @@ set(CMAKE_CXX_STANDARD 98)
 include_directories(.)
 
 add_executable(webserv
-        src/main.cpp includes/webserv.h includes/location.hpp includes/config.hpp src/location.cpp src/config.cpp src/configParser.cpp includes/configParser.hpp src/utils.cpp)
+        src/main.cpp src/webserv.h src/location.hpp src/config.hpp src/location.cpp src/config.cpp src/configParser.cpp src/configParser.hpp src/utils.cpp)

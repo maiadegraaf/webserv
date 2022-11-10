@@ -1,4 +1,4 @@
-#include "includes/location.hpp"
+#include "location.hpp"
 // Constructor initializes attributes to 0 by default 
 location::location()
 	: _index(0)

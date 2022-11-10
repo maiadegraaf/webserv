@@ -9,10 +9,15 @@ PATHO = build/objs/
 PATHS = src/
 
 
-src = src/server_test.cpp
+src = src/Server.cpp \
+      src/config.cpp \
+      src/location.cpp \
+      src/main.cpp \
 
 
-HEADERS = \
+HEADERS = src/Server.hpp \
+			src/config.hpp \
+			src/location.hpp \
 
 OBJS	=	$(addprefix $(PATHO), $(notdir $(patsubst %.cpp, %.o, $(src))))
 
@@ -34,10 +39,10 @@ $(PATHO):
 
 clean:
 	@echo "Cleaning"
-	@rm -f $(OBJS)
-	@rmdir $(PATHO) $(PATHB)
+	@rm -rf $(OBJS)
+	@rm -rf $(PATHO) $(PATHB)
 
 fclean: clean
-	@rm -f $(NAME)
+	@rm -rf $(NAME)
 
 re: fclean all

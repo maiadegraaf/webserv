@@ -24,7 +24,7 @@ public:
 	void	output(void);
 
 //    int checkLineForBracket(std::string s);
-    int configParser::findClosingBracket(int i)
+    int findClosingBracket(int i);
 };
 
 
