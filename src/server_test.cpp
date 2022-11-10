@@ -40,13 +40,6 @@ int createSocket(int port)
         perror("socket() failed");
         exit(-1);
     }
-    rc = setsockopt(serverSd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on));
-    if (rc < 0)
-    {
-        perror("setsockopt() failed");
-        close(serverSd);
-        exit(-1);
-    }
     rc = ioctl(serverSd, FIONBIO, (char *)&on);
     if (rc < 0)
     {
