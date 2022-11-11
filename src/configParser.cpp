@@ -1,4 +1,4 @@
-#include "includes/configParser.hpp"
+#include "inc/configParser.hpp"
 // Constructor initializes attributes to 0 by default 
 configParser::configParser()
 	: _config_file(0), _server_content(0)

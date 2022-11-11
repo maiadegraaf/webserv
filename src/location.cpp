@@ -1,41 +1,44 @@
-#include "includes/location.hpp"
+#include "inc/Location.hpp"
 // Constructor initializes attributes to 0 by default 
-location::location()
-	: _index(0)
+Location::Location()
+	: _location(0), _index(0)
 {
 
 }
  
-location::location( const location& rhs)
+Location::Location( const Location& rhs)
 {
 	*this = rhs;
 }
  
-location::location(string newIndex)
-	: _index(newIndex)
+Location::Location(string newLocation, string newIndex) 
+	: _location(newLocation), _index(newIndex)
 {
 
 }
 
-location::~location()
+Location::~Location()
 {
 
 }
 
-location&	location::operator=( const location& rhs )
+Location&	Location::operator=( const Location& rhs )
 {
 	return *this;
 }
 
 // Getters 
-string location::getIndex() { return _index; }
+string Location::getLocation() { return _location; }
+string Location::getIndex() { return _index; }
  
 // Setters 
-void location::setIndex(string newIndex) { _index = newIndex; }
+void Location::setLocation(string newLocation) { _location = newLocation; }
+void Location::setIndex(string newIndex) { _index = newIndex; }
  
 // Output
-void location::output()
+void Location::output()
 {
-  cout << "index : " << _index << endl;
+  std::cout << "location : " << _location << std::endl; 
+  std::cout << "index : " << _index << std::endl; 
 }
  

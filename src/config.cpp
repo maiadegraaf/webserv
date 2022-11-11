@@ -1,4 +1,4 @@
-#include "includes/config.hpp"
+#include "inc/config.hpp"
 // Constructor initializes attributes to 0 by default 
 config::config()
 	: _address(0), _serverName(0), _root(0), _maxSize(0), _location(0), _cgi(0)
