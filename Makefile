@@ -10,13 +10,18 @@ GPP				:=	g++
 INC_DIR			:=	inc
 INC				:=	-I $(INC_DIR)/
 
-INCLUDES		=	Request.hpp
+INCLUDES		=	Request.hpp \
+					Response.hpp \
+					Utils.h
+
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
-					Request.cpp
+					client/Request.cpp \
+					client/Response.cpp \
+					utils/ContentType.cpp
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
 
