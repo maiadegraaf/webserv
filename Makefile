@@ -1,4 +1,5 @@
 
+include Pretty.mk
 
 NAME			:=	webserve
 
@@ -25,17 +26,21 @@ OBJ				:=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 all : $(NAME)
 
 $(NAME) : $(OBJ)
+	$(O_FILES_P)
 	$(GPP) $(CPP_FLAGS) $(INC) $^ -o $(NAME)
+	$(EXEC_CREATE_P)
 
 $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
-	mkdir -p $(dir $@)
+	$(MKDIR) $(dir $@)
 	$(GPP) $(CPP_FLAGS) $(INC) -c $< -o $@
 
 clean :
-	rm -rf $(OBJ_DIR)
+	$(RM) $(OBJ_DIR)
+	@(CLEAN_P)
 
 fclean : clean
-	rm -rf $(NAME)
+	$(RM) $(NAME)
+	$(FCLEAN_P)
 
 re: fclean all
 
