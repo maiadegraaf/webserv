@@ -9,9 +9,9 @@ int main(int argc, char **argv)
 	config	conf(argv[1]);
 }
 
-#include <iostream>
-#include <sys/socket.h>
-#include "Request.hpp"
+//#include <iostream>
+//#include <sys/socket.h>
+//#include "Request.hpp"
 
 //int main() {
 //	try {
@@ -37,11 +37,11 @@ int main(int argc, char **argv)
 //}
 
 
-int main(int argc, char *argv) {
+//int main(int argc, char *argv) {
 	// config parsing
 	// seeting up server/sockets/
 	// connnectieng with clients
 	// handling requests
 	// sending repsonse
-}
+//}
 
