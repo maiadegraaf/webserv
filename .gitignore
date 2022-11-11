@@ -31,6 +31,12 @@
 *.out
 *.app
 
-cmake-build-debug/*
 
+
+.idea
+cmake-build-debug/*
 CMakeLists.txt
+#createClass.sh
+test
+.dSYM
+/webserve

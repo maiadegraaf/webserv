@@ -57,10 +57,12 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
+
 CMAKE_SOURCE_DIR = /Users/maiadegraaf/webserve
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /Users/maiadegraaf/webserve/cmake-build-debug
+
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +89,11 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
+
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/maiadegraaf/webserve/cmake-build-debug/CMakeFiles /Users/maiadegraaf/webserve/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/maiadegraaf/webserve/cmake-build-debug/CMakeFiles 0
+
 .PHONY : all
 
 # The main clean target
@@ -225,6 +229,7 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/webserv.dir/build.make CMakeFiles/webserv.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -246,6 +251,7 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+
 .PHONY : help
 
 
