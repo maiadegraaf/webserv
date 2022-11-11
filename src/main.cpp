@@ -1,3 +1,14 @@
+#include "includes/webserv.h"
+
+
+
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+		failure("Incorrect INPUT");
+	config	conf(argv[1]);
+}
+
 #include <iostream>
 #include <sys/socket.h>
 #include "Request.hpp"
@@ -33,3 +44,4 @@ int main(int argc, char *argv) {
 	// handling requests
 	// sending repsonse
 }
+
