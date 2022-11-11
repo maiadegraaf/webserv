@@ -1,5 +1,5 @@
 #include "Response.hpp"
-// Constructor initializes attributes to 0 by default
+
 Response::Response(const char *errorMessage, int newSockFD)
 	: _sockFD(newSockFD), _filePath("../../www/error/"), _head("HTTP/1.1 ") {
 	stringstream	ss(errorMessage);
@@ -49,9 +49,8 @@ void Response::output() {
 // functionality
 void Response::sendResponse() {
 	int fd = open(getFilePath().c_str, O_RDONLY);
-	send(_sockFD, fd, _header.size(), 0);
-	sendfile(_sockFD, _file, NULL, getFileSize());
+	send(_sockFD, _head.c_str(), _head.size(), 0);
+	sendfile(_sockFD, fd, NULL, getFileSize());
 	close(fd);
+	// max bytes length to send. chunk it !
 }
-
-
