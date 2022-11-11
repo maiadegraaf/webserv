@@ -1,18 +1,24 @@
 #include "inc/Location.hpp"
 // Constructor initializes attributes to 0 by default 
 Location::Location()
-	: _location(0), _index(0)
+	: _location("/"), _index("index.html")
 {
 
 }
- 
+
 Location::Location( const Location& rhs)
 {
 	*this = rhs;
 }
  
-Location::Location(string newLocation, string newIndex) 
+Location::Location(const string& newLocation, const string& newIndex)
 	: _location(newLocation), _index(newIndex)
+{
+
+}
+
+Location::Location(const string& newLocation)
+		: _location(newLocation), _index("index.html")
 {
 
 }
@@ -32,8 +38,8 @@ string Location::getLocation() { return _location; }
 string Location::getIndex() { return _index; }
  
 // Setters 
-void Location::setLocation(string newLocation) { _location = newLocation; }
-void Location::setIndex(string newIndex) { _index = newIndex; }
+void Location::setLocation(const string& newLocation) { _location = newLocation; }
+void Location::setIndex(const string& newIndex) { _index = newIndex; }
  
 // Output
 void Location::output()

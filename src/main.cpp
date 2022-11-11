@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 		failure("Incorrect INPUT");
-	config	conf(argv[1]);
+	Config	conf(argv[1]);
 }
 
 //#include <iostream>
@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 
 
 //int main(int argc, char *argv) {
-	// config parsing
+	// Config parsing
 	// seeting up server/sockets/
 	// connnectieng with clients
 	// handling requests
