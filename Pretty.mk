@@ -13,11 +13,11 @@
 # -*- Makefile -*-
 
 ## Colors
-GREEN := 			"\033[1;32m"
-CYAN := 			"\033[1;36m"
-RED := 				"\033[1;31m"
-PURPLE := 			"\033[1;35m"
-END :=				"\033[0m" 
+GREEN := 					"\033[1;32m"
+CYAN := 					"\033[1;36m"
+RED := 						"\033[1;31m"
+PURPLE := 					"\033[1;35m"
+END :=						"\033[0m"
 
 ## Remove dir
 RM := @rm -rf
@@ -35,6 +35,6 @@ COMP_MLX :=					@echo $(PURPLE)"Compiling MLX"$(END)
 MLX_COMPILED :=				@echo $(CYAN)"MLX compiled [OK]"$(END)
 
 # Delete
-CLEAN_P :=			@echo $(RED)"Deleting object files [OK]"$(END)
-FCLEAN_P:=			@echo $(RED)"Deleting executable [OK]"$(END)
-TEST_FCLEAN :=		@echo $(RED)"Deleting TESTER Executable [OK]"$(END)
+CLEAN_P :=					@echo $(RED)"Deleting object files [OK]"$(END)
+FCLEAN_P:=					@echo $(RED)"Deleting executable [OK]"$(END)
+TEST_FCLEAN :=				@echo $(RED)"Deleting TESTER Executable [OK]"$(END)

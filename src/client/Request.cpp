@@ -1,5 +1,5 @@
 #include "Request.hpp"
-// Constructor initializes attributes to 0 by default 
+
 Request::Request()
 	: _method(""), _dir(""), _protocol(""), _file("") {}
  
