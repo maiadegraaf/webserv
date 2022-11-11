@@ -20,6 +20,7 @@ config::config(const string& filename)
 		string word = conPar.findFirstWord(i);
 		determineCase(word, conPar[i]);
 	}
+	output();
 }
 
 config::~config()
@@ -45,7 +46,7 @@ void config::setAddress(const string &line)
 {
 	string	type = "listen";
 	size_t end = line.find(type) + type.length();
-	string s = findNextWord(line, end);
+	string s = findNextWord(line, end, false);
 	_address = stoi(s);
 	if (!_address)
 		failure("Listen is not correctly formatted.");
@@ -57,9 +58,10 @@ void config::setServer_name(const string &line)
 	size_t end = line.find(type) + type.length();
 	for(int i = 0; i < line.length(); i++)
 	{
-		string s = findNextWord(line, end);
+		string s = findNextWord(line, end, true);
 		_serverName.push_back(s);
 		end = line.find(s) + s.length();
+		i += end;
 	}
 }
 
@@ -67,14 +69,14 @@ void config::setRoot(const string &line)
 {
 	string	type = "root";
 	size_t end = line.find(type) + type.length();
-	_root = findNextWord(line, end);
+	_root = findNextWord(line, end, false);
 }
 
 void config::setMaxSize(const string &line)
 {
 	string	type = "client_max_body_size";
 	size_t end = line.find(type) + type.length();
-	_maxSize = stoull(findNextWord(line, end));
+	_maxSize = stoull(findNextWord(line, end, false));
 	if (!_maxSize)
 		failure("client_max_body_size is not correctly formatted.");
 }
@@ -88,7 +90,7 @@ void config::setCgi(const string &line)
 {
 	string	type = "cgi";
 	size_t end = line.find(type) + type.length();
-	_cgi = findNextWord(line, end);
+	_cgi = findNextWord(line, end, false);
 
 }
 
@@ -101,12 +103,13 @@ void config::setErrorPage(const string &line)
 // Output
 void config::output()
 {
-  cout << "address : " << _address << endl;
-//  cout << "server_name : " << _serverName << endl;
-  cout << "root : " << _root << endl;
-  cout << "max_size : " << _maxSize << endl;
+	cout << "address : " << _address << endl;
+	cout << "\nserver name(s) : " << endl;
+	for_each(_serverName.begin(), _serverName.end(), printStr);
+ 	cout << "\nroot : " << _root << endl;
+ 	cout << "\nmax_size : " << _maxSize << endl;
 //  _location.output();
-  cout << "cgi : " << _cgi << endl;
+	cout << "\ncgi : " << _cgi << endl;
 }
 
 void config::determineCase(const string& word, const string& line)

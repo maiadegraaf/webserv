@@ -19,8 +19,8 @@ using namespace std;
 
 //utils
 void	failure(const char *message);
-int 	check_file_type(string filename);
-void	printStr(const string str);
-string	findNextWord(const string &line, size_t pos);
+int 	check_file_type(const string& filename);
+void	printStr(const string& str);
+string findNextWord(const string &line, size_t pos, bool multi);
 
 #endif //WEBSERV_H
