@@ -1,10 +1,14 @@
 #include "Response.hpp"
+#include "Utils.h"
+//map<string, string> gContentType = ReturnContentType();
 
-Response::Response(string *errorMessage, int newSockFD)
+
+Response::Response(string errorMessage, int newSockFD)
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("../../www/error/") {
 
 	string			tmp;
 	stringstream	ss;
+	map<string, string> gContentType = returnContentType(); // ugly to pu here needs to be gone inheritance ??
 
 	ss << errorMessage;
 	getline(ss, tmp, ' ');
@@ -34,7 +38,7 @@ Response::Response(string filePath, string message, string contentType, int newS
 
 Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
-	this->_file = rhs._file;
+//	&this->_file = &rhs._file; // file cannot be changed
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;
 	this->_filePath = rhs._filePath;

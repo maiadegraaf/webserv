@@ -23,7 +23,7 @@ class Response
 			: _sockFD(0), _head(""), _filePath(""), _fileSize(0)					{ }
 		~Response() 																	{ }
 		Response(const Response &rhs) 													{ *this = rhs; }
-		Response(string *errorMessage, int newSockFD);
+		Response(string errorMessage, int newSockFD);
 		Response(string filePath, string message, string contentType, int newSockFD);
 		Response&	operator=(const Response &rhs);
 
@@ -45,7 +45,7 @@ class Response
 	// Setters
 	public:
 		void	setSockFD(int newSockFD)				{ this->_sockFD = newSockFD; }
-		void	setHead(string newHead)					{ this->_head = newHead; }
+		void	setHead(const string &newHead)			{ this->_head = newHead; }
 		void	setFile(string newFilePath)				{ this->_filePath = newFilePath; }
 		void	setFileSize(size_t newFileSize)			{ this->_fileSize = newFileSize; }
 
@@ -56,7 +56,7 @@ class Response
 	// Functionality
 	public:
 		void	sendResponse();
-		void	appendToHead(string newHead)			{ this->_head.append(newHead); }
+		void	appendToHead(const string &newHead)			{ this->_head.append(newHead); }
 		void	appendToFilePath(string newPath)		{ this->_filePath.append(newPath); }
 }; 
  
