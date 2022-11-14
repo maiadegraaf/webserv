@@ -1,4 +1,4 @@
-#include "inc/webserv.h"
+#include "webserv.h"
 
 void failure(const char *message)
 {
