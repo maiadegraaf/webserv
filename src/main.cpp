@@ -1,13 +1,13 @@
+#include "Server.hpp"
 #include "webserv.h"
 
-
-
-//int main(int argc, char **argv)
-//{
-//	if (argc != 2)
-//		failure("Incorrect INPUT");
-//	config	conf(argv[1]);
-//}
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+		failure("Incorrect INPUT");
+	Config	conf(argv[1]);
+    Server  ()
+}
 
 //#include <iostream>
 //#include <sys/socket.h>
@@ -37,7 +37,7 @@ int main() {
 
 
 //int main(int argc, char *argv) {
-	// config parsing
+	// Config parsing
 	// seeting up server/sockets/
 	// connnectieng with clients
 	// handling requests

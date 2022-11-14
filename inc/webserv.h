@@ -20,10 +20,11 @@ using namespace std;
 #include "configParser.hpp"
 #include "config.hpp"
 
+
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
-string	findNextWord(const string &line, size_t pos, bool multi);
+string findNextWord(const string &line, size_t pos);
 
 #endif //WEBSERV_H
