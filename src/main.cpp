@@ -1,12 +1,24 @@
-#include "includes/webserv.h"
+<<<<<<< HEAD
+#include "Server.hpp"
+=======
+#include "inc/webserv.h"
+>>>>>>> origin/le-config-parser
 
-
-
-int main(int argc, char **argv)
+int main()
 {
+<<<<<<< HEAD
+    location loc("/");
+    config conf(90, "127.0.0.1", "www", 100000, loc, "test");
+    Server server(&conf);
+
+    server.setup();
+    server.run();
+    server.closeFds();
+}
+=======
 	if (argc != 2)
 		failure("Incorrect INPUT");
-	config	conf(argv[1]);
+	Config	conf(argv[1]);
 }
 
 //#include <iostream>
@@ -38,10 +50,11 @@ int main(int argc, char **argv)
 
 
 //int main(int argc, char *argv) {
-	// config parsing
+	// Config parsing
 	// seeting up server/sockets/
 	// connnectieng with clients
 	// handling requests
 	// sending repsonse
 //}
 
+>>>>>>> origin/le-config-parser

@@ -3,7 +3,7 @@
 #include "webserv.h"
 
 // Class definition
-class configParser
+class ConfigParser
 {
 private: 
 	ifstream _config_file;
@@ -11,15 +11,17 @@ private:
  
 public: 
 // Constructor 
-	configParser(); 
-	configParser( const configParser &rhs);
-	configParser(const string& filename);
-	~configParser(); 
-	configParser& operator=( const configParser &rhs);
+	ConfigParser();
+	ConfigParser(const ConfigParser &rhs);
+	ConfigParser(const string& filename);
+	~ConfigParser();
+	ConfigParser& operator=(const ConfigParser &rhs);
+
+	vector<string>	getServerContent() { return _server_content; };
 
 	void	output(void);
 
-	int findClosingBracket(int i, size_t pos, int tab);
+	int findClosingBracket(int i, size_t pos);
 
 	string&	operator[](int i);
 

@@ -1,4 +1,4 @@
-#include "includes/webserv.h"
+#include "inc/webserv.h"
 
 void failure(const char *message)
 {
@@ -19,7 +19,7 @@ void	printStr(const string& str)
 	cout << str << endl;
 }
 
-string findNextWord(const string &line, size_t pos, bool multi)
+string findNextWord(const string &line, size_t pos)
 {
 	size_t start = line.find_first_not_of(" \t", pos);
 	size_t end = line.find_first_of(" \t", start);

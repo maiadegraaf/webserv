@@ -1,4 +1,3 @@
-
 include Pretty.mk
 
 NAME			:=	webserve
@@ -10,13 +9,21 @@ GPP				:=	g++
 INC_DIR			:=	inc
 INC				:=	-I $(INC_DIR)/
 
-INCLUDES		=	Request.hpp
+INCLUDES		=	Request.hpp \
+					Server.hpp \
+                    config.hpp \
+                    location.hpp
+
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
-					Request.cpp
+					Request.cpp \
+					Server.cpp \
+                    config.cpp \
+                    location.cpp \
+                    main.cpp
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
 

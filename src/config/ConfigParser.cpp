@@ -1,24 +1,23 @@
-#include "includes/configParser.hpp"
+#include "inc/ConfigParser.hpp"
 // Constructor initializes attributes to 0 by default 
-configParser::configParser()
+ConfigParser::ConfigParser()
 	: _config_file(0), _server_content(0)
 {
 
 }
  
-configParser::configParser( const configParser& rhs)
+ConfigParser::ConfigParser(const ConfigParser& rhs)
 {
 	*this = rhs;
 }
 
-configParser::configParser(const string& filename)
+ConfigParser::ConfigParser(const string& filename)
 {
 	check_file_type(filename);
 	_config_file.open(filename, ios::in);
 	if (_config_file.is_open())
 	{
 		string line;
-		cout << filename <<  " has been opened!" << endl;
 		while (getline(_config_file, line))
 			_server_content.push_back(line);
 	}
@@ -27,14 +26,14 @@ configParser::configParser(const string& filename)
 	_config_file.close();
 }
 
-configParser::~configParser() {}
+ConfigParser::~ConfigParser() {}
 
-configParser&	configParser::operator=( const configParser& rhs )
+ConfigParser&	ConfigParser::operator=(const ConfigParser& rhs )
 {
 	return *this;
 }
 
-void	configParser::output()
+void	ConfigParser::output()
 {
 	for_each(_server_content.begin(), _server_content.end(), printStr);
 }
@@ -47,44 +46,37 @@ string addTabs(int tabs)
 	return ret;
 }
 
-int configParser::findClosingBracket(int i, size_t pos, int tab)
+int ConfigParser::findClosingBracket(int i, size_t pos)
 {
     for(; i < _server_content.size(); i++)
     {
 		if (_server_content[i].find('{', pos) != string::npos)
-		{
-			cout << addTabs(tab) << "{ at " << i << ", " << _server_content[i].find('{', pos) << std::endl;
-			cout << addTabs(tab) << "search for a closing bracket initiated:" << endl;
-			i = findClosingBracket(i, _server_content[i].find('{', pos) + 1, ++tab);
-		}
+			i = findClosingBracket(i, _server_content[i].find('{', pos) + 1);
         else if(_server_content[i].find('}') != string::npos)
-		{
-			cout << addTabs(tab) << "} at " << i << ", " << _server_content[i].find('}') << std::endl;
 			return (i);
-		}
 		pos = 0;
     }
     failure("Could not find closing bracket.");
     return (EXIT_FAILURE);
 }
 
-string&	configParser::operator[](int i)
+string&	ConfigParser::operator[](int i)
 {
 	return _server_content[i];
 }
 
-size_t configParser::getSize() {
+size_t ConfigParser::getSize() {
 	return _server_content.size();
 }
 
-string configParser::findFirstWord(int i)
+string ConfigParser::findFirstWord(int i)
 {
 	size_t start = _server_content[i].find_first_not_of(" \t");
 	size_t end = _server_content[i].find_first_of(" \t", start);
 	return(_server_content[i].substr(start, end - start));
 }
 
-int	configParser::findServer()
+int	ConfigParser::findServer()
 {
 	for(int i = 0; i < getSize(); i++)
 	{
@@ -93,9 +85,9 @@ int	configParser::findServer()
 		{
 			size_t brackLoc = s.find('{');
 			if (brackLoc == s.length() - 1 || brackLoc == string::npos)
-				findClosingBracket(++i, 0, 1);
+				findClosingBracket(++i, 0);
 			else
-				findClosingBracket(i, brackLoc + 1, 1);
+				findClosingBracket(i, brackLoc + 1);
 			return i;
 		}
 	}

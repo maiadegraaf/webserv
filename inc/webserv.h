@@ -13,14 +13,14 @@
 #include <vector>
 using namespace std;
 
-#include "location.hpp"
-#include "configParser.hpp"
-#include "config.hpp"
+#include "Location.hpp"
+#include "ConfigParser.hpp"
+#include "Config.hpp"
 
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
-string findNextWord(const string &line, size_t pos, bool multi);
+string findNextWord(const string &line, size_t pos);
 
 #endif //WEBSERV_H
