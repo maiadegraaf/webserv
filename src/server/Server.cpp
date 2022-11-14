@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server(config *conf)
+Server::Server(Config *conf)
     : _fd(-1), _conf(conf), _nfds(1), _newFd(-1)
 {
 

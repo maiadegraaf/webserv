@@ -2,28 +2,36 @@ include Pretty.mk
 
 NAME			:=	webserve
 
-CPP_FLAGS		:=	-Wall -Wextra -Werror -g
+CPP_FLAGS		:=	 -g
 
 GPP				:=	g++
 
 INC_DIR			:=	inc
 INC				:=	-I $(INC_DIR)/
 
-INCLUDES		=	Request.hpp \
-					Server.hpp \
-                    config.hpp \
-                    location.hpp
+INCLUDES		=	Config.hpp \
+                    ConfigParser.hpp \
+                    Location.hpp \
+                    Request.hpp \
+                    Response.hpp \
+                    Server.hpp \
+                    Utils.h \
+                    webserv.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
-					Request.cpp \
-					Server.cpp \
-                    config.cpp \
-                    location.cpp \
-                    main.cpp
+					server/Server.cpp \
+                    config/Config.cpp \
+                    config/Location.cpp \
+                    config/ConfigParser.cpp \
+                    utils/utils_Maia.cpp \
+#                    utils/Utils.cpp \
+#                    client/Request.cpp \
+#                    client/Response.cpp
+
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
 

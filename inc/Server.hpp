@@ -18,7 +18,7 @@
 #include <fstream>
 #include <poll.h>
 #include <sys/ioctl.h>
-#include "config.hpp"
+#include "Config.hpp"
 
 #define TRUE        1
 #define FALSE       0
@@ -28,14 +28,14 @@ class Server
 private:
     int _fd;
     sockaddr_in _servAddr;
-    config *_conf;
+    Config *_conf;
     pollfd _fds[200];
     int     _len;
     int     _nfds;
     int     _newFd;
 
 public:
-	Server(config *conf);
+	Server(Config *conf);
 	Server( const Server &rhs); 
 	~Server(); 
 	Server& operator=( const Server &rhs);
