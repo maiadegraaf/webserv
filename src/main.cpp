@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	Config	conf(argv[1]);
-    Server  ()
+    Server  server(conf);
 }
 
 //#include <iostream>
