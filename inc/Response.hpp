@@ -56,7 +56,7 @@ class Response
 	// Functionality
 	public:
 		void	sendResponse();
-		void	appendToHead(const string &newHead)			{ this->_head.append(newHead); }
+		void	appendToHead(const string &newHead)		{ this->_head.append(newHead); }
 		void	appendToFilePath(string newPath)		{ this->_filePath.append(newPath); }
 }; 
  
