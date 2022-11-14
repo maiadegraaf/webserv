@@ -41,11 +41,11 @@ $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 
 clean :
 	$(RM) $(OBJ_DIR)
-	@(CLEAN_P)
+	@#(CLEAN_P)
 
 fclean : clean
 	$(RM) $(NAME)
-	$(FCLEAN_P)
+	#$(FCLEAN_P)
 
 re: fclean all
 

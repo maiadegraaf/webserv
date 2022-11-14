@@ -4,9 +4,12 @@
 #include <string>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <sys/socket.h>
-#include <sys/sendfile.h>
+#include <sys/types.h>
+#include <sys/uio.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include "Utils.h"
 
 using namespace std;
@@ -17,12 +20,12 @@ class Response
 	// Constructor
 	public:
 		Response()
-			: _sockFD(0), _head(""), _filePath(""), _fileSize(0)	{ }
-		~Response() 													{ }
-		Response(const Response &rhs) 									{ *this = rhs; }
-		Response(string errorMessage, int newSockFD);
-		Repsonse(string message, string file, int newSockFD);
-		Response&	operator=( const Response &rhs);
+			: _sockFD(0), _head(""), _filePath(""), _fileSize(0)					{ }
+		~Response() 																	{ }
+		Response(const Response &rhs) 													{ *this = rhs; }
+		Response(string *errorMessage, int newSockFD);
+		Response(string filePath, string message, string contentType, int newSockFD);
+		Response&	operator=(const Response &rhs);
 
 	// Attributes
 	private:
