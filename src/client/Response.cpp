@@ -1,10 +1,11 @@
 #include "Response.hpp"
 
-Response::Response(const char *errorMessage, int newSockFD)
+Response::Response(string errorMessage, int newSockFD)
 	: _sockFD(newSockFD), _filePath("../../www/error/"), _head("HTTP/1.1 ") {
-	stringstream	ss(errorMessage);
+	stringstream	ss;
 	string			tmp;
-
+	map<string, string> gContentType = returnContentType();
+	ss << errorMessage;
 	getline(ss, tmp, ' ');
 	_filePath.append(tmp);
 	_filePath.append(".html");
@@ -26,15 +27,16 @@ Response::Response(const char *errorMessage, int newSockFD)
 
 Response::Response(string filePath, string message, string contentType, int newSockFD)
 	: _sockFD(newSockFD), _filePath(filePath) {
-	(void)file, (void)messsage, (void)contentType;
+	(void)message, (void)contentType;
 }
 
 Response&	Response::operator=( const Response& rhs )
 {
 	this->_sockFD = rhs._sockFD;
-	this->_file = rhs._file;
+//	this->_file = rhs._file;
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;
+	this->_filePath = rhs._filePath;
 	return *this;
 }
  
@@ -48,9 +50,9 @@ void Response::output() {
 
 // functionality
 void Response::sendResponse() {
-	int fd = open(getFilePath().c_str, O_RDONLY);
-	send(_sockFD, _head.c_str(), _head.size(), 0);
-	sendfile(_sockFD, fd, NULL, getFileSize());
-	close(fd);
+//	int fd = open(getFilePath().c_str(), O_RDONLY);
+//	send(_sockFD, _head.c_str(), _head.size(), 0);
+//	sendfile(_sockFD, fd, NULL, getFileSize());
+//	close(fd);
 	// max bytes length to send. chunk it !
 }

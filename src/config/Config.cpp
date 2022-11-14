@@ -30,6 +30,7 @@ Config::~Config()
 
 Config&	Config::operator=(const Config& rhs )
 {
+	(void) rhs;
 	return *this;
 }
 

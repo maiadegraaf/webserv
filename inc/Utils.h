@@ -7,7 +7,6 @@
 
 using namespace std;
 
-map<string, string> ReturnContentType( void );
+map<string, string> returnContentType( void );
 
-map<string, string> gContentType = ReturnContentType();
 #endif

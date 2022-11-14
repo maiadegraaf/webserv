@@ -30,6 +30,7 @@ ConfigParser::~ConfigParser() {}
 
 ConfigParser&	ConfigParser::operator=(const ConfigParser& rhs )
 {
+	(void)rhs;
 	return *this;
 }
 

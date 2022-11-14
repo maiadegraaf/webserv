@@ -11,10 +11,18 @@ Server::Server( const Server& rhs)
 	*this = rhs;
 }
  
-Server::~Server(){}
+Server::~Server() {}
 
 Server&	Server::operator=( const Server& rhs )
 {
+	(void)rhs;
+//	this->_fd = rhs._fd;
+//	this->_servAddr = rhs._servAddr;
+//	this->_conf = rhs._conf;
+////	this->_fds = rhs._fds;
+//	this->_len = rhs._len;
+//	this->_nfds = rhs._nfds;
+//	this->_newFd = rhs._newFd;
 	return *this;
 }
 

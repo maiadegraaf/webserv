@@ -3,6 +3,7 @@ include Pretty.mk
 NAME			:=	webserve
 
 CPP_FLAGS		:=	 -g
+#-Wall -Werror -Wextra
 
 GPP				:=	g++
 
@@ -28,9 +29,9 @@ SRC				=	main.cpp \
                     config/Location.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
-#                    utils/Utils.cpp \
-#                    client/Request.cpp \
-#                    client/Response.cpp
+                    utils/Utils.cpp \
+                    client/Request.cpp \
+                    client/Response.cpp
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
@@ -51,7 +52,7 @@ $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 
 clean :
 	$(RM) $(OBJ_DIR)
-	@(CLEAN_P)
+	$(CLEAN_P)
 
 fclean : clean
 	$(RM) $(NAME)
