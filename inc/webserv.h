@@ -13,7 +13,6 @@
 #include <vector>
 using namespace std;
 
-#include "Location.hpp"
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 

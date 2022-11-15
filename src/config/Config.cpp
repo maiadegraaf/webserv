@@ -14,7 +14,7 @@ Config::Config(const Config& rhs)
 Config::Config(const string& filename)
 {
 	ConfigParser conPar(filename);
-	int i = conPar.findServer();
+	size_t i = conPar.findServer();
 	for(; i < conPar.getSize(); i++)
 	{
 		string word = conPar.findFirstWord(i);
@@ -30,17 +30,45 @@ Config::~Config()
 
 Config&	Config::operator=(const Config& rhs )
 {
+	_address = rhs._address;
+	_serverName = rhs._serverName;
+	_root = rhs._root;
+	_maxSize = rhs._maxSize;
+	_location = rhs._location;
+	_cgi = rhs._cgi;
+	_errorPage = rhs._errorPage;
 	return *this;
 }
 
 // Getters 
-int Config::getAddress() { return _address; }
-//vector<string> Config::getServer_name() { return _serverName; }
-string Config::getRoot() { return _root; }
-unsigned long long Config::getMax_size() { return _maxSize; }
-//vector<Location> Config::getLocation() { return _location; }
-string Config::getCgi() { return _cgi; }
- 
+int Config::getAddress() const {
+	return _address;
+}
+
+const vector<string> &Config::getServerName() const {
+	return _serverName;
+}
+
+const string &Config::getRoot() const {
+	return _root;
+}
+
+unsigned long long int Config::getMaxSize() const {
+	return _maxSize;
+}
+
+const map<string, string> &Config::getLocation() const {
+	return _location;
+}
+
+const string &Config::getCgi() const {
+	return _cgi;
+}
+
+const map<int, string> &Config::getErrorPage() const {
+	return _errorPage;
+}
+
 // Setters 
 void Config::setAddress(const vector<string>& input, int line)
 {
@@ -86,7 +114,6 @@ void Config::setLocation(const vector<string>& input, int line)
 	string	type = "location";
 	size_t	end = input[line].find(type) + type.length();
 	string	loc = findNextWord(input[line], end);
-	size_t	bracLoc = input[line].find('{');
 	string	ind;
 	for(int i = line + 1; input[i].find('}') == string::npos; i++)
 	{
@@ -122,7 +149,6 @@ void Config::setErrorPage(const vector<string>& input, int line)
 	_errorPage[stoi(tmp)] = page;
 }
 
- 
 // Output
 void Config::output()
 {
@@ -154,3 +180,4 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 		}
 	}
 }
+
