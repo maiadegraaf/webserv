@@ -18,10 +18,12 @@
 #include <fstream>
 #include <poll.h>
 #include <sys/ioctl.h>
-#include "Config.hpp"
+#include "webserv.h"
 
 #define TRUE        1
 #define FALSE       0
+
+class Config;
 
 class Server
 {

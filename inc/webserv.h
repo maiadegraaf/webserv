@@ -14,6 +14,7 @@
 using namespace std;
 
 #include "Location.hpp"
+#include "Server.hpp"
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 

@@ -14,7 +14,7 @@ Config::Config(const Config& rhs)
 Config::Config(const string& filename)
 {
 	ConfigParser conPar(filename);
-	int i = conPar.findServer();
+	size_t i = conPar.findServer();
 	for(; i < conPar.getSize(); i++)
 	{
 		string word = conPar.findFirstWord(i);
@@ -88,6 +88,7 @@ void Config::setLocation(const vector<string>& input, int line)
 	size_t	end = input[line].find(type) + type.length();
 	string	loc = findNextWord(input[line], end);
 	size_t	bracLoc = input[line].find('{');
+	(void)bracLoc;
 	string	ind;
 	for(int i = line + 1; input[i].find('}') == string::npos; i++)
 	{

@@ -3,7 +3,9 @@
 Server::Server(Config *conf)
     : _fd(-1), _conf(conf), _nfds(1), _newFd(-1)
 {
-
+    this->setup();
+    this->run();
+    this->closeFds();
 }
  
 Server::Server( const Server& rhs)
@@ -44,13 +46,13 @@ void Server::setup()
         std::cerr << "could not create socket (server)" << std::endl;
         exit(-1);
     }
-    //makes the socket non blocking
     if (setsockopt(_fd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0)
     {
         perror("setsockopt() failed");
         close(_fd);
         exit(-1);
     }
+    //makes the socket non blocking
     if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
     {
         std::cerr << "ioctl failed: to make the socket unblocking" << std::endl;
@@ -102,7 +104,7 @@ void Server::run()
         for (int i = 0; i < current_size; i++) {
             if (_fds[i].revents == 0)
                 continue;
-            if (_fds[i].revents != POLLIN) 
+            if (_fds[i].revents != POLLIN)
             {
                 printf("  Error! revents = %d\n", _fds[i].revents);
                 end_server = TRUE;
@@ -149,7 +151,7 @@ void Server::run()
                     }
                     _len = rc;
                     printf("  %d bytes received\n", _len);
-                    send(_fds[i].fd, buffer, _len, 0);
+//                    send(_fds[i].fd, buffer, _len, 0);
                 }
                 int read = open("www/index.html", O_RDONLY);
                 off_t _len = filesize("www/index.html");
