@@ -28,13 +28,14 @@ class Config;
 class Server
 {
 private:
-    int			_fd;
-    sockaddr_in	_servAddr;
-    Config		*_conf;
-    pollfd		_fds[200];
-    int			_len;
-    int			_nfds;
-    int			_newFd;
+    int						_fd;
+    sockaddr_in				_servAddr;
+    Config					*_conf;
+    pollfd					_fds[200];
+    int						_len;
+    int						_nfds;
+    int						_newFd;
+	map<string, string> 	_contentType;
 
 public:
 	Server(Config *conf);
@@ -52,7 +53,7 @@ public:
     void		setAddr();
     void		closeFds();
     void		run();
-    std::ifstream::pos_type filesize(const char* filename);
+    ifstream::pos_type filesize(const char* filename);
 
 }; 
  

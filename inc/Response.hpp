@@ -7,7 +7,6 @@
 #include <sys/socket.h>
 #include <sstream>
 #include <map>
-//#include <sys/sendfile.h>
 #include <fcntl.h>
 #include "webserv.h"
 #include "Utils.h"
@@ -17,48 +16,58 @@ using namespace std;
 // Class definition 
 class Response
 {
-	// Constructor
+	/* ********************
+	 * (Con/De)structor's *
+	 * ********************/
 	public:
+		// Canonical Form
 		Response()
 			: _sockFD(0), _head(""), _filePath(""), _fileSize(0)					{ }
 		~Response()																		{ }
 		Response(const Response &rhs) 													{ *this = rhs; }
-        Response(string errorMessage, int newSockFD);
-        Response(string filePath, string message, string contentType, int newSockFD);
-		Response(string message, string file, int newSockFD);
 		Response&	operator=( const Response &rhs);
 
-	// Attributes
+		// Error &  construction
+        Response(string errorMessage, int newSockFD);
+        Response(string filePath, string message, string contentType, \
+		int newSockFD, off_t fileSize);
+
+	/* ************
+	 * Attributes *
+	 * ************/
 	private:
 		int			_sockFD;
 		string		_head;
 		string		_filePath;
-		size_t		_fileSize;
-		ifstream	_file;
+		off_t 		_fileSize;
 
-	// Getters
+	/* *********
+	 * Getters *
+	 * *********/
 	public:
 		int		getSockFD()								{ return _sockFD; }
 		string	getHead()								{ return _head; }
 		string	getFilePath()							{ return _filePath; }
-		size_t	getFileSize()							{ return _fileSize; }
+		off_t 	getFileSize()							{ return _fileSize; }
 
-	// Setters
+	/* *********
+	 * Setters *
+	 * *********/
 	public:
 		void	setSockFD(int newSockFD)				{ this->_sockFD = newSockFD; }
 		void	setHead(string newHead)					{ this->_head = newHead; }
-		void	setFile(string newFilePath)				{ this->_filePath = newFilePath; }
-		void	setFileSize(size_t newFileSize)			{ this->_fileSize = newFileSize; }
+		void	setFilePath(string newFilePath)			{ this->_filePath = newFilePath; }
+		void	setFileSize(off_t newFileSize)			{ this->_fileSize = newFileSize; }
+		void	appendToHead(string newHead)			{ this->_head.append(newHead); }
+		void 	appendToHeadNL(string newHead)			{ appendToHead(newHead); this->_head.append("\n"); }
+		void	appendToFilePath(string newPath)		{ this->_filePath.append(newPath); }
 
-	// Output
+	/* ********
+	 * Output *
+	 * ********/
 	public:
 		void	output();
-
-	// Functionality
-	public:
 		void	sendResponse();
-		void	appendToHead(string newHead)			{ this->_head.append(newHead); }
-		void	appendToFilePath(string newPath)		{ this->_filePath.append(newPath); }
-}; 
+};
  
 #endif

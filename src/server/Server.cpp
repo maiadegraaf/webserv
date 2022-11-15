@@ -33,6 +33,7 @@ void Server::setup()
 {
 	int on = 1;
 
+	_contentType = returnContentType();
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_fd < 0)
 	{
@@ -110,34 +111,42 @@ void Server::loopFds()
 			newConnection();
 		}
 		else
-			clientRequest(i, close_conn);
+			clientRequest(i, close_conn); // break is not incorperated here.
 	}
 }
 
-void	Server::clientRequest(int i, int close_conn) {
+void	Server::clientRequest(int i, int close_conn) { //wanneer keep alive ????
 	// new connection
 	try {
 		cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
 		string	request = receiveRequest(i, close_conn);
 		Request	clientReq(request);
-		_conf->_location[clientReq.getDir()];
-		// location -> filepath
-		// contentType
-		// message
+		string 	filePath("www/");
+		string	file(_conf->_location[clientReq.getDir()]);
+		// if file does not exist throw exception
 
-//		int read = open("www/index.html", O_RDONLY);
-		off_t _len = filesize("www/index.html");
-		if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0)
-		{
-			cerr << "send() failed" << endl;
-			close_conn = true;
-			break;
-		}
-		if (close_conn)
-		{
-			close(_fds[i].fd);
-			_fds[i].fd = -1;
-		}
+		filePath.append(file);
+		string	extension = filePath.substr(filePath.find_lastOf('.') + 1);
+		string	contentType = _contentType[extension];
+		// if not extension throw error;
+
+		string	message("200 OK");
+		off_t _len = filesize(filePath);
+		Response	clientResponse(filePath, message, contentType, _fds[i].fd, _len);
+		Response.send();
+		//		int read = open("www/index.html", O_RDONLY);
+//		if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0)
+//		{
+//			cerr << "send() failed" << endl;
+//			close_conn = true;
+//			break; // break function needs to work
+//		}
+//		if (close_conn)
+//		{
+//			close(_fds[i].fd);
+//			_fds[i].fd = -1;
+//		}
+
 	} catch (exception &e) {
 		string tmpMessage(e.what());
 		Response(tmpMessage, _fds[i].fd);
