@@ -19,6 +19,7 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include "webserv.h"
+#include "Config.hpp"
 
 #define TRUE        1
 #define FALSE       0
@@ -38,9 +39,13 @@ private:
 
 public:
 	Server(Config *conf);
-	Server( const Server &rhs); 
+    Server( const Server& rhs);
 	~Server(); 
 	Server& operator=( const Server &rhs);
+    void creatingPoll();
+    void newConnection();
+    void loopFds();
+    void receiveRequest(int i, int &close_conn);
 	void output();
     void setup();
     void setAddr();

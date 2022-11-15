@@ -10,6 +10,7 @@ Server::Server(Config *conf)
  
 Server::Server( const Server& rhs)
 {
+
 	*this = rhs;
 }
  
@@ -22,9 +23,9 @@ Server&	Server::operator=( const Server& rhs )
 
 void Server::output(){}
 
-std::ifstream::pos_type Server::filesize(const char* filename)
+ifstream::pos_type Server::filesize(const char* filename)
 {
-    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+    ifstream in(filename, ifstream::ate | ifstream::binary);
     return in.tellg();
 }
 
@@ -35,32 +36,32 @@ void Server::setup()
     _fd = socket(AF_INET, SOCK_STREAM, 0);
     if (_fd < 0)
     {
-        std::cerr << "could not create socket (server)" << std::endl;
+        cerr << "could not create socket (server)" << endl;
         exit(-1);
     }
     if (setsockopt(_fd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0)
     {
-        perror("setsockopt() failed");
+        cerr << "setsockopt() failed" << endl;
         close(_fd);
         exit(-1);
     }
     //makes the socket non blocking
     if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
     {
-        std::cerr << "ioctl failed: to make the socket unblocking" << std::endl;
+        cerr << "ioctl failed: to make the socket unblocking" << endl;
         close(_fd);
         exit(-1);
     }
     this->setAddr();
     if(bind(_fd, (struct sockaddr*) &_servAddr, sizeof(_servAddr)) < 0)
     {
-        std::cerr << "Error binding socket to local address" << std::endl;
+        cerr << "Error binding socket to local address" << endl;
         close(_fd);
         exit(-1);
     }
     if (listen(_fd, 32) < 0)
     {
-        std::cerr << "Listen failed" << std::endl;
+        cerr << "Listen failed" << endl;
         close(_fd);
         exit(-1);
     }
@@ -76,91 +77,100 @@ void Server::setAddr()
 
 void Server::run()
 {
-    int     rc;
-    char    buffer[80];
-    int     close_conn, end_server = FALSE;
-
-
     memset(_fds, 0 , sizeof(_fds));
     _fds[0].fd = _fd;
     _fds[0].events = POLLIN;
+    while(1) {
+        creatingPoll();
+        loopFds();
+    }
+}
+
+void Server::creatingPoll()
+{
     int timeout = (3 * 60 * 1000);
-    do  {
-        std::cout << "waiting poll..." << std::endl;
-        if (poll(_fds, _nfds, timeout) == 0)
-        {
-            printf("  poll() timed out.  End program.\n");
-            break;
-        }
-        int current_size = _nfds;
-        for (int i = 0; i < current_size; i++) {
-            if (_fds[i].revents == 0)
-                continue;
-            if (_fds[i].revents != POLLIN)
+
+    cout << "waiting poll..." << endl;
+    if (poll(_fds, _nfds, timeout) == 0)
+        cerr << "poll() timed out.  End program." << endl;
+}
+
+void Server::loopFds()
+{
+    int     current_size = _nfds;
+    int     close_conn = FALSE;
+
+    for (int i = 0; i < current_size; i++) {
+        if (_fds[i].revents == 0)
+            continue;
+        if (_fds[i].revents != POLLIN)
+            cerr << "Error! revents = " <<  _fds[i].revents << endl;
+        if (_fds[i].fd == _fd) {
+            cerr << "Listening socket is readable" << endl;
+            newConnection();
+        } else {
+            cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
+            receiveRequest(i, close_conn);
+            int read = open("www/index.html", O_RDONLY);
+            off_t _len = filesize("www/index.html");
+            if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0)
             {
-                printf("  Error! revents = %d\n", _fds[i].revents);
-                end_server = TRUE;
+                cerr << "send() failed" << endl;
+                close_conn = TRUE;
                 break;
             }
-            if (_fds[i].fd == _fd) {
-                printf("  Listening socket is readable\n");
-                do {
-                    _newFd = accept(_fd , NULL, NULL);
-                    if (_newFd < 0) 
-                    {
-                        if (errno != EWOULDBLOCK)
-                        {
-                            perror("  accept() failed");
-                            end_server = TRUE;
-                        }
-                        break;
-                    }
-                    printf("  New incoming connection - %d\n", _newFd);
-                    _fds[_nfds].fd = _newFd;
-                    _fds[_nfds].events = POLLIN;
-                    _nfds++;
-                } while (_newFd != -1);
-            } else {
-                printf("  Descriptor %d is readable\n", _fds[i].fd);
-                close_conn = FALSE;
-                while (1) 
-                {
-                    rc = recv(_fds[i].fd, buffer, sizeof(buffer), 0);
-                    if (rc < 0) 
-                    {
-                        if (errno != EWOULDBLOCK) 
-                        {
-                            perror("  recv() failed");
-                            close_conn = TRUE;
-                        }
-                        break;
-                    }
-                    if (rc == 0) 
-                    {
-                        printf("  Connection closed\n");
-                        close_conn = TRUE;
-                        break;
-                    }
-                    _len = rc;
-                    printf("  %d bytes received\n", _len);
-//                    send(_fds[i].fd, buffer, _len, 0);
-                }
-                int read = open("www/index.html", O_RDONLY);
-                off_t _len = filesize("www/index.html");
-                if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0) 
-                {
-                    perror("  send() failed");
-                    close_conn = TRUE;
-                    break;
-                }
-                if (close_conn)
-                {
-                    close(_fds[i].fd);
-                    _fds[i].fd = -1;
-                }
+            if (close_conn)
+            {
+                close(_fds[i].fd);
+                _fds[i].fd = -1;
             }
         }
-    } while (end_server == FALSE);
+    }
+}
+
+void Server::newConnection()
+{
+    do {
+        _newFd = accept(_fd , NULL, NULL);
+        if (_newFd < 0)
+        {
+            if (errno != EWOULDBLOCK)
+                cerr << "accept() failed" << endl;
+        }
+        cerr << "New incoming connection - " << _newFd << endl;
+        _fds[_nfds].fd = _newFd;
+        _fds[_nfds].events = POLLIN;
+        _nfds++;
+    } while (_newFd != -1);
+}
+
+void Server::receiveRequest(int i, int &close_conn)
+{
+    int     rc;
+    char    buffer[80];
+
+    while (1)
+    {
+        rc = recv(_fds[i].fd, buffer, sizeof(buffer), 0);
+        if (rc < 0)
+        {
+            if (errno != EWOULDBLOCK)
+            {
+                cerr << "  recv() failed " << endl;
+                close_conn = TRUE;
+            }
+            break;
+        }
+        if (rc == 0)
+        {
+            cerr << "  Connection closed" << endl;
+            close_conn = TRUE;
+            break;
+        }
+        _len = rc;
+        cerr << _len << " bytes receive" << endl ;
+//                    send(_fds[i].fd, buffer, _len, 0);
+    }
 }
 
 void Server::closeFds()
