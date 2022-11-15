@@ -79,7 +79,7 @@ void createPoll(int serverSd)
 {
     int     rc, len, nfds = 1, newSd = -1;
     char    buffer[80];
-    struct  pollfd fds[200];
+    struct  pollfd fds[-1];
     int     close_conn, end_server = FALSE;
 
 

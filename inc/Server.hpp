@@ -19,33 +19,39 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include "webserv.h"
-
-#define TRUE        1
-#define FALSE       0
+#include "Config.hpp"
+#include "Response.hpp"
+#include "Request.hpp"
 
 class Config;
 
 class Server
 {
 private:
-    int _fd;
-    sockaddr_in _servAddr;
-    Config *_conf;
-    pollfd _fds[200];
-    int     _len;
-    int     _nfds;
-    int     _newFd;
+    int			_fd;
+    sockaddr_in	_servAddr;
+    Config		*_conf;
+    pollfd		_fds[200];
+    int			_len;
+    int			_nfds;
+    int			_newFd;
 
 public:
 	Server(Config *conf);
-	Server( const Server &rhs); 
+    Server( const Server& rhs);
 	~Server(); 
 	Server& operator=( const Server &rhs);
-	void output();
-    void setup();
-    void setAddr();
-    void closeFds();
-    void run();
+
+	void 		creatingPoll();
+    void 		newConnection();
+	void		clientRequest();
+    void		loopFds();
+    string		receiveRequest(int i, int &close_conn);
+	void		output();
+    void		setup();
+    void		setAddr();
+    void		closeFds();
+    void		run();
     std::ifstream::pos_type filesize(const char* filename);
 
 }; 
