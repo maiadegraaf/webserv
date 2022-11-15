@@ -107,7 +107,7 @@ void Server::run()
             if (_fds[i].revents != POLLIN)
             {
                 printf("  Error! revents = %d\n", _fds[i].revents);
-                end_server = TRUE;
+                end_server = true;
                 break;
             }
             if (_fds[i].fd == _fd) {
@@ -119,7 +119,7 @@ void Server::run()
                         if (errno != EWOULDBLOCK)
                         {
                             perror("  accept() failed");
-                            end_server = TRUE;
+                            end_server = true;
                         }
                         break;
                     }
@@ -139,14 +139,14 @@ void Server::run()
                         if (errno != EWOULDBLOCK) 
                         {
                             perror("  recv() failed");
-                            close_conn = TRUE;
+                            close_conn = true;
                         }
                         break;
                     }
                     if (rc == 0) 
                     {
                         printf("  Connection closed\n");
-                        close_conn = TRUE;
+                        close_conn = true;
                         break;
                     }
                     _len = rc;
@@ -158,7 +158,7 @@ void Server::run()
                 if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0) 
                 {
                     perror("  send() failed");
-                    close_conn = TRUE;
+                    close_conn = true;
                     break;
                 }
                 if (close_conn)
@@ -168,7 +168,7 @@ void Server::run()
                 }
             }
         }
-    } while (end_server == FALSE);
+    } while (end_server == false);
 }
 
 void Server::closeFds()

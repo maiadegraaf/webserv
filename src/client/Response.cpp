@@ -1,7 +1,7 @@
 #include "Response.hpp"
 
 Response::Response(string errorMessage, int newSockFD)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("../../www/error/") {
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/") {
 	stringstream	ss;
 	string			tmp;
 	map<string, string> gContentType = returnContentType();
