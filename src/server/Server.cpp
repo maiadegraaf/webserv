@@ -99,6 +99,8 @@ void Server::loopFds()
 {
     int     current_size = _nfds;
     int     close_conn = FALSE;
+    char    header[] = "HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html\r\n\rContent-Length: 129\r\n\r\n";
+    int len = 52;
 
     for (int i = 0; i < current_size; i++) {
         if (_fds[i].revents == 0)
@@ -113,6 +115,7 @@ void Server::loopFds()
             receiveRequest(i, close_conn);
             int read = open("www/index.html", O_RDONLY);
             off_t _len = filesize("www/index.html");
+            send(_fds[i].fd, header, 90, 0);
             if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0)
             {
                 cerr << "send() failed" << endl;
@@ -168,7 +171,7 @@ void Server::receiveRequest(int i, int &close_conn)
             break;
         }
         _len = rc;
-        cerr << _len << " bytes receive" << endl ;
+        cerr << _len << " bytes received" << endl ;
 //                    send(_fds[i].fd, buffer, _len, 0);
     }
 }
