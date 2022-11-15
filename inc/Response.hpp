@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sys/socket.h>
-#include <sys/sendfile.h>
+//#include <sys/sendfile.h>
 #include <fcntl.h>
 #include "Utils.h"
 
