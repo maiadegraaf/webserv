@@ -6,7 +6,6 @@ Server::Server(Config *conf)
     this->setup();
     this->run();
     this->closeFds();
-
 }
  
 Server::Server( const Server& rhs)
