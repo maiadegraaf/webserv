@@ -37,3 +37,17 @@ string findNextWord(const string &line, size_t pos)
 	}
 	return(line.substr(start, end - start));
 }
+
+bool fileAccess(string filename)
+{
+	ifstream file;
+	file.open(filename);
+	if (file.is_open())
+	{
+		file.close();
+		return true;
+	}
+	cerr << filename;
+	failure(": ");
+	return false;
+}

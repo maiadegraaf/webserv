@@ -1,11 +1,5 @@
 #include "inc/Config.hpp"
-// Constructor initializes attributes to 0 by default 
-//Config::Config()
-//	: _address(0), _serverName(0), _root(0), _maxSize(0), _location(0), _cgi(0)
-//{
-//
-//}
- 
+
 Config::Config(const Config& rhs)
 {
 	*this = rhs;
@@ -15,11 +9,17 @@ Config::Config(const string& filename)
 {
 	ConfigParser conPar(filename);
 	size_t i = conPar.findServer();
+	_address = 80;
+	_root = "";
+	_maxSize = 1;
+	_cgi = "";
+	_errorPage = setupErrorPages();
 	for(; i < conPar.getSize(); i++)
 	{
 		string word = conPar.findFirstWord(i);
 		determineCase(word, conPar.getServerContent(), i);
 	}
+	checkIfComplete();
 	output();
 }
 
@@ -41,7 +41,7 @@ Config&	Config::operator=(const Config& rhs )
 }
 
 // Getters 
-int Config::getAddress() const {
+unsigned Config::getAddress() const {
 	return _address;
 }
 
@@ -75,7 +75,10 @@ void Config::setAddress(const vector<string>& input, int line)
 	string	type = "listen";
 	size_t	end = input[line].find(type) + type.length();
 	string	s = findNextWord(input[line], end);
-	_address = stoi(s);
+	int tmp = stoi(s);
+	if (tmp < 0)
+		failure("Listen must be a positive integer.");
+	_address = tmp;
 	if (!_address)
 		failure("Listen is not correctly formatted.");
 }
@@ -168,8 +171,24 @@ void Config::output()
 
 void Config::determineCase(const string& word, const vector<string>& input, int line)
 {
-	string words[] = {"listen", "server_name", "root", "location", "client_max_body_size", "error_page", "cgi"};
-	MemFuncPtr setter[] = {&Config::setAddress, &Config::setServer_name, &Config::setRoot, &Config::setLocation, &Config::setMaxSize, &Config::setErrorPage, &Config::setCgi};
+	string words[] = {
+			"listen",
+			"server_name",
+			"root",
+			"location",
+			"client_max_body_size",
+			"error_page",
+			"cgi"
+	};
+	MemFuncPtr setter[] = {
+			&Config::setAddress,
+			&Config::setServer_name,
+			&Config::setRoot,
+			&Config::setLocation,
+			&Config::setMaxSize,
+			&Config::setErrorPage,
+			&Config::setCgi
+	};
 
 	for(int i = 0; i < 7; i++)
 	{
@@ -181,3 +200,12 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 	}
 }
 
+void	Config::checkIfComplete()
+{
+	if (_root.empty())
+		perror("Root is a required field.");
+	if (_serverName.empty())
+		_serverName.push_back("localhost");
+	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
+		fileAccess(_root + '/' + i->second);
+}

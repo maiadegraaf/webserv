@@ -11,6 +11,7 @@
 #include <iterator>
 #include <fstream>
 #include <vector>
+#include <map>
 using namespace std;
 
 #include "ConfigParser.hpp"
@@ -20,6 +21,10 @@ using namespace std;
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
-string findNextWord(const string &line, size_t pos);
+string	findNextWord(const string &line, size_t pos);
+bool	fileAccess(string filename);
+
+//utils/error map
+map<int, string> setupErrorPages();
 
 #endif //WEBSERV_H

@@ -7,10 +7,10 @@
 - [ ] Copy constructors
 
 #### Server
-- [ ]
+- [ ] _empty_
 
 #### Client Handler
-- [ ]
+- [ ] _empty_
 
 #### CGI handler
-- [ ]
+- [ ] _empty_
