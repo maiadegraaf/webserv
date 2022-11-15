@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 //#include <sys/sendfile.h>
 #include <fcntl.h>
-#include "Utils.h"
+#include "webserv.h"
 
 using namespace std;
 
@@ -18,10 +18,12 @@ class Response
 	public:
 		Response()
 			: _sockFD(0), _head(""), _filePath(""), _fileSize(0)	{ }
-		~Response() 													{ }
+		~Response()											{ }
 		Response(const Response &rhs) 									{ *this = rhs; }
-		Response(string errorMessage, int newSockFD);
-		Repsonse(string message, string file, int newSockFD);
+        Response(const char *errorMessage, int newSockFD);
+        Response(string filePath, string message, string contentType, int newSockFD);
+        Response(string errorMessage, int newSockFD);
+		Response(string message, string file, int newSockFD);
 		Response&	operator=( const Response &rhs);
 
 	// Attributes

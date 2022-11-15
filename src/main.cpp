@@ -1,12 +1,12 @@
-#include "inc/webserv.h"
-
-
+#include "Server.hpp"
+#include "webserv.h"
 
 int main(int argc, char **argv)
 {
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	Config	conf(argv[1]);
+    Server  ()
 }
 
 //#include <iostream>
