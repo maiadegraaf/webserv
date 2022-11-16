@@ -45,7 +45,7 @@ void Request::setAttributes() {
 	if (!tmp.compare(0, 1, "") && \
 	!tmp.compare(0, 4, "GET") && tmp.compare(0, 5, "POST") \
 	&& tmp.compare(0, 7, "DELETE")) {
-		throw BadRequestException();
+		throw MethodNotAllowedException();
 	}
 	setMethod(tmp);
 	getline(ss, tmp, ' ');
