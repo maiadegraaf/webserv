@@ -1,20 +1,15 @@
-#include "Server.hpp"
+//#include "Server.hpp"
 #include "webserv.h"
-
-bool extractServer(const string& filename)
-{
-    ConfigParser  conf(filename);
-
-}
 
 int main(int argc, char **argv)
 {
-	if (argc != 2)
-		failure("Incorrect INPUT");
-	Config	conf(argv[1]);
-    Server  ()
-}
+    if (argc != 2)
+        failure("Incorrect INPUT");
+    Config	conf(argv[1]);
+    Server  server(&conf);
 
+
+}
 //#include <iostream>
 //#include <sys/socket.h>
 //#include "Request.hpp"

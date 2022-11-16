@@ -2,21 +2,20 @@ include Pretty.mk
 
 NAME			:=	webserve
 
-CPP_FLAGS		:=	 -g
+CPP_FLAGS		:=	 -g -Wall -Werror -Wextra
 
 GPP				:=	g++
 
 INC_DIR			:=	inc
 INC				:=	-I $(INC_DIR)/
 
-INCLUDES		=	Config.hpp \
-                    ConfigParser.hpp \
-                    Location.hpp \
-                    Request.hpp \
-                    Response.hpp \
+INCLUDES		=	webserv.h \
+					Config.hpp \
+					ConfigParser.hpp \
                     Server.hpp \
-                    webserv.h
-#                    Utils.h \
+#                    Request.hpp \
+#                    Response.hpp \
+                    Utils.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
@@ -25,9 +24,9 @@ SRC_DIR			:=	src
 SRC				=	main.cpp \
 					server/Server.cpp \
                     config/Config.cpp \
-                    config/Location.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
+                    utils/errorMap.cpp \
 #                    utils/Utils.cpp \
 #                    client/Request.cpp \
 #                    client/Response.cpp
@@ -51,7 +50,7 @@ $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 
 clean :
 	$(RM) $(OBJ_DIR)
-	@(CLEAN_P)
+	$(CLEAN_P)
 
 fclean : clean
 	$(RM) $(NAME)

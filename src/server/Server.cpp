@@ -18,6 +18,7 @@ Server::~Server(){}
 
 Server&	Server::operator=( const Server& rhs )
 {
+    (void) rhs;
 	return *this;
 }
 
@@ -97,7 +98,6 @@ void Server::loopFds()
     int     current_size = _nfds;
     int     close_conn = FALSE;
     char    header[] = "HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html\r\n\rContent-Length: 160\r\n\r\n";
-    int     len = 52;
 
     for (int i = 0; i < current_size; i++) {
         if (_fds[i].revents == 0)

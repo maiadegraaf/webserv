@@ -18,7 +18,8 @@ using namespace std;
 #include "Config.hpp"
 #include "Server.hpp"
 
-#define DIRECTORY "/Users/maiadegraaf/webserve/"
+//#define DIRECTORY "/Users/maiadegraaf/webserve/"
+#define DIRECTORY "/Users/fpolycar/Documents/codam/in_progress/webserver/"
 
 //utils
 void	failure(const char *message);
