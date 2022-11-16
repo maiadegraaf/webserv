@@ -32,7 +32,7 @@ private:
     int _fd;
     sockaddr_in _servAddr;
     Config *_conf;
-    pollfd _fds[200];
+    pollfd _fds[100];
     int     _len;
     int     _nfds;
     int     _newFd;

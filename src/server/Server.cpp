@@ -88,29 +88,27 @@ void Server::run()
 
 void Server::creatingPoll()
 {
-    int timeout = (3 * 60 * 1000);
-
     cout << "waiting poll..." << endl;
-    if (poll(_fds, _nfds, timeout) == 0)
-        cerr << "poll() timed out.  End program." << endl;
+    poll(_fds, _nfds, -1);
 }
 
 void Server::loopFds()
 {
     int     current_size = _nfds;
     int     close_conn = FALSE;
-    char    header[] = "HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html\r\n\rContent-Length: 129\r\n\r\n";
-    int len = 52;
+    char    header[] = "HTTP/1.1 200 OK\r\nConnection: Keep-Alive\r\nContent-Type: text/html\r\n\rContent-Length: 160\r\n\r\n";
+    int     len = 52;
 
     for (int i = 0; i < current_size; i++) {
         if (_fds[i].revents == 0)
             continue;
         if (_fds[i].revents != POLLIN)
-            cerr << "Error! revents = " <<  _fds[i].revents << endl;
+            cerr << "error revents "<< _fds[i].fd << endl;
         if (_fds[i].fd == _fd) {
             cerr << "Listening socket is readable" << endl;
             newConnection();
-        } else {
+        }
+        else {
             cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
             receiveRequest(i, close_conn);
             int read = open("www/index.html", O_RDONLY);
@@ -128,6 +126,7 @@ void Server::loopFds()
                 _fds[i].fd = -1;
             }
         }
+        cerr << _nfds << endl;
     }
 }
 
@@ -183,3 +182,19 @@ void Server::closeFds()
             close(_fds[i].fd);
     }
 }
+
+//string Server::htmlOutputBinary(const string &full_path)
+//{
+//    std::vector<char> buffer;
+//
+//    if(ile_stream != nullptr)
+//    {
+//        fseek(file_stream, 0, SEEK_END);
+//        long file_length = ftell(file_stream);
+//        rewind(file_stream);
+//
+//        buffer.resize(file_length);
+//
+//        file_size = fread(&buffer[0], 1, file_length, file_stream);
+//    }
+//}
