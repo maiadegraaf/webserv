@@ -30,7 +30,7 @@ ConfigParser::~ConfigParser() {}
 
 ConfigParser&	ConfigParser::operator=(const ConfigParser& rhs )
 {
-	(void) rhs;
+    _server_content = rhs._server_content;
 	return *this;
 }
 

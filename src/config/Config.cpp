@@ -208,4 +208,6 @@ void	Config::checkIfComplete()
 		_serverName.push_back("localhost");
 	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
 		fileAccess(_root + '/' + i->second);
+    for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
+        fileAccess(_root + '/' + i->second);
 }

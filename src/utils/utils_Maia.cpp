@@ -41,6 +41,7 @@ string findNextWord(const string &line, size_t pos)
 bool fileAccess(string filename)
 {
 	ifstream file;
+    filename.insert(0, DIRECTORY);
 	file.open(filename);
 	if (file.is_open())
 	{

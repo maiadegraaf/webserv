@@ -17,6 +17,8 @@ using namespace std;
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 
+#define DIRECTORY "/Users/maiadegraaf/webserve/"
+
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
