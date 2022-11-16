@@ -105,7 +105,7 @@ void Server::loopFds()
 			newConnection();
 		}
 		else if (!clientRequest(i, &close_conn))
-			break ;// break is not incorperated here.
+			break ;
 	}
 }
 
@@ -113,15 +113,16 @@ bool	Server::clientRequest(int i, bool *close_conn) { //wanneer keep alive ????
 	try {
 		cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
 		string	request = receiveRequest(i, close_conn);
+		cout << request << endl;
 		Request	clientReq(request);
 		string 	filePath("www/");
 		string	file(_conf->getLocation(clientReq.getDir()));
+
+//		if (file.compare(""))
+//			throw PageNotFoundException();
 		filePath.append(file); // exception filePath;
-		cerr << filePath << endl;
 		string	extension = filePath.substr(filePath.find_last_of('.') + 1);
 		string	contentType = _contentType[extension];
-		// if not extension throw error;
-
 		string	message("200 OK");
 		off_t _len = fileSize(filePath.c_str());
 		Response	clientResponse(filePath, message, contentType, _fds[i].fd, _len);
@@ -163,6 +164,7 @@ string Server::receiveRequest(int i, bool *close_conn)
 	int     rc;
 	char    buffer[80];
 	string	request("");
+	string	tmp;
 
 	while (1)
 	{
@@ -183,8 +185,9 @@ string Server::receiveRequest(int i, bool *close_conn)
 			break;
 		}
 		_len = rc;
-		string tmp(buffer);
-		tmp = tmp.substr(0, rc);
+//		string tmp((const char *)buffer);
+		tmp.assign(buffer, rc);
+//		tmp = tmp.substr(0, 80);
 		cerr << _len << " bytes receive " << endl; // << tmp.size() << " " << sizeof(buffer) << " bytes long string" << endl ;
 		request.append(tmp);
 	}

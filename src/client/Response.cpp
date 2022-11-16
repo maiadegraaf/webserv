@@ -36,9 +36,9 @@ Response&	Response::operator=( const Response& rhs )
  
 // Output
 void Response::output() {
-//  std::cout << "sockFD : " << _sockFD << std::endl;
+	std::cout << "sockFD : " << _sockFD << std::endl;
 	cout << "head : " << _head << endl;
-//  std::cout << "fileSize : " << _fileSize << std::endl;
+	std::cout << "fileSize : " << _fileSize << std::endl;
 }
 
 bool Response::sendResponse() {

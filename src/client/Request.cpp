@@ -67,26 +67,14 @@ void Request::setContent() {
 
 	while (i < size) { // && _input[i].compare(0, 1,"\n")) {
 		idx = _input[i].find(':', 0);
-		if (idx == string::npos){
-//			cout << i << " in idx --> " << idx << " == string::npos\n";
-////			throw BadRequestException();
-			break;
-		}
-//		if (idx + 2 > _input[i].size())
-//		{
-//			cout << "idx + 2 > _input[i].size()\n";
-//			throw BadRequestException();
-//		}
+		if (idx == string::npos)
+			break ;
 		key = _input[i].substr(0, idx);
 		value = _input[i].substr(idx + 2);
 		setContentValue(key, value);
 		i++;
 	}
 	_file.clear();
-//	if (i == size)
-//		return ;
-//	if (_input[i].compare(0, 1, ""))
-//		throw BadRequestException();
 	for (size_t j = i; j < size; j++) {
 		_file.append(_input[j]);
 		_file.append("\n");
