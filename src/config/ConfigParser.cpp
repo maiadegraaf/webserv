@@ -95,3 +95,12 @@ int	ConfigParser::findServer()
 	failure("Could not locate server.");
 	return EXIT_FAILURE;
 }
+
+vector<string> ConfigParser::subVector(int first, int last)
+{
+    vector<string> subV;
+
+    for(int i = first; i <= last; i++)
+        subV.push_back(_server_content[i]);
+    return subV;
+}
