@@ -27,8 +27,8 @@ class Response
 		Response(const Response &rhs) 													{ *this = rhs; }
 		Response&	operator=( const Response &rhs);
 
-		// Error &  construction
-        Response(string errorMessage, int newSockFD);
+		// Error & Regular construction
+        Response(string errorMessage, int newSockFD, string contentType);
         Response(string filePath, string message, string contentType, \
 		int newSockFD, off_t fileSize);
 
@@ -54,20 +54,21 @@ class Response
 	 * Setters *
 	 * *********/
 	public:
-		void	setSockFD(int newSockFD)				{ this->_sockFD = newSockFD; }
-		void	setHead(string newHead)					{ this->_head = newHead; }
-		void	setFilePath(string newFilePath)			{ this->_filePath = newFilePath; }
-		void	setFileSize(off_t newFileSize)			{ this->_fileSize = newFileSize; }
-		void	appendToHead(string newHead)			{ this->_head.append(newHead); }
-		void 	appendToHeadNL(string newHead)			{ appendToHead(newHead); this->_head.append("\n"); }
-		void	appendToFilePath(string newPath)		{ this->_filePath.append(newPath); }
+		void	setSockFD(int newSockFD)						{ this->_sockFD = newSockFD; }
+		void	setHead(string newHead)							{ this->_head = newHead; }
+		void	setFilePath(string newFilePath)					{ this->_filePath = newFilePath; }
+		void	setFileSize(off_t newFileSize)					{ this->_fileSize = newFileSize; }
+		void	appendToHead(string newHead)					{ this->_head.append(newHead); }
+		void 	appendToHeadNL(string newHead)					{ appendToHead(newHead); this->_head.append("\n"); }
+		void 	appendObjectToHead(string type, string name)	{ appendToHead(type); appendToHeadNL(name); }
+		void	appendToFilePath(string newPath)				{ this->_filePath.append(newPath); }
 
 	/* ********
 	 * Output *
 	 * ********/
 	public:
 		void	output();
-		void	sendResponse();
+		bool	sendResponse();
 };
  
 #endif

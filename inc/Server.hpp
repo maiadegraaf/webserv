@@ -45,15 +45,14 @@ public:
 
 	void 		creatingPoll();
     void 		newConnection();
-	void		clientRequest();
+	bool		clientRequest(int i, bool *close_conn);
     void		loopFds();
-    string		receiveRequest(int i, int &close_conn);
+    string		receiveRequest(int i, bool *close_conn);
 	void		output();
     void		setup();
     void		setAddr();
     void		closeFds();
     void		run();
-    ifstream::pos_type filesize(const char* filename);
 
 }; 
  

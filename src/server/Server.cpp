@@ -23,12 +23,6 @@ Server&	Server::operator=( const Server& rhs )
 
 void Server::output(){}
 
-ifstream::pos_type Server::filesize(const char* filename)
-{
-	ifstream in(filename, ifstream::ate | ifstream::binary);
-	return in.tellg();
-}
-
 void Server::setup()
 {
 	int on = 1;
@@ -99,7 +93,7 @@ void Server::creatingPoll()
 void Server::loopFds()
 {
 	int     current_size = _nfds;
-	int     close_conn = false;
+	bool     close_conn = false;
 
 	for (int i = 0; i < current_size; i++) {
 		if (_fds[i].revents == 0)
@@ -110,47 +104,41 @@ void Server::loopFds()
 			cerr << "Listening socket is readable" << endl;
 			newConnection();
 		}
-		else
-			clientRequest(i, close_conn); // break is not incorperated here.
+		else if (!clientRequest(i, &close_conn))
+			break ;// break is not incorperated here.
 	}
 }
 
-void	Server::clientRequest(int i, int close_conn) { //wanneer keep alive ????
-	// new connection
+bool	Server::clientRequest(int i, bool *close_conn) { //wanneer keep alive ????
 	try {
 		cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
 		string	request = receiveRequest(i, close_conn);
 		Request	clientReq(request);
 		string 	filePath("www/");
-		string	file(_conf->_location[clientReq.getDir()]);
-		// if file does not exist throw exception
-
-		filePath.append(file);
-		string	extension = filePath.substr(filePath.find_lastOf('.') + 1);
+		string	file(_conf->getLocation(clientReq.getDir()));
+		filePath.append(file); // exception filePath;
+		cerr << filePath << endl;
+		string	extension = filePath.substr(filePath.find_last_of('.') + 1);
 		string	contentType = _contentType[extension];
 		// if not extension throw error;
 
 		string	message("200 OK");
-		off_t _len = filesize(filePath);
+		off_t _len = fileSize(filePath.c_str());
 		Response	clientResponse(filePath, message, contentType, _fds[i].fd, _len);
-		Response.send();
-		//		int read = open("www/index.html", O_RDONLY);
-//		if (sendfile(read, _fds[i].fd, 0, &_len, NULL, 0) < 0)
-//		{
-//			cerr << "send() failed" << endl;
-//			close_conn = true;
-//			break; // break function needs to work
-//		}
-//		if (close_conn)
-//		{
-//			close(_fds[i].fd);
-//			_fds[i].fd = -1;
-//		}
-
+		if (!clientResponse.sendResponse()) {
+			*close_conn = true;
+			return false ;
+		}
+		if (*close_conn) {
+			close(_fds[i].fd);
+			_fds[i].fd = -1;
+		}
+		return true;
 	} catch (exception &e) {
 		string tmpMessage(e.what());
-		Response(tmpMessage, _fds[i].fd);
-		Response.send();
+		Response	error(tmpMessage, _fds[i].fd, _contentType["html"]);
+		error.sendResponse();
+		return false;
 	}
 }
 
@@ -170,7 +158,7 @@ void Server::newConnection()
 	} while (_newFd != -1);
 }
 
-string Server::receiveRequest(int i, int &close_conn)
+string Server::receiveRequest(int i, bool *close_conn)
 {
 	int     rc;
 	char    buffer[80];
@@ -184,19 +172,21 @@ string Server::receiveRequest(int i, int &close_conn)
 			if (errno != EWOULDBLOCK)
 			{
 				cerr << "  recv() failed " << endl;
-				close_conn = true;
+				*close_conn = true;
 			}
 			break;
 		}
 		if (rc == 0)
 		{
 			cerr << "  Connection closed" << endl;
-			close_conn = true;
+			*close_conn = true;
 			break;
 		}
 		_len = rc;
-		cerr << _len << " bytes receive" << endl ;
-		request.append(buffer);
+		string tmp(buffer);
+		tmp = tmp.substr(0, rc);
+		cerr << _len << " bytes receive " << endl; // << tmp.size() << " " << sizeof(buffer) << " bytes long string" << endl ;
+		request.append(tmp);
 	}
 	return request;
 }
