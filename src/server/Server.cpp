@@ -15,6 +15,7 @@ Server::~Server(){}
 
 Server&	Server::operator=( const Server& rhs )
 {
+	(void) rhs;
 	return *this;
 }
 

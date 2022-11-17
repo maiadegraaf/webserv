@@ -17,7 +17,8 @@ using namespace std;
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 
-#define DIRECTORY "/Users/maiadegraaf/webserve/"
+//#define DIRECTORY "/Users/maiadegraaf/webserve/"
+//#define DIRECTORY "/Users/mgraaf/Documents/webserv"
 
 //utils
 void	failure(const char *message);

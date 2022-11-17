@@ -153,6 +153,7 @@ void Config::setErrorPage(const vector<string>& input, int line)
 // Output
 void Config::output()
 {
+	cout << "\n------------------------------------------------------\n" << endl;
 	cout << "address : " << _address << endl;
 	cout << "\nserver name(s) : " << endl;
 	for_each(_serverName.begin(), _serverName.end(), printStr);
@@ -205,7 +206,16 @@ void	Config::checkIfComplete()
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
 	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
-		fileAccess(_root + '/' + i->second);
+	{
+		if (!fileAccess(_root + '/' + i->second))
+			failure(i->second.c_str());
+	}
     for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
-        fileAccess(_root + '/' + i->second);
+	{
+		if (!fileAccess(_root + '/' + i->second))
+		{
+			if (!fileAccess(i->second))
+				failure(i->second.c_str());
+		}
+	}
 }

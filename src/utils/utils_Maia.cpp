@@ -48,8 +48,6 @@ bool fileAccess(string filename)
 		file.close();
 		return true;
 	}
-	cerr << filename;
-	failure(": ");
 	return false;
 }
 

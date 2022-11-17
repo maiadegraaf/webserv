@@ -7,12 +7,13 @@ vector<Config> extractServer(const string& filename)
     vector<Config>  conf;
     int             start = 0;
     int             end;
-    while(start = confParser.findServer(start, &end))
+	start = confParser.findServer(start, &end);
+	while(start > -1)
     {
         Config  tmp(confParser.subVector(start, end));
         conf.push_back(tmp);
-        start = end;
-    }
+		start = confParser.findServer(end, &end);
+	}
     if (conf.empty())
         failure("Could not identify server content");
     return (conf);

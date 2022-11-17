@@ -1,8 +1,12 @@
+
 include Pretty.mk
 
 NAME			:=	webserve
 
-CPP_FLAGS		:=	 -g
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra
+ifdef sanitize
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra -fsanitize=address
+endif
 
 GPP				:=	g++
 
@@ -11,12 +15,11 @@ INC				:=	-I $(INC_DIR)/
 
 INCLUDES		=	Config.hpp \
                     ConfigParser.hpp \
-                    Location.hpp \
-                    Request.hpp \
-                    Response.hpp \
-                    Server.hpp \
-                    Utils.h \
-                    webserv.h
+                    webserv.h \
+                    Utils.h
+#                    Request.hpp \
+#                    Response.hpp \
+#                    Server.hpp \
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
@@ -25,10 +28,10 @@ SRC_DIR			:=	src
 SRC				=	main.cpp \
 					server/Server.cpp \
                     config/Config.cpp \
-                    config/Location.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
-#                    utils/Utils.cpp \
+                    utils/errorMap.cpp \
+#                    utils/Utils.cpp
 #                    client/Request.cpp \
 #                    client/Response.cpp
 
@@ -38,20 +41,27 @@ SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
 OBJ_DIR			:= 	obj
 OBJ				:=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
+CUR_DIR			:= $(shell pwd)
+TMP_DEF			:= $(addprefix DIRECTORY="\"", $(CUR_DIR)"/\"")
+DEFINE 			:= -D $(TMP_DEF)
+
 all : $(NAME)
+
+sanitize : fclean
+	$(MAKE) sanitize=1
 
 $(NAME) : $(OBJ)
 	$(O_FILES_P)
-	$(GPP) $(CPP_FLAGS) $(INC) $^ -o $(NAME)
+	$(GPP) $(CPP_FLAGS) $(INC) $(DEFINE) $^ -o $(NAME)
 	$(EXEC_CREATE_P)
 
 $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 	$(MKDIR) $(dir $@)
-	$(GPP) $(CPP_FLAGS) $(INC) -c $< -o $@
+	$(GPP) $(CPP_FLAGS) $(DEFINE) $(INC) -c $< -o $@
 
 clean :
 	$(RM) $(OBJ_DIR)
-	@(CLEAN_P)
+	$(CLEAN_P)
 
 fclean : clean
 	$(RM) $(NAME)
