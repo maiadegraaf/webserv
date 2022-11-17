@@ -2,7 +2,10 @@ include Pretty.mk
 
 NAME			:=	webserve
 
-CPP_FLAGS		:=	 -g -Wall -Werror -Wextra
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra
+ifdef sanitize
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra -fsanitize=address
+endif
 
 GPP				:=	g++
 
@@ -38,6 +41,9 @@ OBJ_DIR			:= 	obj
 OBJ				:=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
 all : $(NAME)
+
+sanitize : fclean
+	$(MAKE) sanitize=1
 
 $(NAME) : $(OBJ)
 	$(O_FILES_P)

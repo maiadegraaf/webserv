@@ -11,7 +11,6 @@
 
 using namespace std;
 
-// Class definition 
 class Response
 {
 	// Constructor

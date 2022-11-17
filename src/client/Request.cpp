@@ -45,7 +45,7 @@ void Request::setAttributes() {
 	if (!tmp.compare(0, 1, "") && \
 	!tmp.compare(0, 4, "GET") && tmp.compare(0, 5, "POST") \
 	&& tmp.compare(0, 7, "DELETE")) {
-		throw BadRequestException();
+		throw MethodNotAllowedException();
 	}
 	setMethod(tmp);
 	getline(ss, tmp, ' ');
@@ -65,22 +65,16 @@ void Request::setContent() {
 	size_t	i = 1;
 	size_t	size = _input.size();
 
-	while (i < size && _input[i].compare(0, 1,"")) {
+	while (i < size) { // && _input[i].compare(0, 1,"\n")) {
 		idx = _input[i].find(':', 0);
 		if (idx == string::npos)
-			throw BadRequestException();
+			break ;
 		key = _input[i].substr(0, idx);
-		value = _input[i].substr(idx + 2, _input[i].size());
-		if (idx + 2 > _input[i].size())
-			throw BadRequestException();
+		value = _input[i].substr(idx + 2);
 		setContentValue(key, value);
 		i++;
 	}
 	_file.clear();
-	if (i == size)
-		return ;
-	if (_input[i].compare(0, 1, ""))
-		throw BadRequestException();
 	for (size_t j = i; j < size; j++) {
 		_file.append(_input[j]);
 		_file.append("\n");

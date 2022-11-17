@@ -1,56 +1,53 @@
 #include "Response.hpp"
+#include "Server.hpp"
 
-Response::Response(const char *errorMessage, int newSockFD)
-	: _sockFD(newSockFD), _filePath("../../www/error/"), _head("HTTP/1.1 ") {
-	stringstream	ss(errorMessage);
+Response::Response(string errorMessage, int newSockFD, string contentType)
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/") {
+	stringstream	ss;
 	string			tmp;
-
-	getline(ss, tmp, ' ');
-	_filePath.append(tmp);
+	ss << errorMessage;
+	getline(ss, tmp, ' '); // filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
+	_filePath.append(tmp); // check voor nieuwe error
 	_filePath.append(".html");
-
-	ifstream		file(_filePath, ios::binary);
-	file.seekg(0, ios::end);
-	setFileSize((size_t)file.tellg());
+	setFileSize(fileSize(_filePath.c_str()));
 	string size = to_string(getFileSize());
-	appendToHead(errorMessage);
-	appendToHead("\n");
-	appendToHead("Content-Type: ");
-	appendToHead(gContentType["html"]);
-	appendToHead("\n");
-	appendToHead("Content-Length: ");
-	appendToHead(size);
-	appendToHead("\n");
+	appendToHeadNL(errorMessage);
+	appendObjectToHead("Content-Type: ", contentType);
+	appendObjectToHead("Content-Length: ", size);
 	appendToHead("\r\n\r");
 }
 
-Response::Response(string filePath, string message, string contentType, int newSockFD)
-	: _sockFD(newSockFD), _filePath(filePath) {
-	(void)file, (void)messsage, (void)contentType;
+Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize) // keep alive must be there
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize) {
+	appendObjectToHead(message, "\r");
+	appendObjectToHead("Content-Type: ", contentType);
+	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
+	appendToHead("\r\n\r");
 }
 
 Response&	Response::operator=( const Response& rhs )
 {
 	this->_sockFD = rhs._sockFD;
-	this->_file = rhs._file;
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;
+	this->_filePath = rhs._filePath;
 	return *this;
 }
  
 // Output
 void Response::output() {
-  std::cout << "sockFD : " << _sockFD << std::endl; 
-  std::cout << "head : " << _head << std::endl; 
-  std::cout << "file : " << _file << std::endl; 
-  std::cout << "fileSize : " << _fileSize << std::endl; 
+	std::cout << "sockFD : " << _sockFD << std::endl;
+	cout << "head : " << _head << endl;
+	std::cout << "fileSize : " << _fileSize << std::endl;
 }
 
-// functionality
-void Response::sendResponse() {
-	int fd = open(getFilePath().c_str, O_RDONLY);
-	send(_sockFD, _head.c_str(), _head.size(), 0);
-	sendfile(_sockFD, fd, NULL, getFileSize());
-	close(fd);
-	// max bytes length to send. chunk it !
+bool Response::sendResponse() {
+	int read = open(getFilePath().c_str(), O_RDONLY);
+	send(getSockFD(), _head.c_str(), _head.size(), 0);
+	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
+		cerr << "send() failed" << endl;
+		return close(read), false;
+	}
+	close(read);
+	return true;
 }
