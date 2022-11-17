@@ -2,7 +2,10 @@ include Pretty.mk
 
 NAME			:=	webserve
 
-CPP_FLAGS		:=	 -g
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra
+ifdef sanitize
+CPP_FLAGS		=	 -g -Wall -Werror -Wextra -fsanitize=address
+endif
 
 GPP				:=	g++
 
@@ -15,8 +18,8 @@ INCLUDES		=	Config.hpp \
                     Request.hpp \
                     Response.hpp \
                     Server.hpp \
-                    Utils.h \
-                    webserv.h
+                    webserv.h \
+                    Utils.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
@@ -28,9 +31,9 @@ SRC				=	main.cpp \
                     config/Location.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
-#                    utils/Utils.cpp \
-#                    client/Request.cpp \
-#                    client/Response.cpp
+                    utils/Utils.cpp \
+                    client/Request.cpp \
+                    client/Response.cpp
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
@@ -39,6 +42,9 @@ OBJ_DIR			:= 	obj
 OBJ				:=	$(addprefix $(OBJ_DIR)/, $(SRC:%.cpp=%.o))
 
 all : $(NAME)
+
+sanitize : fclean
+	$(MAKE) sanitize=1
 
 $(NAME) : $(OBJ)
 	$(O_FILES_P)
@@ -51,7 +57,7 @@ $(OBJ_DIR)/%.o : %.cpp $(INCLUDES)
 
 clean :
 	$(RM) $(OBJ_DIR)
-	@(CLEAN_P)
+	$(CLEAN_P)
 
 fclean : clean
 	$(RM) $(NAME)

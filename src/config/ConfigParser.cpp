@@ -30,6 +30,7 @@ ConfigParser::~ConfigParser() {}
 
 ConfigParser&	ConfigParser::operator=(const ConfigParser& rhs )
 {
+	(void)rhs;
 	return *this;
 }
 
@@ -48,7 +49,7 @@ string addTabs(int tabs)
 
 int ConfigParser::findClosingBracket(int i, size_t pos)
 {
-    for(; i < _server_content.size(); i++)
+    for(; i < (int)_server_content.size(); i++)
     {
 		if (_server_content[i].find('{', pos) != string::npos)
 			i = findClosingBracket(i, _server_content[i].find('{', pos) + 1);
@@ -78,7 +79,7 @@ string ConfigParser::findFirstWord(int i)
 
 int	ConfigParser::findServer()
 {
-	for(int i = 0; i < getSize(); i++)
+	for(size_t i = 0; i < getSize(); i++)
 	{
 		string s = findFirstWord(i);
 		if (s == "server")
@@ -88,7 +89,7 @@ int	ConfigParser::findServer()
 				findClosingBracket(++i, 0);
 			else
 				findClosingBracket(i, brackLoc + 1);
-			return i;
+			return (int) i;
 		}
 	}
 	failure("Could not locate server.");

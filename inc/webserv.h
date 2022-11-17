@@ -16,6 +16,7 @@ using namespace std;
 #include "Location.hpp"
 #include "ConfigParser.hpp"
 #include "Config.hpp"
+#include "Server.hpp"
 
 //utils
 void	failure(const char *message);

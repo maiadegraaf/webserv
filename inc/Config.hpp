@@ -31,6 +31,7 @@ public:
 	unsigned long long getMax_size();
 //    vector<Location> getLocation();
 	string getCgi();
+	string getLocation(string key)		{ return _location[key]; }
 // Setters
 //	void setAddress(int _address);
 //	void setServer_name(vector<string> _serverName);

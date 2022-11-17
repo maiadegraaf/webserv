@@ -12,7 +12,9 @@ using namespace std;
 
 class Request
 {
-	// (Con/De)structors
+	/* *******************
+	 * (Con/De)structors *
+	 * *******************/
 	public:
 		Request();
 		Request( const Request &rhs );
@@ -20,7 +22,9 @@ class Request
 		Request& operator=( const Request &rhs );
 		Request(string input);
 
-	// Attributes
+	/* ************
+	 * Attributes *
+	 * ************/
 	private:
 		string				_method;
 		string				_dir;
@@ -29,7 +33,9 @@ class Request
 		map<string, string> _content;
 		string 				_file;
 
-    // Getters
+	/* *********
+	 * Getters *
+	 * *********/
 	public:
 		string			getMethod()							{ return _method; }
 		string			getDir() 							{ return _dir; }
@@ -38,7 +44,9 @@ class Request
 		vector<string>	getInput()							{ return _input; }
 		string 			getFile()							{ return _file; }
 
-	// Setters
+	/* *********
+	 * Setters *
+	 * *********/
 	public:
 		void	setMethod(string new_method)				{ _method = new_method; }
 		void	setDir(string new_dir)						{ _dir = new_dir; }
@@ -49,15 +57,25 @@ class Request
 		void	setAttributes();
 		void	setContent();
 
-    // Output
+	/* ********
+	 * Output *
+	 * ********/
         void	output();
 
-	// Exceptions
+	/* ************
+	 * Exceptions *
+	 * ************/
 	class BadRequestException : public exception {
 		public:
 			const char	*what() const throw() {
 				return "400 Bad Request";
 			};
+	};
+	class MethodNotAllowedException : public exception {
+		public:
+			const char	*what() const throw() {
+				return "405 Method Not Allowed";
+			}
 	};
 };
  
