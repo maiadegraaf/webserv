@@ -16,8 +16,8 @@ INCLUDES		=	webserv.h \
 					Config.hpp \
 					ConfigParser.hpp \
                     Server.hpp \
-#                    Request.hpp \
-#                    Response.hpp \
+                    Request.hpp \
+                    Response.hpp \
                     Utils.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
@@ -30,9 +30,9 @@ SRC				=	main.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
                     utils/errorMap.cpp \
-#                    utils/Utils.cpp \
-#                    client/Request.cpp \
-#                    client/Response.cpp
+                    utils/Utils.cpp \
+                    client/Request.cpp \
+                    client/Response.cpp
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))

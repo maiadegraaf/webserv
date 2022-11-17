@@ -20,7 +20,7 @@ Config::Config(const string& filename)
 		determineCase(word, conPar.getServerContent(), i);
 	}
 	checkIfComplete();
-	output();
+//	output();
 }
 
 Config::~Config()

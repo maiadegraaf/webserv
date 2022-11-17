@@ -28,7 +28,8 @@ public:
 	const vector<string> &getServerName() const;
 	const string &getRoot() const;
 	unsigned long long int getMaxSize() const;
-	const map<string, string> &getLocation() const;
+    const map<string, string> &getLocation() const;
+    string getSpecificLocation(string loc) { return loc; };
 	const string &getCgi() const;
 	const map<int, string> &getErrorPage() const;
 // Setters

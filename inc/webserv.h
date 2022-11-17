@@ -17,6 +17,7 @@ using namespace std;
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 #include "Server.hpp"
+#include "Utils.h"
 
 //#define DIRECTORY "/Users/maiadegraaf/webserve/"
 #define DIRECTORY "/Users/fpolycar/Documents/codam/in_progress/webserver/"
