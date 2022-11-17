@@ -5,19 +5,17 @@ Config::Config(const Config& rhs)
 	*this = rhs;
 }
 
-Config::Config(const string& filename)
+Config::Config(vector<string> input)
 {
-	ConfigParser conPar(filename);
-	size_t i = conPar.findServer();
 	_address = 80;
 	_root = "";
 	_maxSize = 1;
 	_cgi = "";
 	_errorPage = setupErrorPages();
-	for(; i < conPar.getSize(); i++)
+	for(size_t i = 0; i < input.size(); i++)
 	{
-		string word = conPar.findFirstWord(i);
-		determineCase(word, conPar.getServerContent(), i);
+		string word = findFirstWord(i, input);
+		determineCase(word, input, i);
 	}
 	checkIfComplete();
 	output();
@@ -203,7 +201,7 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 void	Config::checkIfComplete()
 {
 	if (_root.empty())
-		perror("Root is a required field.");
+		failure("Root is a required field.");
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
 	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)

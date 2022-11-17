@@ -20,8 +20,8 @@ private:
 public:
 // Constructor
 	Config(const Config &rhs );
-	Config(const string& filename);
-	~Config();
+    Config(vector<string> input);
+    ~Config();
 	Config& operator=(const Config &rhs);
 // Getters
 	unsigned int getAddress() const;

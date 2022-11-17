@@ -74,25 +74,26 @@ string ConfigParser::findFirstWord(int i)
 {
 	size_t start = _server_content[i].find_first_not_of(" \t");
 	size_t end = _server_content[i].find_first_of(" \t", start);
+    if (start == string::npos || end == string::npos)
+        return "";
 	return(_server_content[i].substr(start, end - start));
 }
 
-int	ConfigParser::findServer()
+int	ConfigParser::findServer(int start, int *end)
 {
-	for(size_t i = 0; i < getSize(); i++)
+	for(size_t i = start; i < getSize(); i++)
 	{
 		string s = findFirstWord(i);
 		if (s == "server")
 		{
 			size_t brackLoc = s.find('{');
 			if (brackLoc == s.length() - 1 || brackLoc == string::npos)
-				findClosingBracket(++i, 0);
+				*end = findClosingBracket(++i, 0);
 			else
-				findClosingBracket(i, brackLoc + 1);
+				*end = findClosingBracket(i, brackLoc + 1);
 			return i;
 		}
 	}
-	failure("Could not locate server.");
 	return EXIT_FAILURE;
 }
 

@@ -29,9 +29,9 @@ public:
 
 	string findFirstWord(int i);
 
-	int findServer();
-
     vector<string> subVector(int first, int last);
+
+    int findServer(int start, int *end);
 };
 
 #endif
