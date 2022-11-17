@@ -58,7 +58,7 @@ class Response
 		void	setFilePath(string newFilePath)					{ this->_filePath = newFilePath; }
 		void	setFileSize(off_t newFileSize)					{ this->_fileSize = newFileSize; }
 		void	appendToHead(string newHead)					{ this->_head.append(newHead); }
-		void 	appendToHeadNL(string newHead)					{ appendToHead(newHead); this->_head.append("\n"); }
+		void 	appendToHeadNL(string newHead)					{ appendToHead(newHead); this->_head.append("\r\n"); }
 		void 	appendObjectToHead(string type, string name)	{ appendToHead(type); appendToHeadNL(name); }
 		void	appendToFilePath(string newPath)				{ this->_filePath.append(newPath); }
 

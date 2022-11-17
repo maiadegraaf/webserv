@@ -12,9 +12,9 @@ using namespace std;
 
 class Request
 {
-	/* ********************
-	 * (Con/De)structor's *
-	 * ********************/
+	/* *******************
+	 * (Con/De)structors *
+	 * *******************/
 	public:
 		Request();
 		Request( const Request &rhs );

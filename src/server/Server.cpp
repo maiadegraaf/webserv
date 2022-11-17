@@ -83,10 +83,8 @@ void Server::run()
 
 void Server::creatingPoll()
 {
-	int timeout = (3 * 60 * 1000);
-
 	cout << "waiting poll..." << endl;
-	if (poll(_fds, _nfds, timeout) == 0)
+	if (poll(_fds, _nfds, -1) == 0)
 		cerr << "poll() timed out.  End program." << endl;
 }
 
@@ -109,20 +107,24 @@ void Server::loopFds()
 	}
 }
 
-bool	Server::clientRequest(int i, bool *close_conn) { //wanneer keep alive ????
+bool	Server::clientRequest(int i, bool *close_conn) { //wanneer keep alive ???? // segfault her in bool
 	try {
 		cerr << "Descriptor " << _fds[i].fd << " is readable" << endl;
 		string	request = receiveRequest(i, close_conn);
 		cout << request << endl;
 		Request	clientReq(request);
 		string 	filePath("www/");
-		string	file(_conf->getLocation(clientReq.getDir()));
+		string	confFile = _conf->getLocation(clientReq.getDir());
+		string	file;
 
-//		if (file.compare(""))
-//			throw PageNotFoundException();
+		if (confFile.compare(""))
+			file.append(confFile); // apge not foudn exception
+		else
+			file.append(clientReq.getDir());
 		filePath.append(file); // exception filePath;
 		string	extension = filePath.substr(filePath.find_last_of('.') + 1);
 		string	contentType = _contentType[extension];
+		cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 		string	message("200 OK");
 		off_t _len = fileSize(filePath.c_str());
 		Response	clientResponse(filePath, message, contentType, _fds[i].fd, _len);
@@ -185,10 +187,8 @@ string Server::receiveRequest(int i, bool *close_conn)
 			break;
 		}
 		_len = rc;
-//		string tmp((const char *)buffer);
 		tmp.assign(buffer, rc);
-//		tmp = tmp.substr(0, 80);
-		cerr << _len << " bytes receive " << endl; // << tmp.size() << " " << sizeof(buffer) << " bytes long string" << endl ;
+		cerr << _len << " bytes receive " << endl;
 		request.append(tmp);
 	}
 	return request;

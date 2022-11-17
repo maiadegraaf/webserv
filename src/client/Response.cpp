@@ -10,19 +10,18 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 	_filePath.append(tmp); // check voor nieuwe error
 	_filePath.append(".html");
 	setFileSize(fileSize(_filePath.c_str()));
-	string size = to_string(getFileSize());
 	appendToHeadNL(errorMessage);
 	appendObjectToHead("Content-Type: ", contentType);
-	appendObjectToHead("Content-Length: ", size);
-	appendToHead("\r\n\r");
+	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
+	appendToHead("\r\n");
 }
 
 Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize) // keep alive must be there
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize) {
-	appendObjectToHead(message, "\r");
+	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
-	appendToHead("\r\n\r");
+	appendToHead("\r\n");
 }
 
 Response&	Response::operator=( const Response& rhs )
