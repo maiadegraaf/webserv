@@ -1,4 +1,3 @@
-
 include Pretty.mk
 
 NAME			:=	webserve
@@ -15,11 +14,11 @@ INC				:=	-I $(INC_DIR)/
 
 INCLUDES		=	Config.hpp \
                     ConfigParser.hpp \
+                    Request.hpp \
+                    Response.hpp \
+                    Server.hpp \
                     webserv.h \
                     Utils.h
-#                    Request.hpp \
-#                    Response.hpp \
-#                    Server.hpp \
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 
@@ -30,10 +29,10 @@ SRC				=	main.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
-                    utils/errorMap.cpp \
-#                    utils/Utils.cpp
-#                    client/Request.cpp \
-#                    client/Response.cpp
+                    utils/Utils.cpp \
+                    client/Request.cpp \
+                    client/Response.cpp
+                    utils/errorMap.cpp
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))

@@ -45,3 +45,9 @@ map<string, string>	returnContentType( void ) {
 	CT["7z"] = "application/x-7z-compressed";
 	return CT;
 }
+
+ifstream::pos_type fileSize(const char* filename)
+{
+	ifstream in(filename, ifstream::ate | ifstream::binary);
+	return in.tellg();
+}

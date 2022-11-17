@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	vector<Config> conf = extractServer(argv[1]);
-//    Server  ()
+//    Server  server(&conf);
 }
 
 //#include <iostream>

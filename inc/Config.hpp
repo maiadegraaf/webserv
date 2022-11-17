@@ -31,6 +31,7 @@ public:
 	const map<string, string> &getLocation() const;
 	const string &getCgi() const;
 	const map<int, string> &getErrorPage() const;
+	string getLocation(string key)		{ return _location[key]; }
 // Setters
 	void setAddress(const vector<string>& input, int line);
 	void setServer_name(const vector<string>& input, int line);
