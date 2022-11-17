@@ -23,7 +23,7 @@ map<string, string>	returnContentType( void ) {
 	CT["epub"] = "application/epub+zip";
 	CT["gz"] = "application/gzip";
 	CT["gif"] = "image/gif";
-	CT["html"] = "text/html";
+    CT["html"] = "text/html";
 	CT["ico"] = "image/vnd.microsoft.icon";
 	CT["ics"] = "text/calender";
 	CT["jar"] = "application/java-archive";
