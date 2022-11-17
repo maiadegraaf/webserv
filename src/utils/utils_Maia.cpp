@@ -37,3 +37,25 @@ string findNextWord(const string &line, size_t pos)
 	}
 	return(line.substr(start, end - start));
 }
+
+bool fileAccess(string filename)
+{
+	ifstream file;
+    filename.insert(0, DIRECTORY);
+	file.open(filename);
+	if (file.is_open())
+	{
+		file.close();
+		return true;
+	}
+	return false;
+}
+
+string findFirstWord(int i, vector<string> v)
+{
+    size_t start = v[i].find_first_not_of(" \t");
+    size_t end = v[i].find_first_of(" \t", start);
+    if (start == string::npos || end == string::npos)
+        return "";
+    return(v[i].substr(start, end - start));
+}

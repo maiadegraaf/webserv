@@ -21,7 +21,7 @@ public:
 
 	void	output(void);
 
-	int findClosingBracket(int i, size_t pos);
+	int findClosingBracket(size_t i, size_t pos);
 
 	string&	operator[](int i);
 
@@ -29,7 +29,9 @@ public:
 
 	string findFirstWord(int i);
 
-	int findServer();
+    vector<string> subVector(int first, int last);
+
+    int findServer(int start, int *end);
 };
 
 #endif

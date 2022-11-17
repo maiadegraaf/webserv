@@ -1,12 +1,30 @@
 #include "Server.hpp"
 #include "webserv.h"
 
+vector<Config> extractServer(const string& filename)
+{
+    ConfigParser    confParser(filename);
+    vector<Config>  conf;
+    int             start = 0;
+    int             end;
+	start = confParser.findServer(start, &end);
+	while(start > -1)
+    {
+        Config  tmp(confParser.subVector(start, end));
+        conf.push_back(tmp);
+		start = confParser.findServer(end, &end);
+	}
+    if (conf.empty())
+        failure("Could not identify server content");
+    return (conf);
+}
+
 int main(int argc, char **argv)
 {
 	if (argc != 2)
 		failure("Incorrect INPUT");
-	Config	conf(argv[1]);
-    Server  server(&conf);
+	vector<Config> conf = extractServer(argv[1]);
+//    Server  server(&conf);
 }
 
 //#include <iostream>

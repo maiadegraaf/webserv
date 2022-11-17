@@ -11,17 +11,25 @@
 #include <iterator>
 #include <fstream>
 #include <vector>
+#include <map>
 using namespace std;
 
-#include "Location.hpp"
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 #include "Server.hpp"
+
+//#define DIRECTORY "/Users/maiadegraaf/webserve/"
+//#define DIRECTORY "/Users/mgraaf/Documents/webserv"
 
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
-string findNextWord(const string &line, size_t pos);
+string	findNextWord(const string &line, size_t pos);
+string  findFirstWord(int i, vector<string> v);
+bool	fileAccess(string filename);
+
+//utils/error map
+map<int, string> setupErrorPages();
 
 #endif //WEBSERV_H
