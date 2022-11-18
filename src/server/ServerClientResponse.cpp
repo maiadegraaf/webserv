@@ -2,6 +2,7 @@
 
 bool	Server::clientRequest(int i) { //wanneer keep alive ???? // segfault her in bool
 	string strRequest = receiveStrRequest(i);
+	cerr << strRequest << endl;
 	if (strRequest.empty())
 		return false;
 	try {
@@ -16,27 +17,22 @@ bool	Server::clientRequest(int i) { //wanneer keep alive ???? // segfault her in
 	}
 }
 
-string Server::receiveStrRequest(int i)
-{
+string Server::receiveStrRequest(int i) {
 	int     rc;
 	char    buffer[80];
 	string	request("");
 	string	tmp;
 
-	while (1)
-	{
+	while (1) {
 		rc = recv(_fds[i].fd, buffer, sizeof(buffer), 0);
-		if (rc < 0)
-		{
-			if (errno != EWOULDBLOCK)
-			{
+		if (rc < 0) {
+			if (errno != EWOULDBLOCK) {
 				cerr << "  recv() failed " << endl;
 				this->setCloseConnection(true);
 			}
 			break;
 		}
-		if (rc == 0)
-		{
+		if (rc == 0) {
 			cerr << "  Connection closed" << endl;
 			this->setCloseConnection(true);
 			break;
@@ -49,7 +45,7 @@ string Server::receiveStrRequest(int i)
 	return request;
 }
 
-bool	Server::handleRequest(Request clientReq, int i) {
+bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> const Request &ref
 	string filePath("www/");
 	string confFile;
 	string file;
@@ -59,8 +55,11 @@ bool	Server::handleRequest(Request clientReq, int i) {
 	confFile = _conf->getLocation(clientReq.getDir());
 	if (!confFile.empty())
 		file.append(confFile); // page not foudn exception
-	else
+	else {
+		if (clientReq.getDir().empty())
+			throw Request::BadRequestException();
 		file.append(clientReq.getDir()); // Response
+	}
 	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	if (extension.compare("php") == 0) {

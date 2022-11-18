@@ -20,9 +20,9 @@ void Server::creatingPoll()
 
 void Server::loopFds()
 {
-	int     current_size = _nfds;
+	int     currentSize = _nfds;
 
-	for (int i = 0; i < current_size; i++) {
+	for (int i = 0; i < currentSize; i++) {
 		if (_fds[i].revents == 0)
 			continue;
 		if (_fds[i].revents != POLLIN)
@@ -34,6 +34,9 @@ void Server::loopFds()
 		else if (!clientRequest(i))
 			break ;
 	}
+	// lets create a vector of clients instead of this system
+	//
+	// recall
 }
 
 void Server::newConnection()
