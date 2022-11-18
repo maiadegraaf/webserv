@@ -27,6 +27,8 @@ SRC_DIR			:=	src
 
 SRC				=	main.cpp \
 					server/Server.cpp \
+					server/ServerRun.cpp \
+					server/ServerClientResponse.cpp \
                     config/Config.cpp \
                     config/Location.cpp \
                     config/ConfigParser.cpp \

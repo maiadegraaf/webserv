@@ -70,13 +70,13 @@ class Request
 			const char	*what() const throw() {
 				return "400 Bad Request";
 			};
-	};
+		};
 	class MethodNotAllowedException : public exception {
 		public:
 			const char	*what() const throw() {
 				return "405 Method Not Allowed";
 			}
-	};
+		};
 };
  
 #endif
