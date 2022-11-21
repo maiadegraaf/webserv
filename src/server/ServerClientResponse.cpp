@@ -45,7 +45,7 @@ string Server::receiveStrRequest(int i) {
 	return request;
 }
 
-bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> const Request &ref
+bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> const Request &ref ??
 	string filePath("www/");
 	string confFile;
 	string file;
