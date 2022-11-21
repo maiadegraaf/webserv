@@ -48,7 +48,14 @@ bool fileAccess(string filename)
 		file.close();
 		return true;
 	}
-	cerr << filename;
-	failure(": ");
 	return false;
+}
+
+string findFirstWord(int i, vector<string> v)
+{
+    size_t start = v[i].find_first_not_of(" \t");
+    size_t end = v[i].find_first_of(" \t", start);
+    if (start == string::npos || end == string::npos)
+        return "";
+    return(v[i].substr(start, end - start));
 }

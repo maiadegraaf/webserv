@@ -20,18 +20,18 @@ private:
 public:
 // Constructor
 	Config(const Config &rhs );
-	Config(const string& filename);
-	~Config();
+    Config(vector<string> input);
+    ~Config();
 	Config& operator=(const Config &rhs);
 // Getters
 	unsigned int getAddress() const;
 	const vector<string> &getServerName() const;
 	const string &getRoot() const;
 	unsigned long long int getMaxSize() const;
-    const map<string, string> &getLocation() const;
-    string getSpecificLocation(string key) { return _location[key]; };
+	const map<string, string> &getLocation() const;
 	const string &getCgi() const;
 	const map<int, string> &getErrorPage() const;
+	string getLocation(string key)		{ return _location[key]; }
 // Setters
 	void setAddress(const vector<string>& input, int line);
 	void setServer_name(const vector<string>& input, int line);

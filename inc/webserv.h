@@ -19,14 +19,12 @@ using namespace std;
 #include "Server.hpp"
 #include "Utils.h"
 
-//#define DIRECTORY "/Users/maiadegraaf/webserve/"
-#define DIRECTORY "/Users/fpolycar/Documents/codam/in_progress/webserver/"
-
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
 string	findNextWord(const string &line, size_t pos);
+string  findFirstWord(int i, vector<string> v);
 bool	fileAccess(string filename);
 
 //utils/error map

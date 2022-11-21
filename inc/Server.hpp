@@ -27,6 +27,18 @@ class Config;
 
 class Server
 {
+	/* *******************
+	 * (Con/De)structors *
+ 	* *******************/
+	public:
+		Server(Config *conf);
+		Server( const Server& rhs)											{ *this = rhs; }
+		~Server()															{ this->closeFds(); }
+		Server& operator=( const Server &rhs);
+
+	/* ************
+	 * Attributes *
+	 * ************/
 	private:
 		int						_fd;
 		sockaddr_in				_servAddr;
@@ -36,31 +48,52 @@ class Server
 		int						_nfds;
 		int						_newFd;
 		map<string, string> 	_contentType;
+		bool 					_closeConnection;
 
+	/* *********
+ 	* Setters *
+ 	* *********/
 	public:
-		Server(Config *conf);
-		Server( const Server& rhs);
-		~Server();
-		Server& operator=( const Server &rhs);
-
-		void 		creatingPoll();
-		void 		newConnection();
-		bool		clientRequest(int i, bool *close_conn);
-		void		loopFds();
-		string		receiveRequest(int i, bool *close_conn);
-		void		output();
-		void		setup();
 		void		setAddr();
-		void		closeFds();
+		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
+
+
+	/* *********
+ 	* Getters *
+ 	* *********/
+	public:
+		bool 		getCloseConnection()					{ return this->_closeConnection; }
+
+	/* **************
+ 	* Functionality *
+ 	* ***************/
+	public:
+		// Server.cpp
+		void		output()													{}
+		void		setup();
+		// ServerRun.cpp
 		void		run();
+		void 		newConnection();
+		void 		creatingPoll();
+		void		loopFds();
+		void		closeFds();
+		// ClientResponse.cpp
+		bool		clientRequest(int i);
+		string		receiveStrRequest(int i);
+		bool 		handleRequest(Request clientReq, int i);
+		void 		handleResponse(string filePath, string contentType, int i);
+		void 		handleCGIResponse(string filePath, string contentType, int i);
 
-	class PageNotFoundException : public exception {
-		public:
-			const char *what() const throw() {
-				return "404 Page Not Found";
-			}
-	};
-
-};
+	/* ************
+	 * Exceptions *
+	 * ************/
+	public:
+		class PageNotFoundException : public exception {
+			public:
+				const char *what() const throw() {
+					return "404 Page Not Found";
+				}
+			};
+}; 
  
 #endif
