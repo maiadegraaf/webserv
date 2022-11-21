@@ -26,6 +26,8 @@ SRC_DIR			:=	src
 
 SRC				=	main.cpp \
 					server/Server.cpp \
+					server/ServerRun.cpp \
+					server/ServerClientResponse.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
