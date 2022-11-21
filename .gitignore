@@ -41,3 +41,4 @@ createClass.sh
 test
 .dSYM
 /webserve
+.DS_store

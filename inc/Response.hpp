@@ -68,6 +68,7 @@ class Response
 	public:
 		void	output();
 		bool	sendResponse();
+//		bool 	sendCGI();
 };
  
 #endif
