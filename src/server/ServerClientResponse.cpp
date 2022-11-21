@@ -84,7 +84,7 @@ bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> co
 
 void	Server::handleResponse(string filePath, string contentType, int i) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
-	off_t _len = fileSize(filePath.c_str());
+	_len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, _fds[i].fd, _len);
 	if (!clientResponse.sendResponse())
 		setCloseConnection(true);
@@ -92,8 +92,8 @@ void	Server::handleResponse(string filePath, string contentType, int i) {
 
 void	Server::handleCGIResponse(string filePath, string contentType, int i) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
-	off_t _len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, "200 OK", contentType, _fds[i].fd, _len); // different lenght constructor for cgi
-	if (!clientResponse.sendResponse())
+	_len = fileSize(filePath.c_str());
+	CGIResponse	cgi("PHP", filePath, "200 OK", contentType, _fds[i].fd, _len);
+	if (!cgi.exec())
 		setCloseConnection(true);
 }

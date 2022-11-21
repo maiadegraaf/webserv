@@ -45,7 +45,6 @@ bool Response::sendResponse() {
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	send(getSockFD(), _head.c_str(), _head.size(), 0);
     fork();
-    execv("usr/bin/php", )
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		cerr << "send() failed" << endl;
 		return close(read), false;
