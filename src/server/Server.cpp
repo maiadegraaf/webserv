@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(Config *conf)
-		: _fd(-1), _conf(conf), _nfds(1), _newFd(-1), _closeConnection(false) {
+		: _fd(-1), _conf(conf), _closeConnection(false) {
 	this->setup();
 	this->run();
 }
@@ -57,12 +57,4 @@ void Server::setAddr()
 	_servAddr.sin_family = AF_INET;
 	_servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	_servAddr.sin_port = htons(_conf->getAddress());
-}
-
-void Server::closeFds()
-{
-	for (int i = 0; i < _nfds; i++) {
-		if (_fds[i].fd >= 0)
-			close(_fds[i].fd);
-	}
 }
