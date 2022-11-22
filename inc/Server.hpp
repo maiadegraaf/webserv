@@ -18,6 +18,7 @@
 #include <fstream>
 #include <poll.h>
 #include <sys/ioctl.h>
+#include <sys/event.h>
 #include "webserv.h"
 #include "Config.hpp"
 #include "Response.hpp"
@@ -33,20 +34,22 @@ class Server
 	public:
 		Server(Config *conf);
 		Server( const Server& rhs)											{ *this = rhs; }
-		~Server()															{ this->closeFds(); }
+		~Server()															{ }
 		Server& operator=( const Server &rhs);
 
 	/* ************
 	 * Attributes *
 	 * ************/
 	private:
-		int						_fd;
-		sockaddr_in				_servAddr;
+		int						_fd,
+								_kq,
+								_new_events,
+								_len,
+								_newFd,
+								_event_fd;
+		sockaddr_in				_servAddr, _client_addr;
 		Config					*_conf;
-		pollfd					_fds[200];
-		int						_len;
-		int						_nfds;
-		int						_newFd;
+		struct kevent			_change_event[4], _event[4];
 		map<string, string> 	_contentType;
 		bool 					_closeConnection;
 
@@ -73,16 +76,15 @@ class Server
 		void		setup();
 		// ServerRun.cpp
 		void		run();
-		void 		newConnection();
-		void 		creatingPoll();
-		void		loopFds();
-		void		closeFds();
+		void 		newEvent();
+		void 		creatingKqueue();
+		void		loopEvent();
 		// ClientResponse.cpp
-		bool		clientRequest(int i);
-		string		receiveStrRequest(int i);
-		bool 		handleRequest(Request clientReq, int i);
-		void 		handleResponse(string filePath, string contentType, int i);
-		void 		handleCGIResponse(string filePath, string contentType, int i);
+		bool		clientRequest();
+		string		receiveStrRequest();
+		bool 		handleRequest(Request clientReq);
+		void 		handleResponse(string filePath, string contentType);
+		void 		handleCGIResponse(string filePath, string contentType);
 
 	/* ************
 	 * Exceptions *

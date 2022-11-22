@@ -1,31 +1,31 @@
 #include "Server.hpp"
 #include "CGIResponse.hpp"
 
-bool	Server::clientRequest(int i) { //wanneer keep alive ???? // segfault her in bool
-	string strRequest = receiveStrRequest(i);
-	cerr << strRequest << endl;
+bool	Server::clientRequest() { //wanneer keep alive ???? // segfault her in bool
+	string strRequest = receiveStrRequest();
+//	cerr << strRequest << endl;
 	if (strRequest.empty())
 		return false;
 	try {
 		Request	clientReq(strRequest);
-		return (handleRequest(clientReq, i));
+		return (handleRequest(clientReq));
 	} catch (exception &e) {
 		string tmpMessage(e.what());
-		Response error(tmpMessage, _fds[i].fd, _contentType["html"]);
+		Response error(tmpMessage, _event_fd, _contentType["html"]);
 		error.sendResponse();
 		this->setCloseConnection(true);
 		return false;
 	}
 }
 
-string Server::receiveStrRequest(int i) {
+string Server::receiveStrRequest() {
 	int     rc;
 	char    buffer[80];
 	string	request("");
 	string	tmp;
 
 	while (1) {
-		rc = recv(_fds[i].fd, buffer, sizeof(buffer), 0);
+		rc = recv(_event_fd, buffer, sizeof(buffer), 0);
 		if (rc < 0) {
 			if (errno != EWOULDBLOCK) {
 				cerr << "  recv() failed " << endl;
@@ -34,7 +34,7 @@ string Server::receiveStrRequest(int i) {
 			break;
 		}
 		if (rc == 0) {
-//			cerr << "  Connection closed" << endl;
+			cerr << "  Connection closed" << endl;
 			this->setCloseConnection(true);
 			break;
 		}
@@ -46,7 +46,7 @@ string Server::receiveStrRequest(int i) {
 	return request;
 }
 
-bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> const Request &ref ??
+bool	Server::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
 	string filePath("www/");
 	string confFile;
 	string file;
@@ -65,7 +65,7 @@ bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> co
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	if (extension.compare("php") == 0) {
 		cerr << "THIS IS A CGI RESPONSE!" << endl;
-		handleCGIResponse(filePath, _contentType["html"], i);
+		handleCGIResponse(filePath, _contentType["html"]);
 		if (getCloseConnection() == true)
 			return false;
 		return true;
@@ -73,30 +73,30 @@ bool	Server::handleRequest(Request clientReq, int i) { // should we use a --> co
 	contentType = _contentType[extension];
 	if (!contentType.empty()) {
 		cerr << "THIS IS A normal RESPONSE!" << endl;
-		handleResponse(filePath, contentType, i);
+		handleResponse(filePath, contentType);
 		if (getCloseConnection() == true)
 			return false;
 	} else
 		throw PageNotFoundException(); // not a supported extension
 	if (this->getCloseConnection() == true) {
-		close(_fds[i].fd);
-		_fds[i].fd = -1;
+		close(_event_fd);
+		_event_fd = -1;
 	}
 	return true;
 }
 
-void	Server::handleResponse(string filePath, string contentType, int i) {
+void	Server::handleResponse(string filePath, string contentType) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	_len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, "200 OK", contentType, _fds[i].fd, _len);
+	Response	clientResponse(filePath, "200 OK", contentType, _event_fd, _len);
 	if (!clientResponse.sendResponse())
 		setCloseConnection(true);
 }
 
-void	Server::handleCGIResponse(string filePath, string contentType, int i) {
+void	Server::handleCGIResponse(string filePath, string contentType) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	_len = fileSize(filePath.c_str());
-	CGIResponse	cgi("PHP", filePath, "200 OK", contentType, _fds[i].fd, _len);
+	CGIResponse	cgi("PHP", filePath, "200 OK", contentType, _event_fd, _len);
 	if (!cgi.sendResponse())
 		setCloseConnection(true);
 }
