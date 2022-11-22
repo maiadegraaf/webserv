@@ -18,7 +18,6 @@ Config::Config(vector<string> input)
 		determineCase(word, input, i);
 	}
 	checkIfComplete();
-	output();
 }
 
 Config::~Config()

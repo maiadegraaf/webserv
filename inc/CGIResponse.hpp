@@ -2,11 +2,10 @@
 #define CGIRESPONSE_H
 #include <iostream>
 #include <string>
-#include "webserv.h"
 #include "Response.hpp"
 
 class Response;
-// Class definition 
+// Class definition
 class CGIResponse : protected Response
 {
 private:
@@ -29,6 +28,8 @@ public:
 	void output();
 
 	bool exec();
+
+	bool sendResponse();
 };
  
 #endif

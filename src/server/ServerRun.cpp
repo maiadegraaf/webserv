@@ -13,7 +13,7 @@ void Server::run()
 
 void Server::creatingPoll()
 {
-	cout << "waiting poll..." << endl;
+//	cout << "waiting poll..." << endl;
 	if (poll(_fds, _nfds, -1) == 0)
 		cerr << "poll() timed out.  End program." << endl;
 }
@@ -26,7 +26,10 @@ void Server::loopFds()
 		if (_fds[i].revents == 0)
 			continue;
 		if (_fds[i].revents != POLLIN)
-			cerr << "Error! revents = " <<  _fds[i].revents << endl;
+		{
+//			cerr << "Error! revents = " <<  _fds[i].revents << endl;
+//			perror("");
+		}
 		if (_fds[i].fd == _fd) {
 			cerr << "Listening socket is readable" << endl;
 			newConnection();

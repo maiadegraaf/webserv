@@ -1,5 +1,5 @@
 # Todo
-### To Do
+### TODO
 
 #### Config Parser
 - [x] Check if file exists

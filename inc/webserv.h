@@ -18,7 +18,6 @@ using namespace std;
 #include "Config.hpp"
 #include "Server.hpp"
 #include "Utils.h"
-#include "CGIResponse.hpp"
 
 //utils
 void	failure(const char *message);

@@ -1,6 +1,6 @@
 include Pretty.mk
 
-NAME			:=	webserve
+NAME			:=	webserv
 
 CPP_FLAGS		=	 -g -Wall -Werror -Wextra
 ifdef sanitize
@@ -18,6 +18,7 @@ INCLUDES		=	Config.hpp \
                     Response.hpp \
                     Server.hpp \
                     webserv.h \
+					CGIResponse.hpp \
                     Utils.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
@@ -34,6 +35,7 @@ SRC				=	main.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
                     client/Response.cpp \
+                    client/CGIResponse.cpp \
                     utils/errorMap.cpp
 
 

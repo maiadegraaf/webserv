@@ -1,4 +1,5 @@
 #include "CGIResponse.hpp"
+#include "stdio.h"
 
 // Constructor initializes attributes to 0 by default 
 CGIResponse::CGIResponse()
@@ -17,7 +18,7 @@ CGIResponse::CGIResponse(const string& newType, const string& filePath, const st
 	: _type(newType)
 {
 	setFilePath(filePath);
-	setHead("HTTP/1.1");
+	setHead("HTTP/1.1 ");
 	setSockFD(newSockFD);
 	setFileSize(fileSize);
 	appendToHeadNL(message);
@@ -57,11 +58,39 @@ extern char **environ;
 bool CGIResponse::exec()
 {
 	char *split[2];
-
-	getenv("PATH");
+	string filePath = getFilePath();
 
 	split[0] = new char[getFilePath().length() + 1];
+	strcpy(split[0], filePath.c_str());
+	split[1] = NULL;
 	execve(split[0], split, environ);
+	perror("");
 	return (EXIT_FAILURE);
 }
 
+//void	dup_cmd(int end[2], int fd_in)
+//{
+//	if (dup2(fd_in, STDIN_FILENO) < 0)
+//		;
+////		ft_error(4, tools);
+//	close(end[0]);
+//	if (dup2(end[1], STDOUT_FILENO) < 0)
+//		;
+////		ft_error(4, tools);
+//	close(end[1]);
+////	handle_cmd(cmd, tools);
+//}
+
+bool CGIResponse::sendResponse() {
+	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
+	int pid = fork();
+	if (pid == 0)
+	{
+		if (dup2(getSockFD(), STDOUT_FILENO) < 0)
+			failure("");
+//		close(tmpFd);
+		exec();
+	}
+	while(waitpid(pid, NULL, WUNTRACED) != -1);
+	return true;
+}
