@@ -23,9 +23,7 @@ CGIResponse::CGIResponse(const string& newType, const string& filePath, const st
 	setFileSize(fileSize);
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
-	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHeadNL("X-Powered-By: PHP/7.2.17");
-	appendToHead("\r\n");
 }
 
 CGIResponse::CGIResponse(const string& newType) : _type(newType) {}
@@ -80,9 +78,7 @@ bool CGIResponse::exec()
 //	close(end[1]);
 ////	handle_cmd(cmd, tools);
 //}
-
 bool CGIResponse::sendResponse() {
-	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
 	int pid = fork();
 	if (pid == 0)
 	{
@@ -91,6 +87,11 @@ bool CGIResponse::sendResponse() {
 //		close(tmpFd);
 		exec();
 	}
+	dup2(STDOUT_FILENO, STDOUT_FILENO);
+	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
+	appendObjectToHead("Content-Length: ", "271");
+	appendToHead("\r\n");
 	while(waitpid(pid, NULL, WUNTRACED) != -1);
 	return true;
 }
+

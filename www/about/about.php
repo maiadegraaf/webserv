@@ -8,10 +8,19 @@
     <title>Simple-Web-Server html-file</title>
 </head>
 <body>
-    <img src="photo/picture.png"><img>
-    <a href="/">test</a>
+    <center>
+    <img src="/photo/giphy.gif" alt="confusado" />
+    <br>
+    <br><br>
     <?php
       echo "Hello world!";
     ?>
+    </center>
+
 </body>
+<div class="footer">
+  <p>
+  <a href="/"> &#10145 &#127968 </a>
+  </p>
+</div>
 </html>

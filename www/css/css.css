@@ -1,3 +1,28 @@
 html {
-    background-color: blue;
+    background-color: darkslateblue;
+    color: mintcream;
+    font-family: "American Typewriter", serif;
+    font-size: xxx-large;
+}
+
+a:link {
+    color: lightsteelblue;
+}
+
+a:visited {
+    color: lightcoral;
+}
+
+a:hover {
+    color: lightgoldenrodyellow;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: lightsteelblue;
+    color: white;
+    text-align: center;
 }
