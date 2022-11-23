@@ -1,6 +1,7 @@
 #include "CGIResponse.hpp"
 #include "stdio.h"
 
+
 // Constructor initializes attributes to 0 by default 
 CGIResponse::CGIResponse()
 	: _type(0)
@@ -24,6 +25,7 @@ CGIResponse::CGIResponse(const string& newType, const string& filePath, const st
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	appendToHeadNL("X-Powered-By: PHP/7.2.17");
+	appendToHead("\r\n");
 }
 
 CGIResponse::CGIResponse(const string& newType) : _type(newType) {}
@@ -84,14 +86,26 @@ bool CGIResponse::sendResponse() {
 	{
 		if (dup2(getSockFD(), STDOUT_FILENO) < 0)
 			failure("");
-//		close(tmpFd);
+		close(getSockFD());
 		exec();
 	}
-	dup2(STDOUT_FILENO, STDOUT_FILENO);
+	close(getSockFD());
+//	int end[2];
+//	pipe(end);
+//	int pid = fork();
+//	if (pid == 0)
+//	{
+//		if (dup2(end[0], getSockFD()) < 0)
+//			failure("");
+//		if (dup2(end[1], STDOUT_FILENO) < 0)
+//			failure("");
+//		close(end[1]);
+//		close(end[0]);
+//		exec();
+//	}
+//	close(end[1]);
+//	close(end[0]);
 	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
-	appendObjectToHead("Content-Length: ", "271");
-	appendToHead("\r\n");
 	while(waitpid(pid, NULL, WUNTRACED) != -1);
 	return true;
 }
-

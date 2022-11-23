@@ -4,8 +4,8 @@
 #### Config Parser
 - [x] Check if file exists
 - [x] If node is empty fill with default or throw error.
-- [ ] Convert max_client_size.
 - [x] Copy constructors
+- [ ] Check ints are really ints
 
 #### Server
 - [ ] _empty_

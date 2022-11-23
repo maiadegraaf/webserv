@@ -20,7 +20,7 @@
 </body>
 <div class="footer">
   <p>
-  <a href="/"> &#10145 &#127968 </a>
+  <a href="/"> &#127968 </a>
   </p>
 </div>
 </html>
