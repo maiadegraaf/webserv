@@ -30,7 +30,7 @@ void Server::setup()
 		exit(-1);
 	}
 	//makes the socket non blocking
-	if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
+	if (ioctl(_fd, FIONBIO, (char *)&on) < 0) // not allowed
 	{
 		cerr << "ioctl failed: to make the socket unblocking" << endl;
 		close(_fd);
@@ -49,6 +49,7 @@ void Server::setup()
 		close(_fd);
 		exit(-1);
 	}
+	_len = sizeof(_client_addr);
 }
 
 void Server::setAddr()

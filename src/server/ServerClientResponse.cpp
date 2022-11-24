@@ -19,17 +19,19 @@ bool	Server::clientRequest() { //wanneer keep alive ???? // segfault her in bool
 
 string Server::receiveStrRequest() {
 	int     rc;
-	char    buffer[80];
+	char    buffer[100];
 	string	request("");
 	string	tmp;
 
 	while (1) {
 		rc = recv(_event_fd, buffer, sizeof(buffer), 0);
+		cerr << "event fd: " << _event_fd << std::endl;
 		if (rc < 0) {
-			if (errno != EWOULDBLOCK) {
+			cerr << errno << std::endl;
+//			if (errno != EWOULDBLOCK) {
 				cerr << "  recv() failed " << endl;
 				this->setCloseConnection(true);
-			}
+//			}
 			break;
 		}
 		if (rc == 0) {
