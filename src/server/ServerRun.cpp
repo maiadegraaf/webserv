@@ -13,22 +13,28 @@ void Server::run()
 
 void Server::creatingKqueue()
 {
-	struct kevent			_change_event[2];
+//	struct kevent			_change_event[2];
 	cout << "waiting kqueue..." << endl;
 	_kq = kqueue();
 	EV_SET(&_change_event[0], _fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	EV_SET(&_change_event[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-	if (kevent(_kq, _change_event, 2, NULL, 0, NULL) == -1)
+	EV_SET(&_event[0], _fd, EVFILT_READ, EV_ENABLE, 0, 0, 0);
+	EV_SET(&_event[1], _fd, EVFILT_WRITE, EV_ENABLE, 0, 0, 0);
+	_new_events = kevent(_kq, _change_event, 2, _event, 2, NULL);
+	if (_new_events == -1)
 	{
 		perror("kevent");
 		exit(1);
 	}
+//	newEvent();
 }
 
-//
+
 //void Server::newEvent()
 //{
-//	_new_events = kevent(_kq, NULL, 0, _event, 2, NULL);
+//	EV_SET(&_event[0], _fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+//	EV_SET(&_event[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+//	_new_event = kevent(_kq, NULL)
 //	if (_new_events == -1)
 //	{
 //		perror("kevent");
@@ -38,7 +44,7 @@ void Server::creatingKqueue()
 
 void Server::loopEvent()
 {
-	struct kevent			_event[2];
+//	struct kevent			_event[2];
 
 //		printf("amount of new events: %d\n", _new_events);
 	_event_fd = _event[0].ident;

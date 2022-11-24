@@ -49,7 +49,7 @@ class Server
 								_event_fd;
 		sockaddr_in				_servAddr, _client_addr;
 		Config					*_conf;
-//		struct kevent			_change_event[2], _event[2];
+		struct kevent			_change_event[2], _event[2];
 		map<string, string> 	_contentType;
 		bool 					_closeConnection;
 
