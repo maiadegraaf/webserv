@@ -23,6 +23,7 @@
 #include "Config.hpp"
 #include "Response.hpp"
 #include "Request.hpp"
+#include "Client.hpp"
 
 class Config;
 

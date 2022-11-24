@@ -16,6 +16,7 @@ INCLUDES		=	Config.hpp \
                     ConfigParser.hpp \
                     Request.hpp \
                     Response.hpp \
+                    Client.hpp \
                     Server.hpp \
                     webserv.h \
                     Utils.h
@@ -34,6 +35,7 @@ SRC				=	main.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
                     client/Response.cpp \
+                    client/Client.cpp \
                     utils/errorMap.cpp
 
 

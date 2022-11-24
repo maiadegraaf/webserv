@@ -6,14 +6,12 @@ Server::Server(Config *conf)
 	this->run();
 }
 
-Server&	Server::operator=( const Server& rhs )
-{
+Server&	Server::operator=( const Server& rhs ) {
 	(void)rhs;
 	return *this;
 }
 
-void Server::setup()
-{
+void Server::setup() {
 	int on = 1;
 
 	_contentType = returnContentType();
@@ -30,7 +28,7 @@ void Server::setup()
 		exit(-1);
 	}
 	//makes the socket non blocking
-	if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
+	if (ioctl(_fd, FIONBIO, (char *)&on) < 0) // not allowed
 	{
 		cerr << "ioctl failed: to make the socket unblocking" << endl;
 		close(_fd);
@@ -49,6 +47,7 @@ void Server::setup()
 		close(_fd);
 		exit(-1);
 	}
+	_len = sizeof(_client_addr);
 }
 
 void Server::setAddr()
