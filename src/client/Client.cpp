@@ -1,36 +1,55 @@
-#include "Server.hpp"
+#include "Client.hpp"
+// Constructor initializes attributes to 0 by default
 
-bool	Server::clientRequest() { //wanneer keep alive ???? // segfault her in bool
+
+Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType)
+		: _sockFD(newSockFD), _location(newLocation), _contentType(newContentType), _strRequest("") {
+
+}
+
+Client&	Client::operator=( const Client& rhs ) {
+	(void)rhs;
+	return *this;
+}
+
+// Output
+void	Client::output() {
+	std::cout << "SockFD : " << _sockFD << std::endl;
+//	std::cout << "fds : " << _fds << std::endl;
+//	std::cout << "location : " << _location << std::endl;
+	std::cout << "strRequest : " << _strRequest << std::endl;
+}
+
+void	Client::clientRequest() {
 	string strRequest = receiveStrRequest();
 //	cerr << strRequest << endl;
 	if (strRequest.empty())
-		return false;
+		return ;
 	try {
 		Request	clientReq(strRequest);
-		return (handleRequest(clientReq));
+		handleRequest(clientReq);
 	} catch (exception &e) {
 		string tmpMessage(e.what());
-		Response error(tmpMessage, _event_fd, _contentType["html"]);
+		Response error(tmpMessage, _sockFD, getContentType("html"));
 		error.sendResponse();
 		this->setCloseConnection(true);
-		return false;
 	}
 }
 
-string Server::receiveStrRequest() {
+string	Client::receiveStrRequest() {
 	int     rc;
 	char    buffer[100];
 	string	request("");
 	string	tmp;
 
 	while (1) {
-		rc = recv(_event_fd, buffer, sizeof(buffer), 0);
-		cerr << "event fd: " << _event_fd << std::endl;
+		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
+		cerr << "event fd: " << getSockFD() << std::endl;
 		if (rc < 0) {
-			cerr << errno << std::endl;
+			cerr << errno << " --> errno\n";
 //			if (errno != EWOULDBLOCK) {
-				cerr << "  recv() failed " << endl;
-				this->setCloseConnection(true);
+			cerr << "  recv() failed " << endl;
+			this->setCloseConnection(true);
 //			}
 			break;
 		}
@@ -47,14 +66,14 @@ string Server::receiveStrRequest() {
 	return request;
 }
 
-bool	Server::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
+void	Client::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
 	string filePath("www/");
 	string confFile;
 	string file;
 	string extension;
 	string contentType;
 
-	confFile = _conf->getLocation(clientReq.getDir());
+	confFile = getLocation(clientReq.getDir());
 	if (!confFile.empty())
 		file.append(confFile); // page not foudn exception
 	else {
@@ -67,35 +86,37 @@ bool	Server::handleRequest(Request clientReq) { // should we use a --> const Req
 	if (extension.compare("php") == 0) {
 		handleCGIResponse(filePath, _contentType["html"]);
 		if (getCloseConnection() == true)
-			return false;
-		return true;
+			return ;
+		return ;
 	}
 	contentType = _contentType[extension];
 	if (!contentType.empty()) {
 		handleResponse(filePath, contentType);
 		if (getCloseConnection() == true)
-			return false;
+			return ;
 	} else
 		throw PageNotFoundException(); // not a supported extension
-	if (this->getCloseConnection() == true) {
-		close(_event_fd);
-		_event_fd = -1;
-	}
-	return true;
+//	if (this->getCloseConnection() == true) {
+//		close(getSockFD());
+//		setSockFD(-1);
+//	}
+	return ;
 }
 
-void	Server::handleResponse(string filePath, string contentType) {
+void	Client::handleResponse(string filePath, string contentType) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	off_t _len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, "200 OK", contentType, _event_fd, _len);
+	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len);
 	if (!clientResponse.sendResponse())
 		setCloseConnection(true);
+	_strRequest.clear();
 }
 
-void	Server::handleCGIResponse(string filePath, string contentType) {
+void	Client::handleCGIResponse(string filePath, string contentType) {
 //	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	off_t _len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, "200 OK", contentType, _event_fd, _len); // different lenght constructor for cgi
+	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
 	if (!clientResponse.sendResponse())
 		setCloseConnection(true);
+	_strRequest.clear();
 }

@@ -6,14 +6,12 @@ Server::Server(Config *conf)
 	this->run();
 }
 
-Server&	Server::operator=( const Server& rhs )
-{
+Server&	Server::operator=( const Server& rhs ) {
 	(void)rhs;
 	return *this;
 }
 
-void Server::setup()
-{
+void Server::setup() {
 	int on = 1;
 
 	_contentType = returnContentType();
