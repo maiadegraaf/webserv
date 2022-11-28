@@ -33,7 +33,7 @@ public:
 	Location& operator=( const Location &rhs); 
 // Getters 
 	string getIndex(); 
-	bool getAutoIndex(); 
+	bool getAutoIndex() const;
 	map<e_method, bool> getMethod();
 	string getUpload(); 
 // Setters 
@@ -41,7 +41,14 @@ public:
 	void setAutoIndex(bool _autoIndex);
 	void setDefaultMethod(void);
 	void setMethod(map<e_method, bool> _method);
-	void setUpload(string _upload); 
+	void setUpload(string _upload);
+
+// Method Set
+	void setGet()		{_method[GET] = true;}
+	void setPost() 		{_method[POST] = true;}
+	void setDelete()	{_method[DELETE] = true;}
+	void setPut()		{_method[PUT] = true;}
+	void setPatch()		{_method[PATCH] = true;}
 // Output 
 	void output(); 
 }; 

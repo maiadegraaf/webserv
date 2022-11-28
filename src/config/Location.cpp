@@ -1,5 +1,5 @@
 #include "Location.hpp"
-// Constructor initializes attributes to 0 by default 
+// Constructor initializes attributes to 0 by default
 Location::Location()
 	: _index(0), _autoIndex(0), _upload(0)
 {
@@ -29,10 +29,10 @@ Location&	Location::operator=( const Location& rhs )
 
 // Getters 
 string Location::getIndex() { return _index; }
-bool Location::getAutoIndex() { return _autoIndex; }
+bool Location::getAutoIndex() const { return _autoIndex; }
 map<e_method, bool> Location::getMethod() { return _method; }
 string Location::getUpload() { return _upload; }
- 
+
 // Setters 
 void Location::setIndex(string newIndex) { _index = newIndex; }
 void Location::setAutoIndex(bool newAutoIndex) { _autoIndex = newAutoIndex; }
@@ -57,4 +57,3 @@ void Location::output()
   std::cout << "method : " << _method << std::endl; 
   std::cout << "upload : " << _upload << std::endl; 
 }
- 
