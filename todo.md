@@ -6,6 +6,9 @@
 - [x] If node is empty fill with default or throw error.
 - [x] Copy constructors
 - [ ] Check ints are really ints
+- [ ] Add GET POST DEL etc
+- [ ] Auto index?
+- [ ] 
 
 #### Server
 - [ ] _empty_

@@ -16,15 +16,23 @@ server {
 
 ## NGINX
 
-| TYPE                                                                                                    | DESCRIPTION                                                                      | FORMAT                        | EXAMPLE                                   |
-|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------|-------------------------------------------|
-| [`listen`](https://nginx.org/en/docs/http/ngx_http_core_module.html#listen)                             | indicates the IP and TCP that the sever should listen on.                        | `listen [address]`            | `listen 8080`                             |
-| [`server_name`](https://nginx.org/en/docs/http/ngx_http_core_module.html#server_name)                   | _Optional:_ allows multiple domains to be served from a single IP address.       | `server_name [name] ...`      | `server_name example.com www.example.com` |
-| [`root`](https://nginx.org/en/docs/http/ngx_http_core_module.html#root)                                 | sets the root directory for requests                                             | `root [path]`                 | `root www`                                |
-| [`client_max_body_size`](https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size) | Sets the maximum allowed size of the client request body                         | `client_max_body_size [size]` | `client_max_body_size 10M`                |
-| [ `error_page`](https://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)                    | Defines URI that will be shown for the specified errors.                         | `error_page [code] [uri]`     | `error_page 404 www/file_not_found.html`  |
-| [`location`](https://nginx.org/en/docs/http/ngx_http_core_module.html#location)                         | Sets up the way the server responds to requests for resources within the server. | `location [uri]{ ... }`       | `location / { ... }`                      |
-| -----> `index`                                                                                          | In location.  The file location sends to.                                        | `index [file_name]`           | `index index.html`                        |
+| TYPE                                                                                                    | DESCRIPTION                                                                      | FORMAT                         | EXAMPLE                                    |
+|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|--------------------------------|--------------------------------------------|
+| [`listen`](https://nginx.org/en/docs/http/ngx_http_core_module.html#listen)                             | indicates the IP and TCP that the sever should listen on.                        | `listen [address];`            | `listen 8080;`                             |
+| [`server_name`](https://nginx.org/en/docs/http/ngx_http_core_module.html#server_name)                   | _Optional:_ allows multiple domains to be served from a single IP address.       | `server_name [name] ...;`      | `server_name example.com www.example.com;` |
+| [`root`](https://nginx.org/en/docs/http/ngx_http_core_module.html#root)                                 | sets the root directory for requests                                             | `root [path];`                 | `root www;`                                |
+| [`client_max_body_size`](https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size) | Sets the maximum allowed size of the client request body                         | `client_max_body_size [size];` | `client_max_body_size 10;`                 |
+| [ `error_page`](https://nginx.org/en/docs/http/ngx_http_core_module.html#error_page)                    | Defines URI that will be shown for the specified errors.                         | `error_page [code] [uri];`     | `error_page 404 www/file_not_found.html;`  |
+| [`location`](https://nginx.org/en/docs/http/ngx_http_core_module.html#location)                         | Sets up the way the server responds to requests for resources within the server. | `location [uri]{ ... };`       | `location / { ... };`                      |
+
+
+### Location
+| TYPE                                                                        | DESCRIPTION                                       | FORMAT                                | EXAMPLE                    |
+|-----------------------------------------------------------------------------|---------------------------------------------------|---------------------------------------|----------------------------|
+| [`index`](http://nginx.org/en/docs/http/ngx_http_index_module.html)         | The file location sends to.                       | `index [file_name];`                  | `index index.html;`        |
+| [`autoindex`](http://nginx.org/en/docs/http/ngx_http_autoindex_module.html) | Enables or disables the directory listing output. | <code>autoindex on &#124; off;</code> | `autoindex on;`            |
+| `request_method`                                                            | Determines accepted request methods               | `request_method [method(s)];`         | `request_method GET POST;` |
+| `upload`                                                                    | Determines upload route                           | `upload [directory];`                 | `upload /Documents;`       |
 
 ## Ours
 
