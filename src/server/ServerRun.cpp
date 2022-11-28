@@ -76,7 +76,6 @@ void Server::loopEvent()
 			}
 		}
 		if (_event[i].filter == EVFILT_READ) {
-			cerr << "do the request\n";
 			clientRequest();
 		}
 	}

@@ -30,9 +30,9 @@ void Server::setup()
 		exit(-1);
 	}
 	//makes the socket non blocking
-	if (ioctl(_fd, FIONBIO, (char *)&on) < 0) // not allowed
+	if (fcntl(_fd, F_SETFL, O_NONBLOCK) < 0)
 	{
-		cerr << "ioctl failed: to make the socket unblocking" << endl;
+		cerr << "fcntl failed: to make the socket unblocking" << endl;
 		close(_fd);
 		exit(-1);
 	}

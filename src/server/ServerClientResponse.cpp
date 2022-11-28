@@ -25,13 +25,12 @@ string Server::receiveStrRequest() {
 
 	while (1) {
 		rc = recv(_event_fd, buffer, sizeof(buffer), 0);
-		cerr << "event fd: " << _event_fd << std::endl;
 		if (rc < 0) {
-			cerr << errno << std::endl;
-//			if (errno != EWOULDBLOCK) {
+			cerr << "errno: " <<  errno << std::endl;
+			if (errno != EWOULDBLOCK) {
 				cerr << "  recv() failed " << endl;
 				this->setCloseConnection(true);
-//			}
+			}
 			break;
 		}
 		if (rc == 0) {
