@@ -6,8 +6,8 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 	stringstream	ss;
 	string			tmp;
 	ss << errorMessage;
-	getline(ss, tmp, ' '); // filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
-	_filePath.append(tmp); // check voor nieuwe error
+	getline(ss, tmp, ' '); //TODO: filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
+	_filePath.append(tmp); // TODO: check voor nieuwe error
 	_filePath.append(".html");
 	setFileSize(fileSize(_filePath.c_str()));
 	appendToHeadNL(errorMessage);

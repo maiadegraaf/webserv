@@ -5,13 +5,9 @@ Config::Config(const Config& rhs)
 	*this = rhs;
 }
 
-Config::Config(vector<string> input)
+Config::Config(const vector<string> &input)
+	: _address(80), _maxSize(1), _errorPage(setupErrorPages())
 {
-	_address = 80;
-	_root = "";
-	_maxSize = 1;
-	_cgi = "";
-	_errorPage = setupErrorPages();
 	for(size_t i = 0; i < input.size(); i++)
 	{
 		string word = findFirstWord(i, input);
@@ -54,7 +50,7 @@ unsigned long long int Config::getMaxSize() const {
 	return _maxSize;
 }
 
-const map<string, string> &Config::getLocation() const {
+const Location &Config::getLocation() const {
 	return _location;
 }
 
@@ -159,7 +155,7 @@ void Config::output()
 	cout << "\nroot : " << _root << endl;
 	cout << "\nmax_size : " << _maxSize << endl;
 	cout << "\nlocation : " << endl;
-	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
+	for (Location::iterator i = _location.begin(); i != _location.end(); i++)
 		cout << i->first << " : " << i->second << endl;
 	cout << "\ncgi : " << _cgi << endl;
 	cout << "\nError Page : "  << endl;
@@ -178,7 +174,7 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 			"error_page",
 			"cgi"
 	};
-	MemFuncPtr setter[] = {
+	ConfMemFuncPtr setter[] = {
 			&Config::setAddress,
 			&Config::setServer_name,
 			&Config::setRoot,
@@ -204,7 +200,7 @@ void	Config::checkIfComplete()
 		failure("Root is a required field.");
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
-	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
+	for (Location::iterator i = _location.begin(); i != _location.end(); i++)
 	{
 		if (!fileAccess(_root + '/' + i->second))
 			failure(i->second.c_str());

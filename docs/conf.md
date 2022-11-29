@@ -41,3 +41,4 @@ server {
 |-------|-----------------------|-------------------|------------------|
 | `cgi` | location of cgi files | `cgi [directory]` | `cgi /cgi_files` |
 
+

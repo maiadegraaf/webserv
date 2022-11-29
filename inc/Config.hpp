@@ -1,6 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #include "webserv.h"
+#include "Location.hpp"
 #include <map>
 
 class Location;
@@ -13,14 +14,14 @@ private:
 	vector<string> _serverName;
 	string _root;
 	unsigned long long _maxSize;
-	map<string, string> _location;
+	Location _location;
 	string _cgi;
 	map<int, string> _errorPage;
 
 public:
 // Constructor
 	Config(const Config &rhs );
-    Config(vector<string> input);
+    Config(const vector<string> &input);
     ~Config();
 	Config& operator=(const Config &rhs);
 // Getters
@@ -28,10 +29,10 @@ public:
 	const vector<string> &getServerName() const;
 	const string &getRoot() const;
 	unsigned long long int getMaxSize() const;
-	const map<string, string> &getLocation() const;
+	const Location &getLocation() const;
 	const string &getCgi() const;
 	const map<int, string> &getErrorPage() const;
-	string getLocation(string key)		{ return _location[key]; }
+//	string getLocation(string key)		{ return _location[key]; }
 // Setters
 	void setAddress(const vector<string>& input, int line);
 	void setServer_name(const vector<string>& input, int line);
@@ -44,11 +45,13 @@ public:
 	void output();
 //
 	void determineCase(const string &word, const vector<string>& input, int line);
-	typedef void (Config::* MemFuncPtr)(const vector<string>&, int);
 
 	void checkIfComplete();
 
 	void checkFileAccess(string filename);
+
+// MemberFunction Typedef
+	typedef void (Config::* ConfMemFuncPtr)(const vector<string>&, int);
 };
 
 

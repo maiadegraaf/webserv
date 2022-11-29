@@ -27,21 +27,28 @@ private:
 public: 
 // Constructor 
 	Location(); 
-	Location( const Location &rhs); 
-	Location(string newIndex, bool newAutoIndex, map<e_method, bool> newMethod, string newUpload);
+	Location( const Location &rhs);
+	Location(const string &newIndex, bool newAutoIndex, const string &newUpload);
+	Location(const vector<string> &input);
 	~Location(); 
 	Location& operator=( const Location &rhs); 
 // Getters 
-	string getIndex(); 
-	bool getAutoIndex() const;
-	map<e_method, bool> getMethod();
-	string getUpload(); 
+	string getIndex() { return _index; }
+	bool getAutoIndex() const { return _autoIndex; }
+	map<e_method, bool> getMethod() { return _method; }
+	string getUpload() { return _upload; }
 // Setters 
-	void setIndex(string _index); 
-	void setAutoIndex(bool _autoIndex);
+	void setIndex(const string &newIndex) { _index = newIndex; }
+	void setAutoIndex(bool newAutoIndex) { _autoIndex = newAutoIndex; }
+	void setMethod(const map<e_method, bool> &newMethod) { _method = newMethod; }
+	void setUpload(const string &newUpload) { _upload = newUpload; };
+
+	void setIndex(const vector<string>& input, int line);
+	void setAutoIndex(const vector<string>& input, int line);
+	void setMethod(const vector<string>& input, int line);
+	void setUpload(const vector<string>& input, int line);
+
 	void setDefaultMethod(void);
-	void setMethod(map<e_method, bool> _method);
-	void setUpload(string _upload);
 
 // Method Set
 	void setGet()		{_method[GET] = true;}
@@ -50,7 +57,12 @@ public:
 	void setPut()		{_method[PUT] = true;}
 	void setPatch()		{_method[PATCH] = true;}
 // Output 
-	void output(); 
-}; 
+	void output();
+
+	void determineCase(const string& word, const vector<string>& input, int line);
+
+	// Typedef Member function
+	typedef void (Location::* LocMemFuncPtr)(const vector<string>&, int);
+};
  
 #endif

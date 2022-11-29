@@ -1,7 +1,7 @@
 #include "Location.hpp"
 // Constructor initializes attributes to 0 by default
 Location::Location()
-	: _index(0), _autoIndex(0), _upload(0)
+	: _autoIndex(false),
 {
 	setDefaultMethod();
 }
@@ -10,11 +10,23 @@ Location::Location( const Location& rhs)
 {
 	*this = rhs;
 }
- 
-Location::Location(string newIndex, bool newAutoIndex, map<e_method, bool> newMethod, string newUpload) 
-	: _index(newIndex), _autoIndex(newAutoIndex), _method(newMethod), _upload(newUpload)
-{
 
+Location::Location(const string &newIndex, bool newAutoIndex, const string &newUpload)
+	: _index(newIndex), _autoIndex(newAutoIndex), _upload(newUpload)
+{
+	setDefaultMethod();
+}
+
+Location::Location(const vector<string> &input)
+		: _autoIndex(false)
+{
+	setDefaultMethod();
+	for(size_t i = 0; i < input.size(); i++)
+	{
+		string word = findFirstWord(i, input);
+		determineCase(word, input, i);
+	}
+	checkIfComplete();
 }
 
 Location::~Location()
@@ -24,20 +36,14 @@ Location::~Location()
 
 Location&	Location::operator=( const Location& rhs )
 {
+	setIndex(rhs._index);
+	setAutoIndex(rhs._autoIndex);
+	setMethod(rhs._method);
+	setUpload(rhs._upload);
 	return *this;
 }
 
-// Getters 
-string Location::getIndex() { return _index; }
-bool Location::getAutoIndex() const { return _autoIndex; }
-map<e_method, bool> Location::getMethod() { return _method; }
-string Location::getUpload() { return _upload; }
-
-// Setters 
-void Location::setIndex(string newIndex) { _index = newIndex; }
-void Location::setAutoIndex(bool newAutoIndex) { _autoIndex = newAutoIndex; }
-void Location::setMethod(map<e_method, bool> newMethod) { _method = newMethod; }
-
+// Setters
 void Location::setDefaultMethod(void)
 {
 	_method[GET] = false;
@@ -47,8 +53,6 @@ void Location::setDefaultMethod(void)
 	_method[PATCH] = false;
 }
 
-void Location::setUpload(string newUpload) { _upload = newUpload; }
- 
 // Output
 void Location::output()
 {
@@ -56,4 +60,49 @@ void Location::output()
   std::cout << "autoIndex : " << _autoIndex << std::endl; 
   std::cout << "method : " << _method << std::endl; 
   std::cout << "upload : " << _upload << std::endl; 
+}
+
+void Location::setIndex(const vector<string> &input, int line)
+{
+
+}
+
+void Location::setAutoIndex(const vector<string> &input, int line)
+{
+
+}
+
+void Location::setMethod(const vector<string> &input, int line)
+{
+
+}
+
+void Location::setUpload(const vector<string> &input, int line)
+{
+
+}
+
+void Location::determineCase(const string& word, const vector<string>& input, int line)
+{
+	string words[] = {
+			"index",
+			"autoindex",
+			"request_method",
+			"upload",
+	};
+	LocMemFuncPtr setter[] = {
+			&Location::setIndex,
+			&Location::setAutoIndex,
+			&Location::setMethod,
+			&Location::setUpload,
+	};
+
+	for(int i = 0; i < 7; i++)
+	{
+		if (word == words[i])
+		{
+			(this->*setter[i])(input, line);
+			break;
+		}
+	}
 }
