@@ -12,7 +12,7 @@ void Server::run()
 void Server::creatingKqueue() {
 	cout << "waiting kqueue..." << endl;
 	_kq = kqueue();
-	cerr << " _kq " << _kq << endl;
+	cerr << "_kq = " << _kq << endl;
 	EV_SET(&_change_event[0], _fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (kevent(_kq, _change_event, 1, NULL, 0, NULL) == -1)
 	{
@@ -55,7 +55,6 @@ void Server::loopEvent() {
 			if (_newFd == -1) {
 				perror("Accept socket error");
 			}
-			int opt_value = 1;
 			setsockopt(_event_fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 			// Put this new socket connection also as a 'filter' _event
 			// to watch in kqueue, so we can now watch for events on this
@@ -66,7 +65,7 @@ void Server::loopEvent() {
 			EV_SET(&new_events[1], _newFd, EVFILT_WRITE, EV_ADD, 0, 0, newClient);
 			if (kevent(_kq, new_events, 2, NULL, 0, NULL) < 0) {
 				perror("kevent error");
-				cerr << errno << " --> errno\n";
+//				cerr << errno << " --> errno\n";
 			}
 		}
 		else if (_event[i].filter == EVFILT_READ) {

@@ -27,9 +27,9 @@ string Server::receiveStrRequest() {
 		rc = recv(_event_fd, buffer, sizeof(buffer), 0);
 		cerr << "event fd: " << _event_fd << std::endl;
 		if (rc < 0) {
-			cerr << errno << std::endl;
+//			cerr << errno << std::endl;
 //			if (errno != EWOULDBLOCK) {
-				cerr << "  recv() failed " << endl;
+				cerr << "recv() stopped reading " << endl;
 				this->setCloseConnection(true);
 //			}
 			break;

@@ -32,23 +32,22 @@ void	Client::clientRequest() {
 		string tmpMessage(e.what());
 		Response error(tmpMessage, _sockFD, getContentType("html"));
 		error.sendResponse();
-		this->setCloseConnection(true);
 	}
 }
 
 string	Client::receiveStrRequest() {
 	int     rc;
-	char    buffer[100];
+	char    buffer[1000];
 	string	request("");
 	string	tmp;
 
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-		cerr << "event fd: " << getSockFD() << std::endl;
+		cerr << buffer << endl;
 		if (rc < 0) {
-			cerr << errno << " --> errno\n";
+//			cerr << errno << " --> errno\n";
 //			if (errno != EWOULDBLOCK) {
-			cerr << "  recv() failed " << endl;
+			cerr << "recv() stopped reading " << endl;
 			this->setCloseConnection(true);
 //			}
 			break;
@@ -60,7 +59,7 @@ string	Client::receiveStrRequest() {
 		}
 		_len = rc;
 		tmp.assign(buffer, rc);
-		cerr << _len << " bytes receive " << endl;
+		cerr << _len << " bytes received " << endl;
 		request.append(tmp);
 	}
 	return request;
@@ -96,10 +95,6 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 			return ;
 	} else
 		throw PageNotFoundException(); // not a supported extension
-//	if (this->getCloseConnection() == true) {
-//		close(getSockFD());
-//		setSockFD(-1);
-//	}
 	return ;
 }
 
