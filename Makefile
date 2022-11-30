@@ -16,7 +16,9 @@ INCLUDES		=	Config.hpp \
                     ConfigParser.hpp \
                     Request.hpp \
                     Response.hpp \
+                    Client.hpp \
                     Server.hpp \
+                    WSException.hpp \
                     webserv.h \
                     Utils.h
 
@@ -27,13 +29,13 @@ SRC_DIR			:=	src
 SRC				=	main.cpp \
 					server/Server.cpp \
 					server/ServerRun.cpp \
-					server/ServerClientResponse.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
                     client/Response.cpp \
+                    client/Client.cpp \
                     utils/errorMap.cpp
 
 

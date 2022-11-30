@@ -5,9 +5,8 @@ vector<Config> extractServer(const string& filename)
 {
     ConfigParser    confParser(filename);
     vector<Config>  conf;
-    int             start = 0;
     int             end;
-	start = confParser.findServer(start, &end);
+	int 			start = confParser.findServer(0, &end);
 	while(start > -1)
     {
         Config  tmp(confParser.subVector(start, end));
@@ -24,7 +23,7 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	vector<Config> conf = extractServer(argv[1]);
-//    Server  server(&conf);
+    Server  server(&conf[0]);
 }
 
 //#include <iostream>

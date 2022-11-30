@@ -45,16 +45,18 @@ void Request::setAttributes() {
     if (!tmp.compare(0, 1, "") && \
 	!tmp.compare(0, 4, "GET") && tmp.compare(0, 5, "POST") \
 	&& tmp.compare(0, 7, "DELETE")) {
-        throw MethodNotAllowedException();
+        throw WSException::MethodNotAllowed();
     }
     setMethod(tmp);
     getline(ss, tmp, ' ');
     if (!tmp.compare(0, 1, ""))
-        throw BadRequestException();
+        throw WSException::BadRequest();
     setDir(tmp);
     getline(ss, tmp);
     if (!tmp.compare(0, 1, ""))
-        throw BadRequestException();
+        throw WSException::BadRequest();
+	if (tmp.compare("HTTP/1.1"))
+		throw WSException::HTTPVerionNotAvailable();
     setProtocol(tmp);
 }
 

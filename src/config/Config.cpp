@@ -105,7 +105,7 @@ void Config::setMaxSize(const vector<string>& input, int line)
 {
 	string	type = "client_max_body_size";
 	size_t	end = input[line].find(type) + type.length();
-	_maxSize = stoull(findNextWord(input[line], end));
+	_maxSize = stoull(findNextWord(input[line], end)) * 1000000;
 	if (!_maxSize)
 		failure("client_max_body_size is not correctly formatted.");
 }
