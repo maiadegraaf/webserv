@@ -55,8 +55,10 @@ void Request::setAttributes() {
     getline(ss, tmp);
     if (!tmp.compare(0, 1, ""))
         throw WSException::BadRequest();
-	if (tmp.compare("HTTP/1.1"))
-		throw WSException::HTTPVerionNotAvailable();
+	if (!tmp.compare("HTTP/1.1")) {
+		cerr << " http version "  << tmp << endl;
+		throw WSException::HTTPVersionNotAvailable();
+	}
     setProtocol(tmp);
 }
 

@@ -41,7 +41,6 @@ string	Client::receiveStrRequest() {
 
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-		cerr << buffer << endl;
 		if (rc < 0) {
 //			cerr << errno << " --> errno\n";
 //			if (errno != EWOULDBLOCK) {
