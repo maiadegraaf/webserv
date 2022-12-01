@@ -24,6 +24,7 @@ Request::Request(string input) {
     setInput(input);
     setAttributes();
     setContent();
+	setPost();
 }
 
 // Setters
@@ -34,6 +35,10 @@ void Request::setInput(string input) {
     while (getline(ss, vecPush, '\n')) {
         _input.push_back(vecPush);
     }
+}
+
+void Request::setPostContent(string input) {
+	_postContent.push_back(input);
 }
 
 void Request::setAttributes() {
@@ -71,6 +76,8 @@ void Request::setContent() {
             break ;
         key = _input[i].substr(0, idx);
         value = _input[i].substr(idx + 2);
+		value = value.substr(0, value.length() - 1);
+		value = value.substr(0, value.find(";"));
         setContentValue(key, value);
         i++;
     }
@@ -79,6 +86,27 @@ void Request::setContent() {
         _file.append(_input[j]);
         _file.append("\n");
     }
+}
+
+void Request::setPost()
+{
+	size_t	i = 1;
+	size_t	size = _input.size();
+
+	while (i < size)
+	{
+		if (_input[i].length() == 1)
+		{
+			while (i < size)
+			{
+				setPostContent(_input[i]);
+				i++;
+			}
+		}
+		else
+			i++;
+	}
+	cerr << "wajooo" << _postContent[1] << endl;
 }
 
 // Output

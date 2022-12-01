@@ -22,7 +22,7 @@ void	Client::output() {
 
 void	Client::clientRequest() {
 	string strRequest = receiveStrRequest();
-//	cerr << strRequest << endl;
+	cerr << strRequest << endl;
 	if (strRequest.empty())
 		return ;
 	try {
@@ -37,13 +37,13 @@ void	Client::clientRequest() {
 
 string	Client::receiveStrRequest() {
 	int     rc;
-	char    buffer[1000];
+	char    buffer[100];
 	string	request("");
 	string	tmp;
 
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-		cerr << buffer << endl;
+//		cerr << buffer << endl;
 		if (rc < 0) {
 //			cerr << errno << " --> errno\n";
 //			if (errno != EWOULDBLOCK) {
@@ -66,11 +66,9 @@ string	Client::receiveStrRequest() {
 }
 
 void	Client::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
-	string filePath("www/");
 	string confFile;
 	string file;
-	string extension;
-	string contentType;
+	string filePath("www/");
 
 	confFile = getLocation(clientReq.getDir());
 	if (!confFile.empty())
@@ -80,6 +78,22 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 			throw Request::BadRequestException();
 		file.append(clientReq.getDir()); // Response
 	}
+	if (clientReq.getMethod().compare("GET") == 0)
+		handleGetRequest(file, filePath);
+	if (clientReq.getMethod().compare("POST") == 0)
+		handlePostRequest(file, filePath, clientReq);
+//	else if (clientReq.getMethod().compare("DELETE") == 0)
+//	{
+//
+//	}
+
+}
+
+void Client::handleGetRequest(string file, string filePath)
+{
+	string contentType;
+	string extension;
+
 	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	if (extension.compare("php") == 0) {
@@ -94,8 +108,34 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 		if (getCloseConnection() == true)
 			return ;
 	} else
-		throw PageNotFoundException(); // not a supported extension
-	return ;
+		throw PageNotFoundException();
+	return ; // not a supported extension
+}
+
+void Client::handlePostRequest(string file, string filepath, Request clientReq)
+{
+//	string line;
+//	string len;
+//	string disp;
+//	string cont_type;
+//	string filename;
+//	string savePath;
+	(void )filepath;
+	(void )file;
+	string type = clientReq.getContentValue("Content-Type");
+
+	if (type.compare("text/plain") == 0)
+	{
+		cerr << "compare   text plain" << endl;
+	}
+	else if (type.compare("application/x-www-form-urlencoded") == 0)
+	{
+		cerr << "x-www" << endl;
+	}
+	else if (type.compare("multipart/form-data") == 0)
+	{
+		cerr << "multipart" << endl;
+	}
 }
 
 void	Client::handleResponse(string filePath, string contentType) {

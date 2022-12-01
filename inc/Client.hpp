@@ -59,6 +59,9 @@ class Client {
 		void 		clientRequest();
 		string		receiveStrRequest();
 		void 		handleRequest(Request clientReq);
+		void		handleGetRequest(string file, string filepath);
+		void		handlePostRequest(string file, string filepath, Request clientReq);
+		void		handleDeleteRequest();
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(string filePath, string contentType);
 

@@ -30,6 +30,7 @@ class Request
 		string				_dir;
 		string				_protocol;
 		vector<string>		_input;
+		vector<string>		_postContent;
 		map<string, string> _content;
 		string 				_file;
 
@@ -54,8 +55,10 @@ class Request
 		void	setContentValue(string key, string value)	{ _content[key] = value; }
 
 		void	setInput(string input);
+		void	setPostContent(string input);
 		void	setAttributes();
 		void	setContent();
+		void	setPost();
 
 	/* ********
 	 * Output *
