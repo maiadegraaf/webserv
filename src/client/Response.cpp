@@ -43,10 +43,6 @@ void Response::output() {
 bool Response::sendResponse() {
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	send(getSockFD(), _head.c_str(), _head.size(), 0);
-//<<<<<<< HEAD
-//    fork();
-////    execv("usr/bin/php", )
-//=======
 //    fork();
 //    execv("usr/bin/php", )
 //	cerr << read << endl;

@@ -91,6 +91,7 @@ class Server
 		bool 		handleRequest(Request clientReq);
 		void 		handleResponse(string filePath, string contentType);
 		void 		handleCGIResponse(string filePath, string contentType);
+
 }; 
 
 typedef struct s_udata {

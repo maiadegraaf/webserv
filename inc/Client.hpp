@@ -7,6 +7,7 @@
 #include "Request.hpp"
 #include "WSException.hpp"
 
+
 // Class definition
 class Client {
 	/* *******************
@@ -21,6 +22,7 @@ class Client {
 			: _sockFD(0), _strRequest(""), _maxSize(0) 										{}
 		Client(int newSockFD, map<string, string> newLocation, \
 			map<string, string> newContentType, size_t newMaxSize);
+
 
 	/* ************
 	 * Attributes *
