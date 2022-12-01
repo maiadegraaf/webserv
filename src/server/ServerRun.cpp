@@ -59,7 +59,7 @@ void Server::loopEvent() {
 			// Put this new socket connection also as a 'filter' _event
 			// to watch in kqueue, so we can now watch for events on this
 			// new socket.
-			Client *newClient = new Client(_newFd, _conf->getLocation(), _contentType); // used _newFD instead of _event_fd here
+			Client *newClient = new Client(_newFd, _conf->getLocation(), _contentType, getMaxSize()); // used _newFD instead of _event_fd here
 			struct kevent new_events[2];
 			EV_SET(&new_events[0], _newFd, EVFILT_READ, EV_ADD, 0, 0, newClient);
 			EV_SET(&new_events[1], _newFd, EVFILT_WRITE, EV_ADD, 0, 0, newClient);
