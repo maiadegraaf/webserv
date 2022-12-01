@@ -18,6 +18,7 @@ INCLUDES		=	Config.hpp \
                     Response.hpp \
                     Client.hpp \
                     Server.hpp \
+                    WebServ.hpp \
                     WSException.hpp \
                     webserv.h \
                     Utils.h
@@ -27,6 +28,7 @@ INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
+					server/WebServ.cpp \
 					server/Server.cpp \
 					server/ServerRun.cpp \
                     config/Config.cpp \

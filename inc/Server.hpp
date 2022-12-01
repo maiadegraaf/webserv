@@ -53,7 +53,8 @@ class Server
 		sockaddr_in				_servAddr, _client_addr;
 		Config					*_conf;
 		struct kevent			_change_event[2], _event[2];
-		map<string, string> 	_contentType;
+		map<string, string> 	_contentType,
+								_location;
 		bool 					_closeConnection;
 		size_t 					_maxSize;
 
@@ -64,14 +65,26 @@ class Server
 		void		setAddr();
 		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
 		void 		setMaxSize( size_t newMaxSize )			{ this->_maxSize = newMaxSize; }
+		void 		setupKq(int kq);
 
 
 	/* *********
  	* Getters *
  	* *********/
 	public:
-		bool 		getCloseConnection()					{ return this->_closeConnection; }
-		size_t 		getMaxSize()							{ return this->_maxSize; }
+		bool 			getCloseConnection()					{ return this->_closeConnection; }
+		size_t 			getMaxSize()							{ return this->_maxSize; }
+		int				getSockFd()								{ return this->_fd; }
+		struct kevent	*getChangeEvent()						{ return this->_change_event; }
+		struct kevent	getChangeEventRead()					{ return this->_change_event[0]; }
+		struct kevent	getChangeEventWrite()					{ return this->_change_event[1]; }
+		struct kevent	*getEvent()								{ return this->_event; }
+		struct kevent	getEventRead()							{ return this->_event[0]; }
+		struct kevent	getEventWrite()							{ return this->_event[1]; }
+		struct kevent	getEventByIndex( int idx )				{ return this->_event[idx]; }
+		int				getAcceptFd(int eventFd);
+		map<string, string> getLocation()						{ return this->_location; }
+
 
 	/* **************
  	* Functionality *
@@ -81,22 +94,18 @@ class Server
 		void		output()													{}
 		void		setup();
 		// ServerRun.cpp
-		void		run();
-		void 		newEvent();
-		void 		creatingKqueue();
-		void		loopEvent();
-		// ClientResponse.cpp
-		bool		clientRequest();
-		string		receiveStrRequest();
-		bool 		handleRequest(Request clientReq);
-		void 		handleResponse(string filePath, string contentType);
-		void 		handleCGIResponse(string filePath, string contentType);
+//		void		run();
+//		void 		newEvent();
+//		void 		creatingKqueue();
+//		void		loopEvent();
+//		// ClientResponse.cpp
+//		bool		clientRequest();
+//		string		receiveStrRequest();
+//		bool 		handleRequest(Request clientReq);
+//		void 		handleResponse(string filePath, string contentType);
+//		void 		handleCGIResponse(string filePath, string contentType);
 
-}; 
-
-typedef struct s_udata {
-
-}				t_udata;
+};
 
 
 #endif
