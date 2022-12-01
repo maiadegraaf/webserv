@@ -107,26 +107,34 @@ void Config::setMaxSize(const vector<string>& input, int line)
 
 void Config::setLocation(const vector<string>& input, int line)
 {
-	string	type = "location";
-	size_t	end = input[line].find(type) + type.length();
-	string	loc = findNextWord(input[line], end);
-	string	ind;
-	for(int i = line + 1; input[i].find('}') == string::npos; i++)
-	{
-		type = "index";
-		size_t indLoc = input[i].find(type);
-		if (indLoc != string::npos)
-		{
-			ind = findNextWord(input[i], indLoc + type.length());
-			break;
-		}
-	}
-	if (!ind.empty() && !loc.empty())
-		_location[loc] = ind;
-	else if (!loc.empty() && ind.empty())
-		_location[loc] = "index.html";
-	else
-		failure("Index initialized incorrectly");
+    int end;
+    size_t i = line;
+    size_t brackLoc = input[line].find('{');
+    if (brackLoc == input[line].length() - 1 || brackLoc == string::npos)
+        end = findClosingBracket(++i, 0);
+    else
+        end = findClosingBracket(i, brackLoc + 1);
+    _location()
+//	string	type = "location";
+//	size_t	end = input[line].find(type) + type.length();
+//	string	loc = findNextWord(input[line], end);
+//	string	ind;
+//	for(int i = line + 1; input[i].find('}') == string::npos; i++)
+//	{
+//		type = "index";
+//		size_t indLoc = input[i].find(type);
+//		if (indLoc != string::npos)
+//		{
+//			ind = findNextWord(input[i], indLoc + type.length());
+//			break;
+//		}
+//	}
+//	if (!ind.empty() && !loc.empty())
+//		_location[loc] = ind;
+//	else if (!loc.empty() && ind.empty())
+//		_location[loc] = "index.html";
+//	else
+//		failure("Index initialized incorrectly");
 }
 
 void Config::setCgi(const vector<string>& input, int line)

@@ -64,12 +64,20 @@ void Location::output()
 
 void Location::setIndex(const vector<string> &input, int line)
 {
-
+    string type = "index";
+    size_t indLoc = input[i].find(type);
+    _index = findNextWord(input[i], indLoc + type.length());
 }
 
 void Location::setAutoIndex(const vector<string> &input, int line)
 {
-
+    string type = "autoindex";
+    size_t indLoc = input[i].find(type);
+    string tmp = findNextWord(input[i], indLoc + type.length());
+    if (tmp.compare("ON") == 0)
+        _autoIndex = true;
+    else if (tmp.compare("OFF") != 0)
+        failure("Cannot recognize word after autoindex");
 }
 
 void Location::setMethod(const vector<string> &input, int line)
@@ -79,7 +87,9 @@ void Location::setMethod(const vector<string> &input, int line)
 
 void Location::setUpload(const vector<string> &input, int line)
 {
-
+    string type = "upload";
+    size_t indLoc = input[i].find(type);
+    _upload = findNextWord(input[i], indLoc + type.length());
 }
 
 void Location::determineCase(const string& word, const vector<string>& input, int line)
