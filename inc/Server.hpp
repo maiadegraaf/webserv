@@ -50,9 +50,11 @@ class Server
 								_len,
 								_newFd,
 								_event_fd;
-		sockaddr_in				_servAddr, _client_addr;
+		sockaddr_in				_servAddr, 
+								_client_addr;
 		Config					*_conf;
-		struct kevent			_change_event[2], _event[2];
+		struct kevent			_change_event[2], 
+								_event[2];
 		map<string, string> 	_contentType,
 								_location;
 		bool 					_closeConnection;
@@ -65,7 +67,7 @@ class Server
 		void		setAddr();
 		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
 		void 		setMaxSize( size_t newMaxSize )			{ this->_maxSize = newMaxSize; }
-		void 		setupKq(int kq);
+		// void 		setupKq(int kq);
 
 
 	/* *********
@@ -82,7 +84,7 @@ class Server
 		struct kevent	getEventRead()							{ return this->_event[0]; }
 		struct kevent	getEventWrite()							{ return this->_event[1]; }
 		struct kevent	getEventByIndex( int idx )				{ return this->_event[idx]; }
-		int				getAcceptFd(int eventFd);
+		// int				getAcceptFd(int eventFd);
 		map<string, string> getLocation()						{ return this->_location; }
 
 
@@ -93,6 +95,8 @@ class Server
 		// Server.cpp
 		void		output()													{}
 		void		setup();
+		void		setupKq(int kq);
+		int			getAcceptFd(int eventFd);
 		// ServerRun.cpp
 //		void		run();
 //		void 		newEvent();

@@ -73,25 +73,25 @@
 //			Client *client = static_cast<Client *>(_event[i].udata);
 //			client->clientRequest();
 ////			clientRequest(); // comment this out to test with your version alfred
-//		}
-//	}
-//}
+// //		}
+// //	}
+// //}
 
-int	getAcceptFd(int eventFd) {
-	printf("New connection coming in...\n");
+// int	getAcceptFd(int eventFd) {
+// 	printf("New connection coming in...\n");
 
-	// Incoming socket connection on the listening socket.
-	// Create a new socket for the actual connection to client.
-	_newFd = accept(evenFd, (struct sockaddr *) &_client_addr, (socklen_t * ) & _len);
-	int opt_value = 1;
-	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-	if (_newFd == -1) {
-		perror("Accept socket error");
-	}
-	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-	return _newFd;
-	// Put this new socket connection also as a 'filter' _event
-	//			// to watch in kqueue, so we can now watch for events on this
-	//			// new socket.
-}
+// 	// Incoming socket connection on the listening socket.
+// 	// Create a new socket for the actual connection to client.
+// 	_newFd = accept(evenFd, (struct sockaddr *) &_client_addr, (socklen_t * ) & _len);
+// 	int opt_value = 1;
+// 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
+// 	if (_newFd == -1) {
+// 		perror("Accept socket error");
+// 	}
+// 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
+// 	return _newFd;
+// 	// Put this new socket connection also as a 'filter' _event
+// 	//			// to watch in kqueue, so we can now watch for events on this
+// 	//			// new socket.
+// }
 

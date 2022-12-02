@@ -19,7 +19,6 @@ class WebServ
 									_newEvents,
 									_eventFd;
 
-
 	public:
 	// Constructor
 		WebServ()																	{}
@@ -29,13 +28,11 @@ class WebServ
 		WebServ& operator=( const WebServ &rhs);
 
 	// Getters
-		int getKq()																	{ return this->_kq; }
-		size_t getServerSize()														{ return this->_serverSize; }
+		int		getKq()																	{ return this->_kq; }
+		size_t	getServerSize()															{ return this->_serverSize; }
 	// Setters
-		void setKq(int kq)															{ this->_kq = kq; }
-	// Output
-		void output();
-
+		void	setKq(int kq)															{ this->_kq = kq; }
+		void	output();
 		void	runWebServ();
 		void	initKq();
 		void 	newEvent( size_t idx );

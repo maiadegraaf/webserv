@@ -7,7 +7,24 @@ Server::Server(Config *conf)
 }
 
 Server&	Server::operator=( const Server& rhs ) {
-	(void)rhs;
+	this->_fd = rhs._fd;
+	this->_kq = rhs._kq;
+	this->_new_events = rhs._new_events;
+	this->_len = rhs._len;
+	this->_newFd = rhs._newFd;
+	this->_event_fd = rhs._event_fd;
+	this->_servAddr = rhs._servAddr;
+	this->_client_addr = rhs._client_addr;
+	this->_conf = rhs._conf;
+	this->_change_event[0] = rhs._change_event[0];
+	this->_change_event[1] = rhs._change_event[1];
+	this->_event[0] = rhs._event[0];
+	this->_event[1] = rhs._event[1];
+	this->_contentType = rhs._contentType;
+	this->_location = rhs._location;
+	this->_closeConnection = rhs._closeConnection;
+	this->_maxSize = rhs._maxSize;
+
 	return *this;
 }
 
@@ -57,8 +74,10 @@ void Server::setAddr()
 	_servAddr.sin_port = htons(_conf->getAddress());
 }
 
-void	setupKq(int kq) {
+void	Server::setupKq(int kq) {
 	EV_SET(&_change_event[0], _fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
+	// EV_SET(&_change_event[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+	// if (kevent(kq, _change_event, 2, NULL, 0, NULL) == -1)
 	if (kevent(kq, _change_event, 1, NULL, 0, NULL) == -1)
 	{
 		perror("kevent");
@@ -66,7 +85,7 @@ void	setupKq(int kq) {
 	}
 }
 
-int	getAcceptFd(int eventFd) {
+int	Server::getAcceptFd(int eventFd) {
 	printf("New connection coming in...\n");
 
 	// Incoming socket connection on the listening socket.

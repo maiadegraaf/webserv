@@ -21,16 +21,18 @@ WebServ::WebServ(vector<Config> newConfig, map<string, string> newContentType)
 		_server.push_back(tmp);
 	}
 	_serverSize = size;
-//	runWebServ();
+	runWebServ();
 }
 
 void	WebServ::runWebServ() {
 	initKq();
 	while(1) {
-		for (size_t i = 0; i < getServerSize(); i++) {
-			newEvent(i);
-			loopEvent(i);
+		for (size_t idx = 0; idx < getServerSize(); idx++) {
+			newEvent(idx);
+			loopEvent(idx);
 		}
+		// for (size_t idx = 0; idx < getServerSize(); idx++) {
+		// }
 	}
 }
 
@@ -54,6 +56,7 @@ void	WebServ::newEvent(size_t idx) {
 void	WebServ::loopEvent(size_t idx) {
 	struct kevent	event;
 	int				acceptFd;
+	cout << "this is idx:" << idx << ": this is newEvents:" << _newEvents <<":\n";
 	for (int i = 0; i < _newEvents; i++) {
 		event = _server[idx].getEventByIndex(i);
 		_eventFd = event.ident;
@@ -66,25 +69,24 @@ void	WebServ::loopEvent(size_t idx) {
 			Client *client = static_cast<Client *>(event.udata);
 			delete client;
 		}
-		else if (_eventFd == _server[i].getSockFd()) {
+		else if (_eventFd == _server[idx].getSockFd()) {
 			// If the new _event's file descriptor is the same as the listening
 			// socket's file descriptor, we are sure that a new client wants
 			printf("New connection coming in...\n");
-			acceptFd = _server[i].getAcceptFd(_eventFd);
-			Client *newClient = new Client(acceptFd, _server[i].getLocation(), _contentType, _server[i].getMaxSize()); // used _newFD instead of _event_fd here
+			acceptFd = _server[idx].getAcceptFd(_eventFd);
+			cerr << "this is acceptFd:" << acceptFd << ":\n";
+			Client *newClient = new Client(acceptFd, _server[idx].getLocation(), _contentType, _server[idx].getMaxSize()); // used _newFD instead of _event_fd here
 			struct kevent newEvents[2];
 			EV_SET(&newEvents[0], acceptFd, EVFILT_READ, EV_ADD, 0, 0, newClient);
 			EV_SET(&newEvents[1], acceptFd, EVFILT_WRITE, EV_ADD, 0, 0, newClient);
 			if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0) {
 				perror("kevent error");
-//				cerr << errno << " --> errno\n";
 			}
 		}
 		else if (event.filter == EVFILT_READ) {
 			cerr << "doing the request\n";
 			Client *client = static_cast<Client *>(event.udata);
 			client->clientRequest();
-//			clientRequest(); // comment this out to test with your version alfred
 		}
 	}
 }
@@ -97,4 +99,3 @@ void WebServ::output()
   std::cout << "kq : " << _kq << std::endl;
 //  std::cout << "contentType : " << _contentType << std::endl;
 }
-
