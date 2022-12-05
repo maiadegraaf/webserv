@@ -9,7 +9,9 @@ vector<Config> extractServer(const string& filename)
 	int 			start = confParser.findServer(0, &end);
 	while(start > -1)
     {
-        Config  tmp(confParser.subVector(start, end));
+        ConfigParser CPTmp;
+        CPTmp.setServerContent(confParser.subVector(start, end));
+        Config  tmp(CPTmp);
         conf.push_back(tmp);
 		start = confParser.findServer(end, &end);
 	}

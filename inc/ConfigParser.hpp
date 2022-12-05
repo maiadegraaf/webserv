@@ -17,19 +17,31 @@ public:
 	~ConfigParser();
 	ConfigParser& operator=(const ConfigParser &rhs);
 
-	vector<string>	getServerContent() { return _server_content; };
+// Setters
+//    void                    setConfigFile(const ifstream &configFile)               { _config_file(configFile); }
+    void                    setServerContent(const vector<string> &serverContent)   { _server_content = serverContent; }
 
-	void	output(void);
+// Getters
+    const vector<string>    &getServerContent() const                               { return _server_content; }
+    const ifstream          &getConfigFile() const                                  { return _config_file; }
+    size_t                  getSize()                                               { return _server_content.size(); }
 
+// Get at
+    string&	operator[](int i);
+    string &at(int key) const;
+
+// Output
+    void	output(void);
+
+// Closing Bracket
 	int findClosingBracket(size_t i, size_t pos);
+    int findClosingBracket(size_t i, size_t pos) const;
 
-	string&	operator[](int i);
 
-	size_t getSize();
-
-	string findFirstWord(int i);
+    string findFirstWord(int i) const;
 
     vector<string> subVector(int first, int last);
+    vector<string> subVector(int first, int last) const;
 
     int findServer(int start, int *end);
 };

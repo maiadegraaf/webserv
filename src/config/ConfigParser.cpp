@@ -53,16 +53,25 @@ int ConfigParser::findClosingBracket(size_t i, size_t pos)
     return (EXIT_FAILURE);
 }
 
+int ConfigParser::findClosingBracket(size_t i, size_t pos) const {
+    for(; i < _server_content.size(); i++)
+    {
+        if (_server_content[i].find('{', pos) != string::npos)
+            i = findClosingBracket(i, _server_content[i].find('{', pos) + 1);
+        else if(_server_content[i].find('}') != string::npos)
+            return (int) i;
+        pos = 0;
+    }
+    failure("Could not find closing bracket.");
+    return (EXIT_FAILURE);
+}
+
 string&	ConfigParser::operator[](int i)
 {
 	return _server_content[i];
 }
 
-size_t ConfigParser::getSize() {
-	return _server_content.size();
-}
-
-string ConfigParser::findFirstWord(int i)
+string ConfigParser::findFirstWord(int i) const
 {
 	size_t start = _server_content[i].find_first_not_of(" \t");
 	size_t end = _server_content[i].find_first_of(" \t", start);
@@ -96,4 +105,24 @@ vector<string> ConfigParser::subVector(int first, int last)
     for(int i = first; i <= last; i++)
         subV.push_back(_server_content[i]);
     return subV;
+}
+
+vector<string> ConfigParser::subVector(int first, int last) const
+{
+    vector<string> subV;
+
+    for(int i = first; i <= last; i++)
+        subV.push_back(_server_content[i]);
+    return subV;
+}
+
+string &ConfigParser::at(int key) const
+{
+    try {
+        return const_cast<string &>(getServerContent()[key]);
+    }
+    catch (exception) {
+        failure("key does not exist");
+    }
+    return const_cast<string &>(getServerContent()[key]);
 }
