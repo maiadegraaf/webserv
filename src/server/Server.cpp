@@ -6,33 +6,29 @@ Server::Server(Config *conf)
 	this->run();
 }
 
-Server&	Server::operator=( const Server& rhs )
-{
+Server&	Server::operator=( const Server& rhs ) {
 	(void)rhs;
 	return *this;
 }
 
-void Server::setup()
-{
+void Server::setup() {
 	int on = 1;
 
+	setMaxSize(static_cast<size_t>(_conf->getMaxSize()));
 	_contentType = returnContentType();
 	_fd = socket(AF_INET, SOCK_STREAM, 0);
-	if (_fd < 0)
-	{
+	if (_fd < 0) {
 		cerr << "could not create socket (server)" << endl;
 		exit(-1);
 	}
-	if (setsockopt(_fd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0)
-	{
+	if (setsockopt(_fd, SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0) {
 		cerr << "setsockopt() failed" << endl;
 		close(_fd);
 		exit(-1);
 	}
 	//makes the socket non blocking
-	if (ioctl(_fd, FIONBIO, (char *)&on) < 0)
-	{
-		cerr << "ioctl failed: to make the socket unblocking" << endl;
+	if (fcntl(_fd, F_SETFL, O_NONBLOCK) < 0) {
+		cerr << "fcntl failed: to make the socket unblocking" << endl;
 		close(_fd);
 		exit(-1);
 	}
@@ -49,6 +45,7 @@ void Server::setup()
 		close(_fd);
 		exit(-1);
 	}
+	_len = sizeof(_client_addr);
 }
 
 void Server::setAddr()

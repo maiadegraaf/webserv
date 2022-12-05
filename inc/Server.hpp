@@ -23,6 +23,9 @@
 #include "Config.hpp"
 #include "Response.hpp"
 #include "Request.hpp"
+#include "Client.hpp"
+#include "WSException.hpp"
+
 
 class Config;
 
@@ -49,9 +52,10 @@ class Server
 								_event_fd;
 		sockaddr_in				_servAddr, _client_addr;
 		Config					*_conf;
-		struct kevent			_change_event[4], _event[4];
+		struct kevent			_change_event[2], _event[2];
 		map<string, string> 	_contentType;
 		bool 					_closeConnection;
+		size_t 					_maxSize;
 
 	/* *********
  	* Setters *
@@ -59,6 +63,7 @@ class Server
 	public:
 		void		setAddr();
 		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
+		void 		setMaxSize( size_t newMaxSize )			{ this->_maxSize = newMaxSize; }
 
 
 	/* *********
@@ -66,6 +71,7 @@ class Server
  	* *********/
 	public:
 		bool 		getCloseConnection()					{ return this->_closeConnection; }
+		size_t 		getMaxSize()							{ return this->_maxSize; }
 
 	/* **************
  	* Functionality *
@@ -86,16 +92,11 @@ class Server
 		void 		handleResponse(string filePath, string contentType);
 		void 		handleCGIResponse(string filePath, string contentType);
 
-	/* ************
-	 * Exceptions *
-	 * ************/
-	public:
-		class PageNotFoundException : public exception {
-			public:
-				const char *what() const throw() {
-					return "404 Page Not Found";
-				}
-			};
 }; 
- 
+
+typedef struct s_udata {
+
+}				t_udata;
+
+
 #endif

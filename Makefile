@@ -16,7 +16,9 @@ INCLUDES		=	Config.hpp \
                     ConfigParser.hpp \
                     Request.hpp \
                     Response.hpp \
+                    Client.hpp \
                     Server.hpp \
+                    WSException.hpp \
                     webserv.h \
 					CGIResponse.hpp \
 					Location.hpp \
@@ -29,7 +31,6 @@ SRC_DIR			:=	src
 SRC				=	main.cpp \
 					server/Server.cpp \
 					server/ServerRun.cpp \
-					server/ServerClientResponse.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     config/Location.cpp \
@@ -38,6 +39,7 @@ SRC				=	main.cpp \
                     client/Request.cpp \
                     client/Response.cpp \
                     client/CGIResponse.cpp \
+                    client/Client.cpp \
                     utils/errorMap.cpp
 
 

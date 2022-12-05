@@ -21,7 +21,6 @@ Response::Response(string filePath, string message, string contentType, int newS
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
-    appendToHeadNL("X-Powered-By: PHP/7.2.17");
 	appendToHead("\r\n");
 }
 
@@ -45,7 +44,7 @@ bool Response::sendResponse() {
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	send(getSockFD(), _head.c_str(), _head.size(), 0);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-		cerr << "send() failed" << endl;
+		cerr << "send() failed " << errno << endl;
 		return close(read), false;
 	}
 	close(read);
