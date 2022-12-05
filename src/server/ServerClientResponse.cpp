@@ -53,7 +53,7 @@ bool	Server::handleRequest(Request clientReq) { // should we use a --> const Req
 	string extension;
 	string contentType;
 
-	confFile = _conf->getLocation(clientReq.getDir());
+//	confFile = _conf->getLocation(clientReq.getDir());
 	if (!confFile.empty())
 		file.append(confFile); // page not foudn exception
 	else {

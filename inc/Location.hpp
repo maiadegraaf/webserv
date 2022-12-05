@@ -5,48 +5,50 @@
 #include <map>
 #include "webserv.h"
 
+class ConfigParser;
 enum e_method
 {
 	GET,
 	POST,
 	DELETE,
 	PUT,
-	PATCH
+	PATCH,
+    ERROR
 };
 
 using namespace std;
 // Class definition 
 class Location
 {
-private: 
-	string _index;
+private:
+    string _index;
 	bool _autoIndex;
 	map<e_method, bool> _method;
 	string _upload;
- 
-public: 
-// Constructor 
-	Location(); 
+
+public:
+// Constructor
+	Location();
 	Location( const Location &rhs);
 	Location(const string &newIndex, bool newAutoIndex, const string &newUpload);
-	Location(const vector<string> &input);
-	~Location(); 
-	Location& operator=( const Location &rhs); 
-// Getters 
+	Location(const ConfigParser &confP);
+	~Location();
+	Location& operator=( const Location &rhs);
+// Getters
 	string getIndex() { return _index; }
 	bool getAutoIndex() const { return _autoIndex; }
 	map<e_method, bool> getMethod() { return _method; }
 	string getUpload() { return _upload; }
-// Setters 
+// Setters
 	void setIndex(const string &newIndex) { _index = newIndex; }
 	void setAutoIndex(bool newAutoIndex) { _autoIndex = newAutoIndex; }
 	void setMethod(const map<e_method, bool> &newMethod) { _method = newMethod; }
 	void setUpload(const string &newUpload) { _upload = newUpload; };
 
-	void setIndex(const vector<string>& input, int line);
-	void setAutoIndex(const vector<string>& input, int line);
-	void setMethod(const vector<string>& input, int line);
-	void setUpload(const vector<string>& input, int line);
+    void setIndex(const ConfigParser &confP, int line);
+	void setAutoIndex(const ConfigParser &confP, int line);
+	void setMethod(const ConfigParser &confP, int line);
+	void setUpload(const ConfigParser &confP, int line);
 
 	void setDefaultMethod(void);
 
@@ -59,10 +61,11 @@ public:
 // Output 
 	void output();
 
-	void determineCase(const string& word, const vector<string>& input, int line);
+    e_method determineMethod(string s);
+    void determineCase(const string& word, const ConfigParser &confP, int line);
 
 	// Typedef Member function
-	typedef void (Location::* LocMemFuncPtr)(const vector<string>&, int);
+	typedef void (Location::* LocMemFuncPtr)(const ConfigParser&, int);
 };
  
 #endif
