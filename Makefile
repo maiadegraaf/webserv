@@ -33,6 +33,7 @@ SRC				=	main.cpp \
                     utils/utils_Maia.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
+                    client/postHandler.cpp \
                     client/Response.cpp \
                     client/Client.cpp \
                     utils/errorMap.cpp

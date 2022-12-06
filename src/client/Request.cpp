@@ -24,7 +24,6 @@ Request::Request(string input) {
     setInput(input);
     setAttributes();
     setContent();
-	setPost();
 }
 
 // Setters
@@ -37,9 +36,6 @@ void Request::setInput(string input) {
     }
 }
 
-void Request::setPostContent(string input) {
-	_postContent.push_back(input);
-}
 
 void Request::setAttributes() {
     string			iString = _input[0];
@@ -82,31 +78,10 @@ void Request::setContent() {
         i++;
     }
     _file.clear();
-    for (size_t j = i; j < size; j++) {
+    for (size_t j = i + 1; j < size; j++) {
         _file.append(_input[j]);
         _file.append("\n");
     }
-}
-
-void Request::setPost()
-{
-	size_t	i = 1;
-	size_t	size = _input.size();
-
-	while (i < size)
-	{
-		if (_input[i].length() == 1)
-		{
-			while (i < size)
-			{
-				setPostContent(_input[i]);
-				i++;
-			}
-		}
-		else
-			i++;
-	}
-	cerr << "wajooo" << _postContent[1] << endl;
 }
 
 // Output

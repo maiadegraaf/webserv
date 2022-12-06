@@ -22,7 +22,7 @@ void	Client::output() {
 
 void	Client::clientRequest() {
 	string strRequest = receiveStrRequest();
-	cerr << strRequest << endl;
+//	cerr << strRequest << endl;
 	if (strRequest.empty())
 		return ;
 	try {
@@ -111,6 +111,11 @@ void Client::handleGetRequest(string file, string filePath)
 		throw PageNotFoundException();
 	return ; // not a supported extension
 }
+//
+//void Client::setPostContent(string input, int i) {
+//	_postContent.push_back(vector<string>());
+//
+//}
 
 void Client::handlePostRequest(string file, string filepath, Request clientReq)
 {
@@ -125,17 +130,11 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 	string type = clientReq.getContentValue("Content-Type");
 
 	if (type.compare("text/plain") == 0)
-	{
-		cerr << "compare   text plain" << endl;
-	}
+		parsePostPlainRequest(clientReq);
 	else if (type.compare("application/x-www-form-urlencoded") == 0)
-	{
-		cerr << "x-www" << endl;
-	}
+		parsePostWwwRequest(clientReq);
 	else if (type.compare("multipart/form-data") == 0)
-	{
-		cerr << "multipart" << endl;
-	}
+		parsePostMultipartRequest(clientReq);
 }
 
 void	Client::handleResponse(string filePath, string contentType) {

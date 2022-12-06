@@ -28,7 +28,9 @@ class Client {
 		int 								_sockFD,
 											_len;
 		map<string, string> 				_location,
-											_contentType; // maybe pointer to reduce space usage;
+											_contentType;// maybe pointer to reduce space usage;
+		vector< map<string, string> >		_headerMultipart;
+		vector< vector<string> >			_postContent;
 		string 								_strRequest;
 		bool 								_closeConnection; // this can be probably removed
 		// Add in the event struct if it is usefull ??
@@ -38,11 +40,13 @@ class Client {
  	* Getters *
  	* *********/
 	public:
-		int			getSockFD()																	{ return this->_sockFD; }
-		string		getLocation(string key)														{ return this->_location[key]; }
-		string		getContentType(string key)													{ return this->_contentType[key]; }
-		string		getStrRequest()																{ return this->_strRequest; }
-		bool 		getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
+		int							getSockFD()																	{ return this->_sockFD; }
+		string						getLocation(string key)														{ return this->_location[key]; }
+		string						getContentType(string key)													{ return this->_contentType[key]; }
+		string						getStrRequest()																{ return this->_strRequest; }
+		bool 						getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
+		vector< vector<string> >	getPostContent()															{ return _postContent; }
+
 	/* *********
  	* Setters *
  	* *********/
@@ -50,6 +54,9 @@ class Client {
 		void		setSockFD(int newSockFD)													{ this->_sockFD = newSockFD; }
 		void		setStrRequest(string newRequest)											{ this->_strRequest = newRequest; }
 		void		setCloseConnection(bool Bool)												{ this->_closeConnection = Bool; } // this can probably be removed
+		void 		setPostContent(string input, int i);
+		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
+
 
 	/* **************
  	* Functionality *
@@ -64,6 +71,13 @@ class Client {
 		void		handleDeleteRequest();
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(string filePath, string contentType);
+		void		parsePostPlainRequest(Request clientReq);
+		void 		parsePostWwwRequest(Request clientReq);
+		void 		parsePostMultipartRequest(Request clientReq);
+		void 		parseHeaderMultipart(string data);
+		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
+		void		createFileStorePost(int i);
+		void 		decryptWwwForm(string &data);
 
 	/* ************
 	 * Exceptions *
