@@ -18,6 +18,8 @@ class WebServ
 		int 						_kq,
 									_newEvents,
 									_eventFd;
+//		map<int, size_t>			_fdIdxMap;
+//		struct kevent				_event[2];
 
 	public:
 	// Constructor
@@ -37,6 +39,8 @@ class WebServ
 		void	initKq();
 		void 	newEvent( size_t idx );
 		void	loopEvent( size_t idx );
-}; 
+//		void 	newEvent( );
+//		void	loopEvent( );
+};
  
 #endif

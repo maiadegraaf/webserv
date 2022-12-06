@@ -31,8 +31,8 @@ void	WebServ::runWebServ() {
 			newEvent(idx);
 			loopEvent(idx);
 		}
-		// for (size_t idx = 0; idx < getServerSize(); idx++) {
-		// }
+//		newEvent();
+//		loopEvent();
 	}
 }
 
@@ -40,23 +40,84 @@ void	WebServ::initKq() {
 	cout << "waiting kqueue..." << endl;
 	_kq = kqueue();
 	cerr << "_kq = " << _kq << endl;
-	for (size_t i = 0; i < getServerSize(); i++) {
-		_server[i].setupKq(getKq());
+	for (size_t idx = 0; idx < getServerSize(); idx++) {
+		_server[idx].setupKq(getKq());
+//		_fdIdxMap[_server[idx].getSockFd()] = idx;
 	}
 }
 
 void	WebServ::newEvent(size_t idx) {
+//	EV_SET(_server[idx].getEventByIndex(0), idx, EVFILT_READ, EV_ADD | EV_ENBLE, 0, 0, 0);
+//	EV_SET(_server[idx].getEventByindex(0), idx, EVFILT_WRITE, EV_ADD | EV_ENBLE, 0, 0, 0);
 	_newEvents = kevent(getKq(), NULL, 0, _server[idx].getEvent(), 2, NULL);
 	if (_newEvents == -1)	{
 		perror("kevent");
 		exit(1);
 	}
 }
+//
+//void	WebServ::newEvent() {
+////	EV_SET(_server[idx].getEventByIndex(0), idx, EVFILT_READ, EV_ADD | EV_ENBLE, 0, 0, 0);
+////	EV_SET(_server[idx].getEventByindex(0), idx, EVFILT_WRITE, EV_ADD | EV_ENBLE, 0, 0, 0);
+//	_newEvents = kevent(getKq(), NULL, 0, _event, 2, NULL);
+//	if (_newEvents == -1)	{
+//		perror("kevent");
+//		exit(1);
+//	}
+//}
+
+//
+//void	WebServ::loopEvent() {
+//	struct kevent	event;
+//	int				acceptFd;
+//	size_t			idx;
+////	cout << "this is idx:" << idx << ": this is newEvents:" << _newEvents <<":\n";
+//	for (int i = 0; i < _newEvents; i++) {
+//		event = _event[i];
+//		_eventFd = event.ident;
+//
+//		// When the client disconnects an EOF is sent. By closing the file
+//		// descriptor the _event is automatically removed from the kqueue.
+//		if (event.flags == EV_EOF) {
+//			printf("Client has disconnected\n");
+//			close(_eventFd);
+//			Client *client = static_cast<Client *>(event.udata);
+//			delete client;
+//		}
+//		else if (_fdIdxMap.find(_eventFd) != _fdIdxMap.end()) {
+//			// If the new _event's file descriptor is the same as the listening
+//			// socket's file descriptor, we are sure that a new client wants
+//			printf("New connection coming in...\n");
+//			idx = _fdIdxMap[_eventFd];
+//			acceptFd = _server[idx].clientAcceptFd(_eventFd);
+//			cerr << "this is acceptFd:" << acceptFd << ":\n";
+//			Client *newClient = new Client(acceptFd, _server[idx].getLocation(), _contentType, _server[idx].getMaxSize()); // used _newFD instead of _event_fd here
+//			struct kevent newEvents[2];
+//			EV_SET(&newEvents[0], acceptFd, EVFILT_READ, EV_ADD, 0, 0, newClient);
+//			EV_SET(&newEvents[1], acceptFd, EVFILT_WRITE, EV_ADD, 0, 0, newClient);
+//			if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0) {
+//				perror("kevent error");
+//			}
+//			_fdIdxMap[acceptFd] = idx;
+////			newClient->output();
+//		}
+//		else if (event.filter == EVFILT_READ && _fdIdxMap.find(_eventFd) != _fdIdxMap.end() ) {//_eventFd == _server[idx].getNewFd()) {
+//			Client *client = reinterpret_cast<Client *>(event.udata);
+//			if (client) {
+//				cerr << "doing the request\n";
+//				cerr << "eventFd :" << _eventFd << endl;
+//				_server[idx].output();
+//				client->clientRequest();
+//			}
+//		}
+//	}
+//}
+
 
 void	WebServ::loopEvent(size_t idx) {
 	struct kevent	event;
 	int				acceptFd;
-	cout << "this is idx:" << idx << ": this is newEvents:" << _newEvents <<":\n";
+//	cout << "this is idx:" << idx << ": this is newEvents:" << _newEvents <<":\n";
 	for (int i = 0; i < _newEvents; i++) {
 		event = _server[idx].getEventByIndex(i);
 		_eventFd = event.ident;
@@ -73,7 +134,7 @@ void	WebServ::loopEvent(size_t idx) {
 			// If the new _event's file descriptor is the same as the listening
 			// socket's file descriptor, we are sure that a new client wants
 			printf("New connection coming in...\n");
-			acceptFd = _server[idx].getAcceptFd(_eventFd);
+			acceptFd = _server[idx].clientAcceptFd(_eventFd);
 			cerr << "this is acceptFd:" << acceptFd << ":\n";
 			Client *newClient = new Client(acceptFd, _server[idx].getLocation(), _contentType, _server[idx].getMaxSize()); // used _newFD instead of _event_fd here
 			struct kevent newEvents[2];
@@ -82,11 +143,16 @@ void	WebServ::loopEvent(size_t idx) {
 			if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0) {
 				perror("kevent error");
 			}
+//			newClient->output();
 		}
-		else if (event.filter == EVFILT_READ) {
-			cerr << "doing the request\n";
-			Client *client = static_cast<Client *>(event.udata);
-			client->clientRequest();
+		else if (event.filter == EVFILT_READ && _eventFd == _server[idx].getAcceptFd()) {
+			Client *client = reinterpret_cast<Client *>(event.udata);
+			if (client) {
+				cerr << "doing the request\n";
+				cerr << "eventFd :" << _eventFd << endl;
+				_server[idx].output();
+				client->clientRequest();
+			}
 		}
 	}
 }

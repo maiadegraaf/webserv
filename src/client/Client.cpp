@@ -6,7 +6,7 @@ Client::Client(int newSockFD, map<string,string> newLocation, map<string, string
 size_t newMaxSize)
 	: _sockFD(newSockFD), _len(-1), _location(newLocation), _contentType(newContentType), _strRequest(""), \
 	_maxSize(newMaxSize), _closeConnection(false) {
-	cerr << "this is sockfd:" << _sockFD << ":\n";
+//	cerr << "this is sockfd:" << _sockFD << ":\n";
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -63,7 +63,7 @@ string	Client::receiveStrRequest() {
 		}
 		_len = rc;
 		tmp.assign(buffer, rc);
-		cerr << _len << " bytes received " << endl;
+//		cerr << _len << " bytes received " << endl;
 		request.append(tmp);
 	}
 	if (request.size() > getMaxSize())

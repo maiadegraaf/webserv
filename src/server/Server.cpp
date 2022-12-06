@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(Config *conf)
-		: _fd(-1), _conf(conf), _closeConnection(false) {
+		: _fd(-1), _acceptFd(-1), _conf(conf), _closeConnection(false) {
 	this->setup();
 //	this->run();
 }
@@ -11,7 +11,7 @@ Server&	Server::operator=( const Server& rhs ) {
 	this->_kq = rhs._kq;
 	this->_new_events = rhs._new_events;
 	this->_len = rhs._len;
-	this->_newFd = rhs._newFd;
+	this->_acceptFd = rhs._acceptFd;
 	this->_event_fd = rhs._event_fd;
 	this->_servAddr = rhs._servAddr;
 	this->_client_addr = rhs._client_addr;
@@ -76,7 +76,7 @@ void Server::setAddr()
 
 void	Server::setupKq(int kq) {
 	EV_SET(&_change_event[0], _fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
-	// EV_SET(&_change_event[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+//	EV_SET(&_change_event[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
 	// if (kevent(kq, _change_event, 2, NULL, 0, NULL) == -1)
 	if (kevent(kq, _change_event, 1, NULL, 0, NULL) == -1)
 	{
@@ -85,20 +85,24 @@ void	Server::setupKq(int kq) {
 	}
 }
 
-int	Server::getAcceptFd(int eventFd) {
-	printf("New connection coming in...\n");
-
+int	Server::clientAcceptFd(int eventFd) {
 	// Incoming socket connection on the listening socket.
 	// Create a new socket for the actual connection to client.
-	_newFd = accept(eventFd, (struct sockaddr *) &_client_addr, (socklen_t * ) & _len);
+	_acceptFd = accept(eventFd, (struct sockaddr *) &_client_addr, (socklen_t * ) & _len);
 	int opt_value = 1;
 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-	if (_newFd == -1) {
+	if (_acceptFd == -1) {
 		perror("Accept socket error");
 	}
 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-	return _newFd;
+	return _acceptFd;
 	// Put this new socket connection also as a 'filter' _event
 	//			// to watch in kqueue, so we can now watch for events on this
 	//			// new socket.
+}
+
+void	Server::output() {
+	cout << "acceptFd: " << _acceptFd << endl;
+	cout << "kq: " << _kq << endl;
+	cout << "fd or sockfd: " << _fd << endl;
 }

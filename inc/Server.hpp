@@ -48,7 +48,7 @@ class Server
 								_kq,
 								_new_events,
 								_len,
-								_newFd,
+								_acceptFd,
 								_event_fd;
 		sockaddr_in				_servAddr, 
 								_client_addr;
@@ -86,6 +86,7 @@ class Server
 		struct kevent	getEventByIndex( int idx )				{ return this->_event[idx]; }
 		// int				getAcceptFd(int eventFd);
 		map<string, string> getLocation()						{ return this->_location; }
+		int 			getAcceptFd()							{ return this->_acceptFd; }
 
 
 	/* **************
@@ -93,10 +94,10 @@ class Server
  	* ***************/
 	public:
 		// Server.cpp
-		void		output()													{}
+		void		output();
 		void		setup();
 		void		setupKq(int kq);
-		int			getAcceptFd(int eventFd);
+		int			clientAcceptFd(int eventFd);
 		// ServerRun.cpp
 //		void		run();
 //		void 		newEvent();
