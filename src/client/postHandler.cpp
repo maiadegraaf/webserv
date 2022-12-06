@@ -60,7 +60,7 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 		setHeaderMultipartValue(tmp.substr(0, tmp.find(":")), tmp.substr(tmp.find(":") + 2, tmp.length()),
 								content_nb);
 	if (tmp.find("=") < tmp.find(": "))
-		setHeaderMultipartValue(tmp.substr(0, tmp.find("=")), tmp.substr(tmp.find("=") + 2, tmp.length()).erase("\""),
+		setHeaderMultipartValue(tmp.substr(0, tmp.find("=")), tmp.substr(tmp.find("=") + 1, tmp.length()),
 								content_nb);
 }
 
