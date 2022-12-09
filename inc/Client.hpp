@@ -19,7 +19,7 @@ class Client {
 		Client( const Client &rhs)																{ *this = rhs; }
 		Client& operator=( const Client &rhs);
 		Client()
-			: _sockFD(0), _strRequest(""), _maxSize(0) 										{}
+			: _sockFD(-1), _strRequest(""), _maxSize(0) 										{}
 		Client(int newSockFD, map<string, string> newLocation, \
 			map<string, string> newContentType, size_t newMaxSize);
 

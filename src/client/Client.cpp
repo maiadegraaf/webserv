@@ -4,13 +4,19 @@
 
 Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
-		: _sockFD(newSockFD), _location(newLocation), _contentType(newContentType), _strRequest(""), \
-		_maxSize(newMaxSize) {
-
+	: _sockFD(newSockFD), _len(-1), _location(newLocation), _contentType(newContentType), _strRequest(""), \
+	_maxSize(newMaxSize), _closeConnection(false) {
+//	cerr << "this is sockfd:" << _sockFD << ":\n";
 }
 
 Client&	Client::operator=( const Client& rhs ) {
-	(void)rhs;
+	this->_sockFD = rhs._sockFD;
+	this->_len = rhs._len;
+	this->_location = rhs._location;
+	this->_contentType = rhs._contentType;
+	this->_strRequest = rhs._strRequest;
+	this->_maxSize = rhs._maxSize;
+	this->_closeConnection = rhs._closeConnection;
 	return *this;
 }
 
@@ -42,11 +48,8 @@ string	Client::receiveStrRequest() {
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
 		if (rc < 0) {
-//			cerr << errno << " --> errno\n";
-//			if (errno != EWOULDBLOCK) {
 			cerr << "recv() stopped reading " << endl;
 			this->setCloseConnection(true);
-//			}
 			break;
 		}
 		if (rc == 0) {
@@ -56,7 +59,7 @@ string	Client::receiveStrRequest() {
 		}
 		_len = rc;
 		tmp.assign(buffer, rc);
-		cerr << _len << " bytes received " << endl;
+//		cerr << _len << " bytes received " << endl;
 		request.append(tmp);
 	}
 	if (request.size() > getMaxSize())
