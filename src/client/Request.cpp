@@ -31,7 +31,8 @@ void Request::setInput(string input) {
     string vecPush;
     stringstream ss(input);
 
-    while (getline(ss, vecPush, '\n')) {
+	cerr << input << endl;
+	while (getline(ss, vecPush, '\n')) {
         _input.push_back(vecPush);
     }
 }
@@ -60,8 +61,10 @@ void Request::setAttributes() {
 }
 
 void Request::setContent() {
-    string	key;
-    string	value;
+	string	key;
+	string	nextKey;
+	string	value;
+	string	nextValue;
     size_t	idx;
     size_t	i = 1;
     size_t	size = _input.size();
@@ -74,6 +77,13 @@ void Request::setContent() {
         value = _input[i].substr(idx + 2);
 		value = value.substr(0, value.length() - 1);
 		value = value.substr(0, value.find(";"));
+		if (_input[i].find(";"))
+		{
+			nextKey = _input[i].substr(_input[i].find(';', 0) + 2, _input[i].find('=', 0) - _input[i].find(';', 0) - 2);
+			nextValue = _input[i].substr(_input[i].find("=") + 1, _input[i].length() - 1);
+			nextValue = nextValue.substr(0, nextValue.find(";"));
+			setContentValue(nextKey, nextValue);
+		}
         setContentValue(key, value);
         i++;
     }
