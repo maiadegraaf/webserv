@@ -46,7 +46,7 @@ class Server
 	private:
 		int						_fd,
 								_kq,
-								_new_events,
+								_nrEvents,
 								_len,
 								_acceptFd,
 								_event_fd;
@@ -65,8 +65,9 @@ class Server
  	* *********/
 	public:
 		void		setAddr();
-		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
-		void 		setMaxSize( size_t newMaxSize )			{ this->_maxSize = newMaxSize; }
+		void		setCloseConnection(bool Bool)				{ this->_closeConnection = Bool; }
+		void 		setMaxSize( size_t newMaxSize )				{ this->_maxSize = newMaxSize; }
+		void 		setNrEvents( int newNrEvents )				{ this->_nrEvents = newNrEvents; }
 		// void 		setupKq(int kq);
 
 
@@ -77,6 +78,7 @@ class Server
 		bool 			getCloseConnection()					{ return this->_closeConnection; }
 		size_t 			getMaxSize()							{ return this->_maxSize; }
 		int				getSockFd()								{ return this->_fd; }
+		int 			getNrEvents()							{ return this->_nrEvents; }
 		struct kevent	*getChangeEvent()						{ return this->_change_event; }
 		struct kevent	getChangeEventRead()					{ return this->_change_event[0]; }
 		struct kevent	getChangeEventWrite()					{ return this->_change_event[1]; }

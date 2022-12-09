@@ -16,10 +16,11 @@ class WebServ
 		size_t 						_serverSize;
 		map<string, string>			_contentType;
 		int 						_kq,
-									_newEvents,
+									_nrEvents,
 									_eventFd;
-//		map<int, size_t>			_fdIdxMap;
-//		struct kevent				_event[2];
+		map<int, size_t>			_sockFdIdxMap,
+									_acceptFdIdxMap;
+		struct kevent				_events[2];
 
 	public:
 	// Constructor
@@ -37,10 +38,10 @@ class WebServ
 		void	output();
 		void	runWebServ();
 		void	initKq();
-		void 	newEvent( size_t idx );
+//		void 	newEvent( size_t idx );
 		void	loopEvent( size_t idx );
-//		void 	newEvent( );
-//		void	loopEvent( );
+		void 	newEvent( );
+		void	loopEvent( );
 };
  
 #endif

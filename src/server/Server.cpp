@@ -9,7 +9,7 @@ Server::Server(Config *conf)
 Server&	Server::operator=( const Server& rhs ) {
 	this->_fd = rhs._fd;
 	this->_kq = rhs._kq;
-	this->_new_events = rhs._new_events;
+	this->_nrEvents = rhs._nrEvents;
 	this->_len = rhs._len;
 	this->_acceptFd = rhs._acceptFd;
 	this->_event_fd = rhs._event_fd;
@@ -83,6 +83,7 @@ void	Server::setupKq(int kq) {
 		perror("kevent");
 		exit(1);
 	}
+	_kq = kq;
 }
 
 int	Server::clientAcceptFd(int eventFd) {

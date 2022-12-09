@@ -46,14 +46,10 @@ string	Client::receiveStrRequest() {
 	string	tmp;
 
 	while (1) {
-		// cout << "buffer:" << buffer << ": _sockFd:" << _sockFD << ":\n";
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
 		if (rc < 0) {
-//			cerr << errno << " --> errno\n";
-//			if (errno != EWOULDBLOCK) {
 			cerr << "recv() stopped reading " << endl;
 			this->setCloseConnection(true);
-//			}
 			break;
 		}
 		if (rc == 0) {
