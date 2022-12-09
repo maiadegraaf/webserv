@@ -30,7 +30,7 @@ INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
-					server/WebServ.cpp \
+					webserv/WebServ.cpp \
 					server/Server.cpp \
 					server/ServerKq.cpp \
                     config/Config.cpp \

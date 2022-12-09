@@ -95,18 +95,6 @@ class Server
 		void		clientNewAcceptFd(int eventFd);
 		void		bindServerAcceptFdWithClient();
 
-	// ServerRun.cpp
-//		void		run();
-//		void 		newEvent();
-//		void 		creatingKqueue();
-//		void		loopEvent();
-//		// ClientResponse.cpp
-//		bool		clientRequest();
-//		string		receiveStrRequest();
-//		bool 		handleRequest(Request clientReq);
-//		void 		handleResponse(string filePath, string contentType);
-//		void 		handleCGIResponse(string filePath, string contentType);
-
 };
 
 

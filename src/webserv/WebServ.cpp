@@ -31,16 +31,14 @@ void	WebServ::runWebServ() {
 }
 
 void	WebServ::initKq() {
-	cout << "waiting kqueue..." << endl;
+	cout << "initializing kqueue..." << endl;
 	_kq = kqueue();
-	cerr << "_kq = " << _kq << endl;
 	for (size_t idx = 0; idx < getServerSize(); idx++) {
 		_server[idx].setupKq(getKq());
 		_sockFdIdxMap[_server[idx].getSockFd()] = idx;
 	}
 }
 
-//
 void	WebServ::newEvent() {
 	_nrEvents = kevent(getKq(), NULL, 0, _events, 2, NULL);
 	if (_nrEvents == -1) {
