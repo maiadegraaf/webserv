@@ -30,7 +30,7 @@ SRC_DIR			:=	src
 SRC				=	main.cpp \
 					server/WebServ.cpp \
 					server/Server.cpp \
-					server/ServerRun.cpp \
+					server/ServerKq.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     utils/utils_Maia.cpp \
@@ -39,6 +39,7 @@ SRC				=	main.cpp \
                     client/Response.cpp \
                     client/Client.cpp \
                     utils/errorMap.cpp
+#					server/ServerRun.cpp \
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))

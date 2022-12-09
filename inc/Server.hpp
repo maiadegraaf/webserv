@@ -44,17 +44,14 @@ class Server
 	 * Attributes *
 	 * ************/
 	private:
-		int						_fd,
+		int						_sockFd,
 								_kq,
-								_nrEvents,
 								_len,
-								_acceptFd,
-								_event_fd;
-		sockaddr_in				_servAddr, 
+								_acceptFd;
+		sockaddr_in				_servAddr,
 								_client_addr;
 		Config					*_conf;
-		struct kevent			_change_event[2], 
-								_event[2];
+		struct kevent			_changeEvent[2];
 		map<string, string> 	_contentType,
 								_location;
 		bool 					_closeConnection;
@@ -64,43 +61,41 @@ class Server
  	* Setters *
  	* *********/
 	public:
-		void		setAddr();
-		void		setCloseConnection(bool Bool)				{ this->_closeConnection = Bool; }
-		void 		setMaxSize( size_t newMaxSize )				{ this->_maxSize = newMaxSize; }
-		void 		setNrEvents( int newNrEvents )				{ this->_nrEvents = newNrEvents; }
-		// void 		setupKq(int kq);
-
+		void		setCloseConnection(bool Bool)					{ this->_closeConnection = Bool; }
+		void 		setMaxSize( size_t newMaxSize )					{ this->_maxSize = newMaxSize; }
 
 	/* *********
  	* Getters *
  	* *********/
 	public:
-		bool 			getCloseConnection()					{ return this->_closeConnection; }
-		size_t 			getMaxSize()							{ return this->_maxSize; }
-		int				getSockFd()								{ return this->_fd; }
-		int 			getNrEvents()							{ return this->_nrEvents; }
-		struct kevent	*getChangeEvent()						{ return this->_change_event; }
-		struct kevent	getChangeEventRead()					{ return this->_change_event[0]; }
-		struct kevent	getChangeEventWrite()					{ return this->_change_event[1]; }
-		struct kevent	*getEvent()								{ return this->_event; }
-		struct kevent	getEventRead()							{ return this->_event[0]; }
-		struct kevent	getEventWrite()							{ return this->_event[1]; }
-		struct kevent	getEventByIndex( int idx )				{ return this->_event[idx]; }
-		// int				getAcceptFd(int eventFd);
-		map<string, string> getLocation()						{ return this->_location; }
-		int 			getAcceptFd()							{ return this->_acceptFd; }
-
+		bool 				getCloseConnection()					{ return this->_closeConnection; }
+		size_t 				getMaxSize()							{ return this->_maxSize; }
+		int					getSockFd()								{ return this->_sockFd; }
+		int					getAcceptFd()							{ return this->_acceptFd; }
+		map<string, string> getLocation()							{ return this->_location; }
+		map<string, string> getContentType()						{ return this->_contentType; }
+		int 				getKq()									{ return this->_kq; }
 
 	/* **************
  	* Functionality *
  	* ***************/
 	public:
 		// Server.cpp
-		void		output();
 		void		setup();
+		void 		setupSockFd();
+		void		setupSocketOpt();
+		void 		setupNonBlock();
+		void		setAddr();
+		void 		bindSocket();
+		void 		listenSocket();
+		void		output();
+
+		// ServerKq.cpp
 		void		setupKq(int kq);
-		int			clientAcceptFd(int eventFd);
-		// ServerRun.cpp
+		void		clientNewAcceptFd(int eventFd);
+		void		bindServerAcceptFdWithClient();
+
+	// ServerRun.cpp
 //		void		run();
 //		void 		newEvent();
 //		void 		creatingKqueue();
