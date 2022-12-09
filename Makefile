@@ -43,7 +43,6 @@ SRC				=	main.cpp \
                     client/CGIResponse.cpp \
                     client/Client.cpp \
                     utils/errorMap.cpp
-#					server/ServerRun.cpp \
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))
