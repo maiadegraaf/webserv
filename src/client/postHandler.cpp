@@ -63,9 +63,9 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 								content_nb);
 	if (tmp.find("=") < tmp.find(": "))
 	{
-		cerr << tmp << tmp.find("=") << " " << tmp.length() <<endl;
 		s = tmp.substr(tmp.find("=") + 1, tmp.length());
 		s.erase(remove( s.begin(), s.end(), '\"' ),s.end());
+		s.erase(remove( s.begin(), s.end(), '\r' ),s.end());
 		setHeaderMultipartValue(tmp.substr(0, tmp.find("=")), s, content_nb);
 	}
 }
@@ -96,7 +96,6 @@ void Client::parsePostMultipartRequest(Request clientReq)
 					makeMapOfMultipartHeader(tmp, content_nb);
 					req.erase(0, pos + 2);
 				}
-				cerr << req;
 				makeMapOfMultipartHeader(req, content_nb);
 			}
 		}
@@ -112,6 +111,7 @@ void Client::parsePostMultipartRequest(Request clientReq)
 		}
 		if (req.compare("--" + clientReq.getContentValue("boundary")) == 0)
 		{
+			cerr << "ffdf" << content_nb << req <<endl << fileContent<< endl;
 			if (fileContent.length() != 0)
 			{
 				ofstream outfile (_headerMultipart[content_nb]["name"]);
@@ -122,7 +122,7 @@ void Client::parsePostMultipartRequest(Request clientReq)
 			contentLoop = 0;
 		}
 		if (contentLoop == 1) {
-			fileContent = fileContent + req + "\n";
+			fileContent = fileContent + req;
 		}
 	}
 }
