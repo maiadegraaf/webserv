@@ -63,6 +63,7 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 								content_nb);
 	if (tmp.find("=") < tmp.find(": "))
 	{
+		cerr << tmp << tmp.find("=") << " " << tmp.length() <<endl;
 		s = tmp.substr(tmp.find("=") + 1, tmp.length());
 		s.erase(remove( s.begin(), s.end(), '\"' ),s.end());
 		setHeaderMultipartValue(tmp.substr(0, tmp.find("=")), s, content_nb);
@@ -77,6 +78,7 @@ void Client::parsePostMultipartRequest(Request clientReq)
 	int contentLoop = 0;
 	string	req;
 	string	tmp;
+	string	fileContent;
 	size_t pos = 0;
 
 	while (getline(ss, req, '\n') ) {
@@ -94,29 +96,34 @@ void Client::parsePostMultipartRequest(Request clientReq)
 					makeMapOfMultipartHeader(tmp, content_nb);
 					req.erase(0, pos + 2);
 				}
+				cerr << req;
 				makeMapOfMultipartHeader(req, content_nb);
 			}
 		}
-		else if (req.empty()){
+		if (req.length() == 1 && contentLoop == 0)
+		{
 			contentLoop = 1;
-			cerr << "test: " << req << endl;
-			if (req.compare("--" + clientReq.getContentValue("boundary")) == 0 || req.compare("--" + clientReq.getContentValue("boundary") + "--") == 0)
-			{
-				contentLoop = 0;
-//				ofstream outfile (_headerMultipart[content_nb]["name"] + "/" + _headerMultipart[content_nb]["filename"]);
-//
-//				outfile << req;
-//				outfile.close();
-			}
+			continue;
 		}
-	}
-	while (content_nb >= 0)
-	{
-		cerr << content_nb <<  _headerMultipart[content_nb]["Content-Disposition"] << endl;
-		cerr << content_nb <<  _headerMultipart[content_nb]["Content-Type"] << endl;
-		cerr << content_nb <<  _headerMultipart[content_nb]["name"] << endl;
-		cerr << content_nb <<  _headerMultipart[content_nb]["filename"] << endl;
-		content_nb--;
+		if (req.compare("--" + clientReq.getContentValue("boundary") + "--") == 0)
+		{
+			contentLoop = 0;
+			break;
+		}
+		if (req.compare("--" + clientReq.getContentValue("boundary")) == 0)
+		{
+			if (fileContent.length() != 0)
+			{
+				ofstream outfile (_headerMultipart[content_nb]["name"]);
+				outfile << fileContent;
+				outfile.close();
+				fileContent.clear();
+			}
+			contentLoop = 0;
+		}
+		if (contentLoop == 1) {
+			fileContent = fileContent + req + "\n";
+		}
 	}
 }
 
