@@ -2,9 +2,9 @@
 // Constructor initializes attributes to 0 by default
 
 
-Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType, \
+Client::Client(int newSockFD, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
-	: _sockFD(newSockFD), _len(-1), _location(newLocation), _contentType(newContentType), _strRequest(""), \
+	: _sockFD(newSockFD), _len(-1), _contentType(newContentType), _location(newLocation), _strRequest(""), \
 	_maxSize(newMaxSize), _closeConnection(false) {
 //	cerr << "this is sockfd:" << _sockFD << ":\n";
 }
@@ -33,8 +33,8 @@ void	Client::clientRequest() {
 		Request	clientReq(receiveStrRequest());
 		handleRequest(clientReq);
 	} catch (exception &e) {
-		string tmpMessage(e.what());
-		Response error(tmpMessage, _sockFD, getContentType("html"));
+		string		tmpMessage(e.what());
+		Response	error(tmpMessage, _sockFD, getContentType("html"));
 		error.sendResponse();
 	}
 }
@@ -47,19 +47,10 @@ string	Client::receiveStrRequest() {
 
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-		if (rc < 0) {
-			cerr << "recv() stopped reading " << endl;
-			this->setCloseConnection(true);
-			break;
-		}
-		if (rc == 0) {
-			cerr << "  Connection closed" << endl;
-			this->setCloseConnection(true);
-			break;
-		}
-		_len = rc;
+		if (recvError(rc))
+			break ;
+//		_len = rc;
 		tmp.assign(buffer, rc);
-//		cerr << _len << " bytes received " << endl;
 		request.append(tmp);
 	}
 	if (request.size() > getMaxSize())
@@ -69,14 +60,31 @@ string	Client::receiveStrRequest() {
 	return request;
 }
 
+bool	Client::recvError(int rc) {
+	if (rc < 0) {
+		cerr << "recv() stopped reading " << endl;
+		this->setCloseConnection(true);
+		return true ;
+	}
+	if (rc == 0) {
+		cerr << "  Connection closed" << endl;
+		this->setCloseConnection(true);
+		return true ;
+	}
+	return false ;
+}
+
 void	Client::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
 	string filePath("www/");
 	string confFile;
+	Location loca;
 	string file;
 	string extension;
 	string contentType;
 
-	confFile = getLocation(clientReq.getDir());
+	cerr << "clientReq " << clientReq.getDir() << endl;
+	loca = getLocation(clientReq.getDir());
+	confFile = loca.getIndex();
 	if (!confFile.empty())
 		file.append(confFile); // page not foudn exception
 	else {
@@ -88,22 +96,21 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	if (extension.compare("php") == 0) {
 		handleCGIResponse(filePath, _contentType["html"]);
-		if (getCloseConnection() == true)
-			return ;
+//		if (getCloseConnection() == true)
+//			return ;
 		return ;
 	}
 	contentType = _contentType[extension];
 	if (!contentType.empty()) {
 		handleResponse(filePath, contentType);
-		if (getCloseConnection() == true)
-			return ;
+//		if (getCloseConnection() == true)
+//			return ;
 	} else
 		throw WSException::PageNotFound(); // not a supported extension
 	return ;
 }
 
 void	Client::handleResponse(string filePath, string contentType) {
-//	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	off_t _len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len);
 	if (!clientResponse.sendResponse())
@@ -112,7 +119,6 @@ void	Client::handleResponse(string filePath, string contentType) {
 }
 
 void	Client::handleCGIResponse(string filePath, string contentType) {
-//	cerr << "this is file ---> " << file << "  - this is  content type --> " << confFile<<  endl;
 	off_t _len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
 	if (!clientResponse.sendResponse())

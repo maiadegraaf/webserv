@@ -1,8 +1,8 @@
 #include "Server.hpp"
 
 void	Server::setupKq(int kq) {
-	// EV_SET(&_changeEvent[1], _fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
-	// if (kevent(kq, _changeEvent, 2, NULL, 0, NULL) == -1)
+//	EV_SET(&_changeEvent[1], getSockFd(), EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, 0);
+//	if (kevent(kq, _changeEvent, 2, NULL, 0, NULL) == -1)
 	EV_SET(&_changeEvent[0], getSockFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, 0);
 	if (kevent(kq, _changeEvent, 1, NULL, 0, NULL) == -1)
 	{

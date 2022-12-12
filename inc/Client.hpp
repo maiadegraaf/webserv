@@ -6,6 +6,7 @@
 #include "Response.hpp"
 #include "Request.hpp"
 #include "WSException.hpp"
+#include "Location.hpp"
 
 
 // Class definition
@@ -20,7 +21,7 @@ class Client {
 		Client& operator=( const Client &rhs);
 		Client()
 			: _sockFD(-1), _strRequest(""), _maxSize(0) 										{}
-		Client(int newSockFD, map<string, string> newLocation, \
+		Client(int newSockFD, map<string, Location> newLocation, \
 			map<string, string> newContentType, size_t newMaxSize);
 
 
@@ -30,24 +31,24 @@ class Client {
 	private:
 		int 								_sockFD,
 											_len;
-		map<string, string> 				_location,
-											_contentType; // maybe pointer to reduce space usage;
+		map<string, string>					_contentType;
+		map<string, Location>		        _location;
+											 // maybe pointer to reduce space usage;
 		string 								_strRequest;
 		size_t								_maxSize;
 		bool 								_closeConnection; // this can be probably removed
-		// Add in the event struct if it is usefull ??
 		// Add in the 5 string variables here from handleRequest() and put in getters/setters as well for them
 
 	/* *********
  	* Getters *
  	* *********/
 	public:
-		int			getSockFD()																	{ return this->_sockFD; }
-		string		getLocation(string key)														{ return this->_location[key]; }
-		string		getContentType(string key)													{ return this->_contentType[key]; }
-		string		getStrRequest()																{ return this->_strRequest; }
-		bool 		getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
-		size_t 		getMaxSize()																{ return this->_maxSize; }
+		int					getSockFD() const													{ return this->_sockFD; }
+		const string		&getContentType(string key)											{ return this->_contentType[key]; }
+		Location			&getLocation(string key)											{ return this->_location[key]; }
+		string				getStrRequest() const												{ return this->_strRequest; }
+		bool 				getCloseConnection() const											{ return this->_closeConnection; } // this can probably be removed
+		size_t 				getMaxSize() const													{ return this->_maxSize; }
 
 	/* *********
  	* Setters *
@@ -64,6 +65,7 @@ class Client {
 		void		output();
 		void 		clientRequest();
 		string		receiveStrRequest();
+		bool 		recvError(int rc);
 		void 		handleRequest(Request clientReq);
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(string filePath, string contentType);
