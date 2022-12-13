@@ -4,10 +4,9 @@
 
 Client::Client(int newSockFD, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
-	: _sockFD(newSockFD), _len(-1), _contentType(newContentType), _location(newLocation), _strRequest(""), \
-	_maxSize(newMaxSize), _closeConnection(false) {
-//	cerr << "this is sockfd:" << _sockFD << ":\n";
-}
+	: _sockFD(newSockFD), _len(-1), _contentType(newContentType), _location(newLocation), \
+	_requestBuffer(""), _maxSize(newMaxSize), _closeConnection(false) { }
+
 
 Client&	Client::operator=( const Client& rhs ) {
 	this->_sockFD = rhs._sockFD;
@@ -30,13 +29,35 @@ void	Client::output() {
 
 void	Client::clientRequest() {
 	try {
-		Request	clientReq(receiveStrRequest());
-		handleRequest(clientReq);
+		this->fillRequestBuffer();
+		this-
+//		string request = receiveStrRequest();
+//		cout << "--------------------\n";
+//		cout << request ;
+//		cout << "--------------------\n";
+//		Request	clientReq(request);
+////		if (getCloseConnection() == true)
+////			return ;
+//		handleRequest(clientReq);
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		Response	error(tmpMessage, _sockFD, getContentType("html"));
 		error.sendResponse();
 	}
+}
+
+void	Client::fillRequestBuffer() {
+	int     rc;
+	char    buffer[200];
+
+	rc = recv(_sockFD, buffer, sizeof(buffer), 0);
+	if (recvError(rc))
+		exit(-1) ;
+	_bufferRequest.append(tmp);
+}
+
+void	Client::addClientRequest() {
+	re
 }
 
 string	Client::receiveStrRequest() {
@@ -49,7 +70,6 @@ string	Client::receiveStrRequest() {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
 		if (recvError(rc))
 			break ;
-//		_len = rc;
 		tmp.assign(buffer, rc);
 		request.append(tmp);
 	}
@@ -62,6 +82,8 @@ string	Client::receiveStrRequest() {
 
 bool	Client::recvError(int rc) {
 	if (rc < 0) {
+		cerr << errno << ": errno\n";
+		perror("recv()");
 		cerr << "recv() stopped reading " << endl;
 		this->setCloseConnection(true);
 		return true ;
@@ -113,6 +135,8 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 void	Client::handleResponse(string filePath, string contentType) {
 	off_t _len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len);
+	if (getCloseConnection() == true)
+		send(getSockFD(), 0, 1, 0);
 	if (!clientResponse.sendResponse())
 		setCloseConnection(true);
 	_strRequest.clear();

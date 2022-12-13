@@ -20,7 +20,7 @@ class Request
 		Request( const Request &rhs );
 		~Request();
 		Request& operator=( const Request &rhs );
-		Request(string input);
+//		Request(string input);
 
 	/* ************
 	 * Attributes *
@@ -30,8 +30,11 @@ class Request
 		string				_dir;
 		string				_protocol;
 		vector<string>		_input;
-		map<string, string> _content;
-		string 				_file;
+		map<string, string> _content; // maybe call header
+		string 				_buffer,
+							_file;
+		bool 				_contentSet,
+							_setWrite;
 
 	/* *********
 	 * Getters *

@@ -93,6 +93,8 @@ class Server
 
 		// ServerKq.cpp
 		void		setupKq(int kq);
+		void 		setKqRead();
+		void 		setKqWrite();
 		void		clientNewAcceptFd(int eventFd);
 		void		bindServerAcceptFdWithClient();
 

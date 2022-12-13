@@ -33,8 +33,8 @@ class Client {
 											_len;
 		map<string, string>					_contentType;
 		map<string, Location>		        _location;
-											 // maybe pointer to reduce space usage;
-		string 								_strRequest;
+		string								_requestBuffer;
+		Request								_clientRequest;
 		size_t								_maxSize;
 		bool 								_closeConnection; // this can be probably removed
 		// Add in the 5 string variables here from handleRequest() and put in getters/setters as well for them
