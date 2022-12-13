@@ -74,56 +74,46 @@ void Client::parsePostMultipartRequest(Request clientReq)
 {
 	string data = clientReq.getFile();
 	stringstream ss(data);
-	int	content_nb = -1;
-	int contentLoop = 0;
+	int	content_nb = 0;
 	string	req;
+	string	contentFile;
 	string	tmp;
-	string	fileContent;
 	size_t pos = 0;
 
-	while (getline(ss, req, '\n') ) {
-		if (contentLoop == 0 && req.compare("--" + clientReq.getContentValue("boundary")) == 0) {
-			content_nb++;
-		}
-		else if (contentLoop == 0)
+	while (contentFile.compare("--" + clientReq.getContentValue("boundary")+ "--") != 0) {
+		while (getline(ss, req, '\n'))
 		{
 			_headerMultipart.push_back( map<string, string>() );
-			if (req.compare("\n") != 0)
-			{
-				tmp = req;
-				while ((pos = req.find(";")) != string::npos) {
-					tmp = req.substr(0, pos);
-					makeMapOfMultipartHeader(tmp, content_nb);
-					req.erase(0, pos + 2);
-				}
-				makeMapOfMultipartHeader(req, content_nb);
+			cerr << "begin: " << req << endl;
+			if (req.length() == 1) {
+				break;
 			}
-		}
-		if (req.length() == 1 && contentLoop == 0)
-		{
-			contentLoop = 1;
-			continue;
-		}
-		if (req.compare("--" + clientReq.getContentValue("boundary") + "--") == 0)
-		{
-			contentLoop = 0;
-			break;
-		}
-		if (req.compare("--" + clientReq.getContentValue("boundary")) == 0)
-		{
-			cerr << "ffdf" << content_nb << req <<endl << fileContent<< endl;
-			if (fileContent.length() != 0)
-			{
-				ofstream outfile (_headerMultipart[content_nb]["name"]);
-				outfile << fileContent;
-				outfile.close();
-				fileContent.clear();
+			tmp = req;
+			while ((pos = req.find(";")) != string::npos) {
+				tmp = req.substr(0, pos);
+				makeMapOfMultipartHeader(tmp, content_nb);
+				req.erase(0, pos + 2);
 			}
-			contentLoop = 0;
+			cerr << "pars: " << req << endl;
+			makeMapOfMultipartHeader(req, content_nb);
 		}
-		if (contentLoop == 1) {
-			fileContent = fileContent + req;
+		ofstream outfile (_headerMultipart[content_nb]["name"]);
+		cerr << "file: ->" <<  _headerMultipart[content_nb]["name"] << endl;
+		while (getline(ss, contentFile, '\n'))
+		{
+			if (contentFile.compare("--" + clientReq.getContentValue("boundary")) == 0) {
+				break;
+			}
+			cerr << "content: " << contentFile << endl;
+//			cerr << "dfsfdfdsf  " << content_nb <<  req << endl;
+			outfile << contentFile;
 		}
+		if (req.compare("--" + clientReq.getContentValue("boundary")) == 0) {
+			content_nb++;
+		}
+		outfile.close();
+		cerr << "end: " << req << endl << endl;
+		sleep(1);
 	}
 }
 
