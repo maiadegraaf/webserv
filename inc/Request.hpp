@@ -30,11 +30,12 @@ class Request
 		string				_dir;
 		string				_protocol;
 		vector<string>		_input;
-		map<string, string> _content; // maybe call header
+		map<string, string> _header; // maybe call header
 		string 				_buffer,
-							_file;
-		bool 				_contentSet,
-							_setWrite;
+							_body;
+		bool 				_requestHeader,
+							_requestBody;
+//							_setWrite;
 
 	/* *********
 	 * Getters *
@@ -43,20 +44,24 @@ class Request
 		string			getMethod()							{ return _method; }
 		string			getDir() 							{ return _dir; }
 		string			getProtocol()						{ return _protocol; }
-		string			getContentValue(string key)			{ return _content[key]; }
+		string			getHeaderValue(string key)			{ return _header[key]; }
 		vector<string>	getInput()							{ return _input; }
-		string 			getFile()							{ return _file; }
+		string 			getBody()							{ return _body; }
 
 	/* *********
 	 * Setters *
 	 * *********/
 	public:
-		void	setMethod(string new_method)				{ _method = new_method; }
-		void	setDir(string new_dir)						{ _dir = new_dir; }
-		void	setProtocol(string new_protocol)			{ _protocol = new_protocol; }
-		void	setContentValue(string key, string value)	{ _content[key] = value; }
+		void	setMethod(string new_method)				{ this->_method = new_method; }
+		void	setDir(string new_dir)						{ this->_dir = new_dir; }
+		void	setProtocol(string new_protocol)			{ this->_protocol = new_protocol; }
+		void	setHeaderValue(string key, string value)	{ this->_header[key] = value; }
+		void 	setRequestHeader(bool newBool)				{ this->_requestHeader = newBool; }
+		void 	setRequestBody(bool newBool)				{ this->_requestBody = newBool; }
 
-		void	setInput(string input);
+		void 	parseHeader();
+		void 	setHeader();
+		void 	parseBody();
 		void	setAttributes();
 		void	setContent();
 

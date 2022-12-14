@@ -48,6 +48,7 @@ class Server
 		int						_sockFd,
 								_kq,
 								_len,
+								_readFd,
 								_acceptFd;
 		sockaddr_in				_servAddr,
 								_client_addr;
@@ -57,6 +58,7 @@ class Server
 		map<string, Location>	_location;
 		bool 					_closeConnection;
 		size_t 					_maxSize;
+		Response				*_response;
 
 	/* *********
  	* Setters *
@@ -97,6 +99,7 @@ class Server
 		void 		setKqWrite();
 		void		clientNewAcceptFd(int eventFd);
 		void		bindServerAcceptFdWithClient();
+		void 		readFile();
 
 };
 

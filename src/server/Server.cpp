@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 Server::Server(Config *conf)
-		: _sockFd(-1), _acceptFd(-1), _conf(conf), _closeConnection(false) {
+		: _sockFd(-1), _readFd(-1), _acceptFd(-1), _conf(conf), _closeConnection(false) {
 	this->setup();
 }
 

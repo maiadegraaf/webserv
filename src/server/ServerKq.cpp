@@ -11,7 +11,7 @@ void	Server::setupKq(int kq) {
 	this->setKqRead();
 }
 
-void	Server::setKqRead() {
+void	Server::enableKqRead() {
 	EV_SET(&_changeEvent[0], getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, 0);
 	EV_SET(&_changeEvent[1], getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, 0);
 	if (kevent(getKq(), _changeEvent, 2, NULL, 0, NULL) == -1) {
@@ -20,11 +20,20 @@ void	Server::setKqRead() {
 	}
 }
 
-void	Server::setKqWrite() {
+void	Server::enableKqWrite() {
 	EV_SET(&_changeEvent[0], getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, 0);
 	EV_SET(&_changeEvent[1], getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, 0);
 	if (kevent(getKq(), _changeEvent, 2, NULL, 0, NULL) == -1) {
 		perror("kevent server write error");
+		exit(1);
+	}
+}
+
+void	Server::disableKq() {
+	EV_SET(&_changeEvent[0], getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, 0);
+	EV_SET(&_changeEvent[1], getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, 0);
+	if (kevent(getKq(), _changeEvent, 2, NULL, 0, NULL) == -1) {
+		perror("kevent disable server error");
 		exit(1);
 	}
 }
@@ -47,9 +56,23 @@ void	Server::clientNewAcceptFd(int eventFd) {
 void	Server::bindServerAcceptFdWithClient() {
 	struct kevent	newEvents[2];
 	Client *newClient = new Client(getAcceptFd(), getLocation(), getContentType(), getMaxSize());
-	EV_SET(&newEvents[0], getAcceptFd(), EVFILT_READ, EV_ADD, 0, 0, newClient);
-	EV_SET(&newEvents[1], getAcceptFd(), EVFILT_WRITE, EV_ADD, 0, 0, newClient);
+	EV_SET(&newEvents[0], getAcceptFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, newClient);
+	EV_SET(&newEvents[1], getAcceptFd(), EVFILT_WRITE, EV_ADD | EV_DISABLE, 0, 0, newClient);
 	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0) {
 		perror("kevent error");
 	}
+}
+
+string	Server::readFile(string FilePath) {
+	char 	*buf;
+	off_t 	fSize;
+
+	_readFd = open(filePath.c_str(), O_RDONLY);
+	fSize = lseek(_readFd, 0, SEEK_END);
+	buf = new [fSize] char;
+	read(_readFd, buf, (size_t)fSize);
+	close(_readFd);
+	string	readB(buf);
+	delete buf;
+	return readB;
 }

@@ -30,13 +30,17 @@ class Client {
 	 * ************/
 	private:
 		int 								_sockFD,
-											_len;
+											_len,
+											_read;
 		map<string, string>					_contentType;
 		map<string, Location>		        _location;
 		string								_requestBuffer;
-		Request								_clientRequest;
 		size_t								_maxSize;
-		bool 								_closeConnection; // this can be probably removed
+		bool 								_closeConnection;
+		Request								_clientRequest;
+		Response							_response;
+
+		// this can be probably removed
 		// Add in the 5 string variables here from handleRequest() and put in getters/setters as well for them
 
 	/* *********

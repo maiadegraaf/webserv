@@ -1,7 +1,8 @@
 #include "Request.hpp"
 
 Request::Request()
-        : _method(""), _dir(""), _protocol(""), _file(""), _buffer(""), _contentSet(false) {}
+        : _method(""), _dir(""), _protocol(""), _file(""), _buffer(""), _body(""),
+		_requestHeader(false), _requestBody(false) {}
 
 Request::Request( const Request& rhs ) {
     *this = rhs;
@@ -13,7 +14,7 @@ Request&	Request::operator=( const Request& rhs ) {
     this->_dir = rhs._dir;
     this->_method = rhs._method;
     this->_protocol = rhs._protocol;
-    this->_content = rhs._content;
+    this->_header = rhs._header;
     this->_input = rhs._input;
 	this->_file = rhs._file;
 	this->_buffer = rhs._buffer;
@@ -37,40 +38,67 @@ void	Request::setInput(string input) {
     }
 }
 
-void	Request::appendBuffer(string recvBuffer) {
+bool	Request::appendBuffer(string recvBuffer) {
 	_buffer.append(recvBuffer);
 
-	// parse buffer
+	if (this->getRequestHeader() == true) {
+		this->parseHeader();
+		return true;
+	}
+	else if (this->getRequestBody() == true) {
+		this->parseBody();
+		return true;
+	}
+	return false;
+}
+
+void	Request::parseHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
+
 	while (getline(ss, tmp)) {
-		if (tmp.find("\r") != string::npos) {
+		if (tmp.find("\r") == string::npos) {
 			_buffer = tmp;
-			return ; // misschien een boolean oid returnen
+			return ;
 		}
 		else if (!tmp.compare("\r")) {
-			// setRequestHeader()
-			this->setAttributes();
-			this->setContent();
-			if ((_content.find("Content-Length") != _content.end() && \
-			getContentValue("Content-Length").compare("0")) ) {
-//				request open for _file to append too
-//				extra check for POST getMethod.compare("POST") == 0
-			}
-
-//			else
-				// setup request for writing operation
-			_input.clear();
+			this->setHeader();
+			return ;
 		}
-//		if (tmp.empty())
-			// function for deciding GET POST DELETE setting up write or read on KQ
-//			&& 	(_content.find("Content-Length") == _content.end() || \
-//		getContentValue("Content-Length").compare("0") == 0 )) { }
-		_input.push_backl(tmp);
+		_input.push_back(tmp);
+	}
+}
+void	Request::setHeader() {
+	this->setAttributes();
+	this->setContent();
+	if ((_content.find("Content-Length") != _content.end() && \
+			getContentValue("Content-Length").compare("0")) && !getMethod().compare("POST")) {
+		this->setRequestBody(true);
+	}
+	this->setRequestHeader(false);
+	_input.clear();
+	_buffer.clear();
+}
+
+void	Request::parseBody() {
+	stringstream	ss(_buffer);
+	string			tmp;
+
+	while (getline(ss, buffer)) {
+		if (tmp.find("\r") == string::npos) {
+			_buffer = tmp;
+			return ;
+		}
+		else if (tmp.compare("\r")) {
+			this->setRequestBody(false);
+			return ;
+		}
+		_body.append(tmp);
+		_body.append("\n");
 	}
 }
 
-void Request::setAttributes() {
+void	Request::setAttributes() {
     stringstream 	ss(_input[0]);
     string 			tmp;
 
@@ -94,32 +122,39 @@ void Request::setAttributes() {
     setProtocol(tmp);
 }
 
-void Request::setContent() {
-    string	key;
-    string	value;
-    size_t	idx;
-    size_t	i = 1;
-    size_t	size = _input.size();
+void	Request::reset() {
+	Request	newRequest;
 
-    while (i < size) { // && _input[i].compare(0, 1,"\n")) {
-        idx = _input[i].find(':', 0);
-        if (idx == string::npos)
-            break ;
-        key = _input[i].substr(0, idx);
-        value = _input[i].substr(idx + 2);
-        setContentValue(key, value);
-        i++;
-    }
-    _file.clear();
-    for (size_t j = i; j < size; j++) {
-        _file.append(_input[j]);
-        _file.append("\n");
-    }
+	this = newRequest;
 }
+
+//
+//void Request::setContent() {
+//    string	key;
+//    string	value;
+//    size_t	idx;
+//    size_t	i = 1;
+//    size_t	size = _input.size();
+//
+//    while (i < size) { // && _input[i].compare(0, 1,"\n")) {
+//        idx = _input[i].find(':', 0);
+//        if (idx == string::npos)
+//            break ;
+//        key = _input[i].substr(0, idx);
+//        value = _input[i].substr(idx + 2);
+//        setContentValue(key, value);
+//        i++;
+//    }
+//    _file.clear();
+//    for (size_t j = i; j < size; j++) {
+//        _file.append(_input[j]);
+//        _file.append("\n");
+//    }
+//}
 
 // Output
-void Request::output() {
-    std::cout << "_method : " << _method << std::endl;
-    std::cout << "_dir : " << _dir << std::endl;
-    std::cout << "_protocol : " << _protocol << std::endl;
-}
+//void Request::output() {
+//    std::cout << "_method : " << _method << std::endl;
+//    std::cout << "_dir : " << _dir << std::endl;
+//    std::cout << "_protocol : " << _protocol << std::endl;
+//}

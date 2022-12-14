@@ -24,8 +24,7 @@ Response::Response(string filePath, string message, string contentType, int newS
 	appendToHead("\r\n");
 }
 
-Response&	Response::operator=( const Response& rhs )
-{
+Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;

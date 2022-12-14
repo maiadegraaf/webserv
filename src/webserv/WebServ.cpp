@@ -58,7 +58,9 @@ void	WebServ::loopEvent( ) {
 		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
 		else if (event.filter == EVFILT_READ)
-			this->incomingRequest(event.udata);
+			this->readOperation(event.udata);
+		else if (event.filter == EVFILT_WRITE)
+			this->writeOperation(event.ident);
 	}
 }
 
@@ -78,14 +80,25 @@ void	WebServ::connectNewClient() {
 	_server[idx].bindServerAcceptFdWithClient();
 }
 
-void WebServ::incomingRequest(void *udata) {
-	Client *client = reinterpret_cast<Client *>(udata);
+void	WebServ::readOperation(void *udata) {
+	size_t	idx = _sockFdIxMap[_eventFd]; // is idx correct for the opperation
+	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
 		cerr << "doing the request\n";
 		cerr << "eventFd :" << _eventFd << endl;
-		client->clientRequest();
+		if (client->clientInRequest() == false) { // this is only for read
+			_server[idx].setResponse(&client->getResponse()); // more elaborate on Get Post Delete
+			_server[idx].setKqRead();
+			client->resetRequest();
+		}
+	}
+	else {
+		string	buf =	_server[idx].readFile();
+		_server[idx]. // do somethign with buf;
 	}
 }
+
+void	WebServ::writeOperation()
 
 // Output
 void WebServ::output() {
