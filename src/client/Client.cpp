@@ -2,7 +2,7 @@
 // Constructor initializes attributes to 0 by default
 
 
-Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType, \
+Client::Client(int newSockFD, map<string,Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFD(newSockFD), _len(-1), _location(newLocation), _contentType(newContentType), _strRequest(""), \
 	_maxSize(newMaxSize), _closeConnection(false) {

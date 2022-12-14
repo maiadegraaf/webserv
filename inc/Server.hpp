@@ -24,10 +24,12 @@
 #include "Response.hpp"
 #include "Request.hpp"
 #include "Client.hpp"
+#include "Location.hpp"
 #include "WSException.hpp"
 
 
 class Config;
+class Location;
 
 class Server
 {
@@ -52,8 +54,8 @@ class Server
 								_client_addr;
 		Config					*_conf;
 		struct kevent			_changeEvent[2];
-		map<string, string> 	_contentType,
-								_location;
+		map<string, string> 	_contentType;
+		map<string, Location>	_location;
 		bool 					_closeConnection;
 		size_t 					_maxSize;
 
@@ -72,7 +74,7 @@ class Server
 		size_t 				getMaxSize()							{ return this->_maxSize; }
 		int					getSockFd()								{ return this->_sockFd; }
 		int					getAcceptFd()							{ return this->_acceptFd; }
-		map<string, string> getLocation()							{ return this->_location; }
+		map<string, Location> getLocation()							{ return this->_location; }
 		map<string, string> getContentType()						{ return this->_contentType; }
 		int 				getKq()									{ return this->_kq; }
 

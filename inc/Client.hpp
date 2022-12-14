@@ -3,8 +3,12 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include "webserv.h"
+#include "Config.hpp"
 #include "Response.hpp"
 #include "Request.hpp"
+#include "Client.hpp"
+#include "Location.hpp"
 #include "WSException.hpp"
 
 
@@ -20,7 +24,7 @@ class Client {
 		Client& operator=( const Client &rhs);
 		Client()
 			: _sockFD(-1), _strRequest(""), _maxSize(0) 										{}
-		Client(int newSockFD, map<string, string> newLocation, \
+		Client(int newSockFD, map<string, Location> newLocation, \
 			map<string, string> newContentType, size_t newMaxSize);
 
 
@@ -30,8 +34,8 @@ class Client {
 	private:
 		int 								_sockFD,
 											_len;
-		map<string, string> 				_location,
-											_contentType;// maybe pointer to reduce space usage;
+		map<string, Location> 				_location;
+		map<string, string> 				_contentType;// maybe pointer to reduce space usage;
 		vector< map<string, string> >		_headerMultipart;
 		vector< vector<string> >			_postContent;
 		string 								_strRequest;
@@ -45,7 +49,7 @@ class Client {
  	* *********/
 	public:
 		int			getSockFD()																	{ return this->_sockFD; }
-		string		getLocation(string key)														{ return this->_location[key]; }
+		Location	getLocation(string key)														{ return this->_location[key]; }
 		string		getContentType(string key)													{ return this->_contentType[key]; }
 		string		getStrRequest()																{ return this->_strRequest; }
 		bool 		getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
