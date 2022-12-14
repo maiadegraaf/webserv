@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 #include <sstream>
-#include <exception>
+#include "WSException.hpp"
 
 using namespace std;
 
@@ -61,21 +61,6 @@ class Request
 	 * ********/
         void	output();
 
-	/* ************
-	 * Exceptions *
-	 * ************/
-	class BadRequestException : public exception {
-		public:
-			const char	*what() const throw() {
-				return "400 Bad Request";
-			};
-		};
-	class MethodNotAllowedException : public exception {
-		public:
-			const char	*what() const throw() {
-				return "405 Method Not Allowed";
-			}
-		};
 };
  
 #endif

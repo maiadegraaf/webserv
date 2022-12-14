@@ -18,7 +18,11 @@ INCLUDES		=	Config.hpp \
                     Response.hpp \
                     Client.hpp \
                     Server.hpp \
+                    WebServ.hpp \
+                    WSException.hpp \
                     webserv.h \
+					CGIResponse.hpp \
+					Location.hpp \
                     Utils.h
 
 INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
@@ -26,17 +30,21 @@ INCLUDES		:=	$(addprefix $(INC_DIR)/, $(INCLUDES))
 SRC_DIR			:=	src
 
 SRC				=	main.cpp \
+					server/WebServ.cpp \
 					server/Server.cpp \
-					server/ServerRun.cpp \
+					server/ServerKq.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
+                    config/Location.cpp \
                     utils/utils_Maia.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
                     client/postHandler.cpp \
                     client/Response.cpp \
+                    client/CGIResponse.cpp \
                     client/Client.cpp \
                     utils/errorMap.cpp
+#					server/ServerRun.cpp \
 
 
 SRC				:=	$(addprefix $(SRC_DIR)/, $(SRC))

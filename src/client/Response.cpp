@@ -6,8 +6,8 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 	stringstream	ss;
 	string			tmp;
 	ss << errorMessage;
-	getline(ss, tmp, ' '); // filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
-	_filePath.append(tmp); // check voor nieuwe error
+	getline(ss, tmp, ' '); //TODO: filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
+	_filePath.append(tmp); // TODO: check voor nieuwe error
 	_filePath.append(".html");
 	setFileSize(fileSize(_filePath.c_str()));
 	appendToHeadNL(errorMessage);
@@ -43,9 +43,6 @@ void Response::output() {
 bool Response::sendResponse() {
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	send(getSockFD(), _head.c_str(), _head.size(), 0);
-//    fork();
-//    execv("usr/bin/php", )
-//	cerr << read << endl;
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		cerr << "send() failed " << errno << endl;
 		return close(read), false;

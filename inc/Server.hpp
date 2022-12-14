@@ -24,6 +24,8 @@
 #include "Response.hpp"
 #include "Request.hpp"
 #include "Client.hpp"
+#include "WSException.hpp"
+
 
 class Config;
 
@@ -42,66 +44,70 @@ class Server
 	 * Attributes *
 	 * ************/
 	private:
-		int						_fd,
+		int						_sockFd,
 								_kq,
-								_new_events,
 								_len,
-								_newFd,
-								_event_fd;
-		sockaddr_in				_servAddr, _client_addr;
+								_acceptFd;
+		sockaddr_in				_servAddr,
+								_client_addr;
 		Config					*_conf;
-		struct kevent			_change_event[2], _event[2];
-		map<string, string> 	_contentType;
+		struct kevent			_changeEvent[2];
+		map<string, string> 	_contentType,
+								_location;
 		bool 					_closeConnection;
+		size_t 					_maxSize;
 
 	/* *********
  	* Setters *
  	* *********/
 	public:
-		void		setAddr();
-		void		setCloseConnection(bool Bool)			{ this->_closeConnection = Bool; }
-
+		void		setCloseConnection(bool Bool)					{ this->_closeConnection = Bool; }
+		void 		setMaxSize( size_t newMaxSize )					{ this->_maxSize = newMaxSize; }
 
 	/* *********
  	* Getters *
  	* *********/
 	public:
-		bool 		getCloseConnection()					{ return this->_closeConnection; }
+		bool 				getCloseConnection()					{ return this->_closeConnection; }
+		size_t 				getMaxSize()							{ return this->_maxSize; }
+		int					getSockFd()								{ return this->_sockFd; }
+		int					getAcceptFd()							{ return this->_acceptFd; }
+		map<string, string> getLocation()							{ return this->_location; }
+		map<string, string> getContentType()						{ return this->_contentType; }
+		int 				getKq()									{ return this->_kq; }
 
 	/* **************
  	* Functionality *
  	* ***************/
 	public:
 		// Server.cpp
-		void		output()													{}
 		void		setup();
-		// ServerRun.cpp
-		void		run();
-		void 		newEvent();
-		void 		creatingKqueue();
-		void		loopEvent();
-		// ClientResponse.cpp
-		bool		clientRequest();
-		string		receiveStrRequest();
-		bool 		handleRequest(Request clientReq);
-		void 		handleResponse(string filePath, string contentType);
-		void 		handleCGIResponse(string filePath, string contentType);
+		void 		setupSockFd();
+		void		setupSocketOpt();
+		void 		setupNonBlock();
+		void		setAddr();
+		void 		bindSocket();
+		void 		listenSocket();
+		void		output();
 
-	/* ************
-	 * Exceptions *
-	 * ************/
-	public:
-		class PageNotFoundException : public exception {
-			public:
-				const char *what() const throw() {
-					return "404 Page Not Found";
-				}
-			};
-}; 
+		// ServerKq.cpp
+		void		setupKq(int kq);
+		void		clientNewAcceptFd(int eventFd);
+		void		bindServerAcceptFdWithClient();
 
-typedef struct s_udata {
+	// ServerRun.cpp
+//		void		run();
+//		void 		newEvent();
+//		void 		creatingKqueue();
+//		void		loopEvent();
+//		// ClientResponse.cpp
+//		bool		clientRequest();
+//		string		receiveStrRequest();
+//		bool 		handleRequest(Request clientReq);
+//		void 		handleResponse(string filePath, string contentType);
+//		void 		handleCGIResponse(string filePath, string contentType);
 
-}				t_udata;
+};
 
 
 #endif

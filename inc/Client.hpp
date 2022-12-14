@@ -5,6 +5,8 @@
 #include <map>
 #include "Response.hpp"
 #include "Request.hpp"
+#include "WSException.hpp"
+
 
 // Class definition
 class Client {
@@ -17,9 +19,10 @@ class Client {
 		Client( const Client &rhs)																{ *this = rhs; }
 		Client& operator=( const Client &rhs);
 		Client()
-			: _sockFD(0), _strRequest("") 													{}
+			: _sockFD(-1), _strRequest(""), _maxSize(0) 										{}
 		Client(int newSockFD, map<string, string> newLocation, \
-			map<string, string> newContentType);
+			map<string, string> newContentType, size_t newMaxSize);
+
 
 	/* ************
 	 * Attributes *
@@ -32,6 +35,7 @@ class Client {
 		vector< map<string, string> >		_headerMultipart;
 		vector< vector<string> >			_postContent;
 		string 								_strRequest;
+		size_t								_maxSize;
 		bool 								_closeConnection; // this can be probably removed
 		// Add in the event struct if it is usefull ??
 		// Add in the 5 string variables here from handleRequest() and put in getters/setters as well for them
@@ -40,16 +44,16 @@ class Client {
  	* Getters *
  	* *********/
 	public:
-		int							getSockFD()																	{ return this->_sockFD; }
-		string						getLocation(string key)														{ return this->_location[key]; }
-		string						getContentType(string key)													{ return this->_contentType[key]; }
-		string						getStrRequest()																{ return this->_strRequest; }
-		bool 						getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
-		vector< vector<string> >	getPostContent()															{ return _postContent; }
-
+		int			getSockFD()																	{ return this->_sockFD; }
+		string		getLocation(string key)														{ return this->_location[key]; }
+		string		getContentType(string key)													{ return this->_contentType[key]; }
+		string		getStrRequest()																{ return this->_strRequest; }
+		bool 		getCloseConnection()														{ return this->_closeConnection; } // this can probably be removed
+		size_t 		getMaxSize()																{ return this->_maxSize; }
+		vector< vector<string> >	getPostContent()											{ return _postContent; }
 	/* *********
- 	* Setters *
- 	* *********/
+ * Setters *
+ * *********/
 	public:
 		void		setSockFD(int newSockFD)													{ this->_sockFD = newSockFD; }
 		void		setStrRequest(string newRequest)											{ this->_strRequest = newRequest; }
@@ -79,16 +83,6 @@ class Client {
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
 
-	/* ************
-	 * Exceptions *
-	 * ************/
-	public:
-		class PageNotFoundException : public exception {
-			public:
-				const char *what() const throw() {
-					return "404 Page Not Found";
-			}
-		};
 };
 
 #endif
