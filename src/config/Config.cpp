@@ -5,20 +5,16 @@ Config::Config(const Config& rhs)
 	*this = rhs;
 }
 
-Config::Config(vector<string> input)
+Config::Config(const ConfigParser &confP)
+	: _address(80), _maxSize(1), _errorPage(setupErrorPages())
 {
-	_address = 80;
-	_root = "";
-	_maxSize = 1;
-	_cgi = "";
-	_errorPage = setupErrorPages();
-	for(size_t i = 0; i < input.size(); i++)
+	for(size_t i = 0; i < confP.getServerContent().size(); i++)
 	{
-		string word = findFirstWord(i, input);
-		determineCase(word, input, i);
+		string word = confP.findFirstWord(i);
+		determineCase(word, confP, i);
 	}
+    output();
 	checkIfComplete();
-	output();
 }
 
 Config::~Config()
@@ -55,7 +51,7 @@ unsigned long long int Config::getMaxSize() const {
 	return _maxSize;
 }
 
-const map<string, string> &Config::getLocation() const {
+const map<string, Location> &Config::getLocation() const {
 	return _location;
 }
 
@@ -68,11 +64,11 @@ const map<int, string> &Config::getErrorPage() const {
 }
 
 // Setters 
-void Config::setAddress(const vector<string>& input, int line)
+void Config::setAddress(const ConfigParser &confP, int line)
 {
 	string	type = "listen";
-	size_t	end = input[line].find(type) + type.length();
-	string	s = findNextWord(input[line], end);
+	size_t	end = confP.at(line).find(type) + type.length();
+	string	s = findNextWord(confP.at(line), end);
 	int tmp = stoi(s);
 	if (tmp < 0)
 		failure("Listen must be a positive integer.");
@@ -81,72 +77,100 @@ void Config::setAddress(const vector<string>& input, int line)
 		failure("Listen is not correctly formatted.");
 }
 
-void Config::setServer_name(const vector<string>& input, int line)
+void Config::setServer_name(const ConfigParser &confP, int line)
 {
 	string	type = "server_name";
-	size_t	end = input[line].find(type) + type.length();
-	for(size_t i = 0; i < input[line].length(); i++)
+	size_t	end = confP.at(line).find(type) + type.length();
+	for(size_t i = 0; i < confP.at(line).length(); i++)
 	{
-		string s = findNextWord(input[line], end);
+		string s = findNextWord(confP.at(line), end);
 		_serverName.push_back(s);
-		end = input[line].find(s) + s.length();
+		end = confP.at(line).find(s) + s.length();
 		i += end;
 	}
 }
 
-void Config::setRoot(const vector<string>& input, int line)
+void Config::setRoot(const ConfigParser &confP, int line)
 {
 	string	type = "root";
-	size_t	end = input[line].find(type) + type.length();
-	_root = findNextWord(input[line], end);
+	size_t	end = confP.at(line).find(type) + type.length();
+	_root = findNextWord(confP.at(line), end);
 }
 
-void Config::setMaxSize(const vector<string>& input, int line)
+void Config::setMaxSize(const ConfigParser &confP, int line)
 {
 	string	type = "client_max_body_size";
-	size_t	end = input[line].find(type) + type.length();
-	_maxSize = stoull(findNextWord(input[line], end));
+	size_t	end = confP.at(line).find(type) + type.length();
+	_maxSize = stoull(findNextWord(confP.at(line), end));
+	string	myLine = confP.at(line);
+	for (size_t i = confP.at(line).find(type) + type.length(); i < myLine.size(); i++) {
+		if (isalpha(myLine[i])) {
+			if (myLine[i] == 'K')
+				_maxSize *= 1000;
+			else if (myLine[i] == 'M')
+				_maxSize *= (1000 * 1000);
+			else if (myLine[i] == 'G')
+				_maxSize *= (1000 * 1000 * 1000);
+			break ;
+		}
+	}
 	if (!_maxSize)
 		failure("client_max_body_size is not correctly formatted.");
 }
 
-void Config::setLocation(const vector<string>& input, int line)
+void Config::setLocation(const ConfigParser &confP, int line)
 {
-	string	type = "location";
-	size_t	end = input[line].find(type) + type.length();
-	string	loc = findNextWord(input[line], end);
-	string	ind;
-	for(int i = line + 1; input[i].find('}') == string::npos; i++)
-	{
-		type = "index";
-		size_t indLoc = input[i].find(type);
-		if (indLoc != string::npos)
-		{
-			ind = findNextWord(input[i], indLoc + type.length());
-			break;
-		}
-	}
-	if (!ind.empty() && !loc.empty())
-		_location[loc] = ind;
-	else if (!loc.empty() && ind.empty())
-		_location[loc] = "index.html";
-	else
-		failure("Index initialized incorrectly");
+    string	type = "location";
+	size_t	end = confP.at(line).find(type) + type.length();
+	string	loc = findNextWord(confP.at(line), end);
+    size_t brackLoc = confP.at(line).find('{');
+    int start = line;
+    if (brackLoc == confP.at(line).length() - 1 || brackLoc == string::npos)
+    {
+        start++;
+        end = confP.findClosingBracket(start, 0);
+    }
+    else
+        end = confP.findClosingBracket(start, brackLoc + 1);
+    ConfigParser tmp;
+    tmp.setServerContent(confP.subVector(start, end - 1));
+    Location    oneL(tmp);
+    _location[loc] = oneL;
+//	string	type = "location";
+//	size_t	end = confP.at(line).find(type) + type.length();
+//	string	loc = findNextWord(input[line], end);
+//	string	ind;
+//	for(int i = line + 1; input[i].find('}') == string::npos; i++)
+//	{
+//		type = "index";
+//		size_t indLoc = input[i].find(type);
+//		if (indLoc != string::npos)
+//		{
+//			ind = findNextWord(input[i], indLoc + type.length());
+//			break;
+//		}
+//	}
+//	if (!ind.empty() && !loc.empty())
+//		_location[loc] = ind;
+//	else if (!loc.empty() && ind.empty())
+//		_location[loc] = "index.html";
+//	else
+//		failure("Index initialized incorrectly");
 }
 
-void Config::setCgi(const vector<string>& input, int line)
+void Config::setCgi(const ConfigParser &confP, int line)
 {
 	string	type = "cgi";
-	size_t end = input[line].find(type) + type.length();
-	_cgi = findNextWord(input[line], end);
+	size_t end = confP.at(line).find(type) + type.length();
+	_cgi = findNextWord(confP.at(line), end);
 }
 
-void Config::setErrorPage(const vector<string>& input, int line)
+void Config::setErrorPage(const ConfigParser &confP, int line)
 {
 	string	type = "error_page";
-	size_t	end = input[line].find(type) + type.length();
-	string tmp = findNextWord(input[line], end);
-	string page = findNextWord(input[line], input[line].find(tmp) + tmp.length());
+	size_t	end = confP.at(line).find(type) + type.length();
+	string tmp = findNextWord(confP.at(line), end);
+	string page = findNextWord(confP.at(line), confP.at(line).find(tmp) + tmp.length());
 	_errorPage[stoi(tmp)] = page;
 }
 
@@ -159,16 +183,18 @@ void Config::output()
 	for_each(_serverName.begin(), _serverName.end(), printStr);
 	cout << "\nroot : " << _root << endl;
 	cout << "\nmax_size : " << _maxSize << endl;
-	cout << "\nlocation : " << endl;
-	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
-		cout << i->first << " : " << i->second << endl;
+    for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
+    {
+        cout << "\nLocation : " << i->first << endl;
+        i->second.output();
+    }
 	cout << "\ncgi : " << _cgi << endl;
 	cout << "\nError Page : "  << endl;
 	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
 		cout << i->first << " : " << i->second << endl;
 }
 
-void Config::determineCase(const string& word, const vector<string>& input, int line)
+void Config::determineCase(const string& word, const ConfigParser &confP, int line)
 {
 	string words[] = {
 			"listen",
@@ -179,7 +205,7 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 			"error_page",
 			"cgi"
 	};
-	MemFuncPtr setter[] = {
+	ConfMemFuncPtr setter[] = {
 			&Config::setAddress,
 			&Config::setServer_name,
 			&Config::setRoot,
@@ -193,7 +219,7 @@ void Config::determineCase(const string& word, const vector<string>& input, int 
 	{
 		if (word == words[i])
 		{
-			(this->*setter[i])(input, line);
+			(this->*setter[i])(confP, line);
 			break;
 		}
 	}
@@ -205,11 +231,11 @@ void	Config::checkIfComplete()
 		failure("Root is a required field.");
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
-	for (map<string, string>::iterator i = _location.begin(); i != _location.end(); i++)
-	{
-		if (!fileAccess(_root + '/' + i->second))
-			failure(i->second.c_str());
-	}
+//	for (Location::iterator i = _location.begin(); i != _location.end(); i++)
+//	{
+//		if (!fileAccess(_root + '/' + i->second))
+//			failure(i->second.c_str());
+//	}
     for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
 	{
 		if (!fileAccess(_root + '/' + i->second))

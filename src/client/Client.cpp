@@ -2,13 +2,21 @@
 // Constructor initializes attributes to 0 by default
 
 
-Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType)
-		: _sockFD(newSockFD), _location(newLocation), _contentType(newContentType), _strRequest("") {
-
+Client::Client(int newSockFD, map<string,string> newLocation, map<string, string> newContentType, \
+size_t newMaxSize)
+	: _sockFD(newSockFD), _len(-1), _location(newLocation), _contentType(newContentType), _strRequest(""), \
+	_maxSize(newMaxSize), _closeConnection(false) {
+//	cerr << "this is sockfd:" << _sockFD << ":\n";
 }
 
 Client&	Client::operator=( const Client& rhs ) {
-	(void)rhs;
+	this->_sockFD = rhs._sockFD;
+	this->_len = rhs._len;
+	this->_location = rhs._location;
+	this->_contentType = rhs._contentType;
+	this->_strRequest = rhs._strRequest;
+	this->_maxSize = rhs._maxSize;
+	this->_closeConnection = rhs._closeConnection;
 	return *this;
 }
 
@@ -21,12 +29,8 @@ void	Client::output() {
 }
 
 void	Client::clientRequest() {
-	string strRequest = receiveStrRequest();
-//	cerr << strRequest << endl;
-	if (strRequest.empty())
-		return ;
 	try {
-		Request	clientReq(strRequest);
+		Request	clientReq(receiveStrRequest());
 		handleRequest(clientReq);
 	} catch (exception &e) {
 		string tmpMessage(e.what());
@@ -37,19 +41,15 @@ void	Client::clientRequest() {
 
 string	Client::receiveStrRequest() {
 	int     rc;
-	char    buffer[1000];
+	char    buffer[100];
 	string	request("");
 	string	tmp;
 
 	while (1) {
 		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-		cerr << buffer << endl;
 		if (rc < 0) {
-//			cerr << errno << " --> errno\n";
-//			if (errno != EWOULDBLOCK) {
 			cerr << "recv() stopped reading " << endl;
 			this->setCloseConnection(true);
-//			}
 			break;
 		}
 		if (rc == 0) {
@@ -59,9 +59,13 @@ string	Client::receiveStrRequest() {
 		}
 		_len = rc;
 		tmp.assign(buffer, rc);
-		cerr << _len << " bytes received " << endl;
+//		cerr << _len << " bytes received " << endl;
 		request.append(tmp);
 	}
+	if (request.size() > getMaxSize())
+		throw WSException::PayloadTooLarge();
+	if (request.size() == 0)
+		throw WSException::BadRequest();
 	return request;
 }
 
@@ -77,7 +81,7 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 		file.append(confFile); // page not foudn exception
 	else {
 		if (clientReq.getDir().empty())
-			throw Request::BadRequestException();
+			throw WSException::BadRequest();
 		file.append(clientReq.getDir()); // Response
 	}
 	filePath.append(file); // exception filePath;
@@ -94,7 +98,7 @@ void	Client::handleRequest(Request clientReq) { // should we use a --> const Req
 		if (getCloseConnection() == true)
 			return ;
 	} else
-		throw PageNotFoundException(); // not a supported extension
+		throw WSException::PageNotFound(); // not a supported extension
 	return ;
 }
 

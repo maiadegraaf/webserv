@@ -10,6 +10,8 @@
 #include <fcntl.h>
 #include "webserv.h"
 #include "Utils.h"
+#include "WSException.hpp"
+
 
 using namespace std;
 
