@@ -82,9 +82,11 @@ void Request::setContent() {
 			nextKey = _input[i].substr(_input[i].find(';', 0) + 2, _input[i].find('=', 0) - _input[i].find(';', 0) - 2);
 			nextValue = _input[i].substr(_input[i].find("=") + 1, _input[i].length() - 1);
 			nextValue = nextValue.substr(0, nextValue.find(";"));
+			nextValue.erase(remove( nextValue.begin(), nextValue.end(), '\r' ),nextValue.end());
 			setContentValue(nextKey, nextValue);
 		}
-        setContentValue(key, value);
+		value.erase(remove( value.begin(), value.end(), '\r' ),value.end());
+		setContentValue(key, value);
         i++;
     }
     _file.clear();

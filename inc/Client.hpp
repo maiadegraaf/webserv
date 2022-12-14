@@ -74,7 +74,7 @@ class Client {
 		void		parsePostPlainRequest(Request clientReq);
 		void 		parsePostWwwRequest(Request clientReq);
 		void 		parsePostMultipartRequest(Request clientReq);
-		void 		parseHeaderMultipart(string data);
+		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq);
 		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);

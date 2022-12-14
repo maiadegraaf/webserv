@@ -59,8 +59,11 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 	string s;
 
 	if (tmp.find(": ") < tmp.find("="))
+	{
+		tmp.erase(remove( tmp.begin(), tmp.end(), '\r' ),tmp.end());
 		setHeaderMultipartValue(tmp.substr(0, tmp.find(":")), tmp.substr(tmp.find(":") + 2, tmp.length()),
 								content_nb);
+	}
 	if (tmp.find("=") < tmp.find(": "))
 	{
 		s = tmp.substr(tmp.find("=") + 1, tmp.length());
@@ -70,50 +73,62 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 	}
 }
 
+void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq)
+{
+	string	tmp;
+	size_t pos = 0;
+	(void)clientReq;
+
+	while (getline(*ss, *req, '\n'))
+	{
+		if (req->compare("--" + clientReq.getContentValue("boundary") + "--\r") == 0)
+		{
+			*endOfReq = true;
+			break;
+		}
+		if (req->length() == 1)
+			break;
+		_headerMultipart.push_back( map<string, string>() );
+		tmp = *req;
+		while ((pos = req->find(";")) != string::npos) {
+			tmp = req->substr(0, pos);
+			makeMapOfMultipartHeader(tmp, content_nb);
+			req->erase(0, pos + 2);
+		}
+		makeMapOfMultipartHeader(*req, content_nb);
+	}
+}
+
+
 void Client::parsePostMultipartRequest(Request clientReq)
 {
+	bool endOfReq = false;
 	string data = clientReq.getFile();
 	stringstream ss(data);
 	int	content_nb = 0;
 	string	req;
 	string	contentFile;
-	string	tmp;
-	size_t pos = 0;
 
-	while (contentFile.compare("--" + clientReq.getContentValue("boundary")+ "--") != 0) {
-		while (getline(ss, req, '\n'))
-		{
-			_headerMultipart.push_back( map<string, string>() );
-			cerr << "begin: " << req << endl;
-			if (req.length() == 1) {
-				break;
-			}
-			tmp = req;
-			while ((pos = req.find(";")) != string::npos) {
-				tmp = req.substr(0, pos);
-				makeMapOfMultipartHeader(tmp, content_nb);
-				req.erase(0, pos + 2);
-			}
-			cerr << "pars: " << req << endl;
-			makeMapOfMultipartHeader(req, content_nb);
-		}
-		ofstream outfile (_headerMultipart[content_nb]["name"]);
-		cerr << "file: ->" <<  _headerMultipart[content_nb]["name"] << endl;
+	while (1) {
+		parseHeaderMultipart(&req, &ss, content_nb, clientReq, &endOfReq);
+		if (endOfReq == true)
+			break;
+		ofstream outfile(_headerMultipart[content_nb]["name"]);
 		while (getline(ss, contentFile, '\n'))
 		{
-			if (contentFile.compare("--" + clientReq.getContentValue("boundary")) == 0) {
+			if (contentFile.compare("--" + clientReq.getContentValue("boundary") + "\r") == 0) {
 				break;
 			}
-			cerr << "content: " << contentFile << endl;
-//			cerr << "dfsfdfdsf  " << content_nb <<  req << endl;
+			if (contentFile.compare("--" + clientReq.getContentValue("boundary") + "--\r") == 0)
+			{
+				endOfReq = true;
+				break;
+			}
 			outfile << contentFile;
-		}
-		if (req.compare("--" + clientReq.getContentValue("boundary")) == 0) {
-			content_nb++;
+			outfile << endl;
 		}
 		outfile.close();
-		cerr << "end: " << req << endl << endl;
-		sleep(1);
+		content_nb++;
 	}
 }
 
