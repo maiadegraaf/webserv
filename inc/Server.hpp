@@ -21,12 +21,11 @@
 #include <sys/event.h>
 #include "webserv.h"
 #include "Config.hpp"
-#include "Response.hpp"
-#include "Request.hpp"
+//#include "Response.hpp"
+//#include "Request.hpp"
 #include "Client.hpp"
 #include "WSException.hpp"
 #include "Location.hpp"
-
 
 class Config;
 
@@ -97,6 +96,5 @@ class Server
 		void		bindServerAcceptFdWithClient();
 
 };
-
 
 #endif

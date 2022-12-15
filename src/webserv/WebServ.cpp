@@ -59,6 +59,8 @@ void	WebServ::loopEvent( ) {
 			this->connectNewClient();
 		else if (event.filter == EVFILT_READ)
 			this->incomingRequest(event.udata);
+		else if (event.filter == EVFILT_WRITE)
+			this->outgoingResponse(event.udata);
 	}
 }
 
@@ -76,15 +78,45 @@ void	WebServ::connectNewClient() {
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
+	idx = _sockFdIdxMap[_eventFd];
 }
 
-void WebServ::incomingRequest(void *udata) {
+void	WebServ::setupClientWrite(Client *client) {
+	struct kevent	newEvents[2];
+
+	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
+	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, client);
+	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+		perror("kevent client write");
+}
+
+void	WebServ::setupClientRead(Client *client) {
+	struct kevent	newEvents[2];
+
+	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
+	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
+	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+		perror("kevent client read");
+}
+
+void	WebServ::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		cerr << "doing the request\n";
-		cerr << "eventFd :" << _eventFd << endl;
-		client->clientRequest();
+		if (client->incomingRequest() == true)
+			this->setupClientWrite(client);
 	}
+	else
+		perror("unknown request");
+}
+
+void	WebServ::outgoingResponse(void *udata) {
+	Client	*client = reinterpret_cast<Client *>(udata);
+	if (client) {
+		if (client->outgoingResponse() == false) // nog maken
+			this->setupClientRead(client);
+	}
+	else
+		perror("unkown response");
 }
 
 // Output
