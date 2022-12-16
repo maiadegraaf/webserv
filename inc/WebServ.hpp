@@ -56,6 +56,7 @@ class WebServ
 
 		void	setupClientRead(Client *client);
 		void	setupClientWrite(Client *client);
+		void 	setupClientEOF(Client *client);
 		void	output();
 };
 

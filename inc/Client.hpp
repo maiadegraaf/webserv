@@ -36,10 +36,9 @@ class Client {
 		map<string, Location>		        _location;
 		string 								_requestBuffer;
 		size_t								_maxSize;
-		Request								_clientRequest;
+		Request								_request;
 		Response							_response;
-//		bool 								_closeConnection; // this can be probably removed
-		// Add in the 5 string variables here from handleRequest() and put in getters/setters as well for them
+		bool 								_requestMode; // weg
 
 	/* *********
  	* Getters *
@@ -49,34 +48,29 @@ class Client {
 		const string		&getContentType(string key)											{ return this->_contentType[key]; }
 		Location			&getLocation(string key)											{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
-//		bool 				getCloseConnection() const											{ return this->_closeConnection; } // this can probably be removed
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
+		bool 				getRequestMode()													{ return this->_requestMode; }
 
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-//		void		setStrRequest(string newRequest)											{ this->_strRequest = newRequest; }
-//		void		setCloseConnection(bool Bool)												{ this->_closeConnection = Bool; } // this can probably be removed
+		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
 
 	/* **************
  	* Functionality *
  	* ***************/
 	public:
 		void		output();
-//		void 		clientRequest();
-		bool		incomingRequest();
+		bool		requestReceived();
 		void 		fillRequestBuffer();
-//		string		receiveStrRequest();
-		bool 		recvError(int rc);
+		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
 		void		setResponse(string filePath, string contentType);
 
-		bool 		outgoingResponse();
-//		void 		handleRequest(Request clientReq);
-//		void		handleResponse(string filePath, string contentType);
-//		void		handleCGIResponse(string filePath, string contentType);
+		bool 		responseSend();
+		void 		resetRequest();
 
 };
 

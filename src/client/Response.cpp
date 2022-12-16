@@ -28,6 +28,8 @@ Response&	Response::operator=( const Response& rhs ) {
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;
 	this->_filePath = rhs._filePath;
+	this->_hasBody = rhs._hasBody;
+	this->_sendHeader = rhs._sendHeader;
 	return *this;
 }
  
@@ -57,6 +59,7 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
+//	cerr << "komonnnnn" << endl;
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		perror("sendfile body failed");

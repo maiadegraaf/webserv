@@ -28,44 +28,55 @@ bool	Request::appendBuffer(string recvBuffer) {
 	_buffer.append(recvBuffer);
 
 	if (this->getRequestHeader() == true) {
-		this->parseHeader();
+		this->parseBufferHeader();
+		if (this->getRequestHeader() == false && this->getRequestBody() == false)
+			return false;
 		return true;
 	}
 	if (this->getRequestHeader() == false && this->getRequestBody() == true) {
-		this->parseBody();
+		this->parseBufferBody();
+		if (this->getRequestBody() == false)
+			return false;
 		return true;
 	}
 	return false;
 }
 
-void	Request::parseHeader() {
+void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-
+//	cout << "test buffer:" << _buffer << endl;
 	while (getline(ss, tmp)) {
-		if (tmp.find("\r") == string::npos) {
-			_buffer = tmp;
+		if (tmp.empty())
+			continue ;
+		else if (tmp.compare("\r") == 0) {
+//			cout << "this happens now" << endl;
+			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
 		}
-		else if (!tmp.compare("\r")) {
-			this->setupHeader();// buffer moet iets van tmp zijn
+		else if (tmp.find("\r") == string::npos) {
+//			cout << "this is tmp:" << tmp ;
+//			cerr << ":inside\n";
+			_buffer = tmp;
 			return ;
 		}
 		_input.push_back(tmp);
 	}
+	_buffer.clear();
 }
 
 void	Request::setupHeader() {
 	this->setAttributes();
 	this->setHeaderContent();
-	if ((_header.find("Content-Length") != _header.end() && !getMethod().compare("POST")))
+	if (_header.find("Content-Length") != _header.end() && !getMethod().compare("POST"))
 		this->setRequestBody(true);
 	this->setRequestHeader(false);
-	_input.clear();
-//	_buffer.clear();
+	this->output();
+//	_input.clear();
+	_buffer.clear();
 }
 
-void	Request::parseBody() {
+void	Request::parseBufferBody() {
 	stringstream	ss(_buffer);
 	string			tmp;
 
@@ -104,19 +115,19 @@ void	Request::setAttributes() {
 	string 			tmp;
 
 	getline(ss, tmp, ' ');
-	if (!tmp.empty() || !tmp.compare("GET") || !tmp.compare("POST") || \
-	!tmp.compare("DELETE")) {
+	if (tmp.empty() || (tmp.compare("GET") && tmp.compare("POST") && \
+	tmp.compare("DELETE"))) {
 		throw WSException::MethodNotAllowed();
 	}
 	setMethod(tmp);
 	getline(ss, tmp, ' ');
-	if (!tmp.empty())
+	if (tmp.empty())
 		throw WSException::BadRequest();
 	setDir(tmp);
 	getline(ss, tmp);
-	if (!tmp.empty())
+	if (tmp.empty())
 		throw WSException::BadRequest();
-	if (!tmp.compare("HTTP/1.1")) {
+	if (tmp.compare("HTTP/1.1\r")) {
 		cerr << " http version "  << tmp << endl;
 		throw WSException::HTTPVersionNotAvailable();
 	}
@@ -131,19 +142,15 @@ void	Request::setHeaderContent() {
     size_t	size = _input.size();
 
     while (i < size) { // && _input[i].compare(0, 1,"\n")) {
-        idx = _input[i].find(':', 0);
+        cout << "setHeaderContent:" << _input[i] << endl;
+		idx = _input[i].find(':', 0);
         if (idx == string::npos)
             break ;
         key = _input[i].substr(0, idx);
-        value = _input[i].substr(idx + 2);
+        value = _input[i].substr(idx + 2, _input[i].size() - 1);
         setHeaderValue(key, value);
         i++;
     }
-//    _file.clear();
-//    for (size_t j = i; j < size; j++) {
-//        _file.append(_input[j]);
-//        _file.append("\n");
-//    }
 }
 
 // Output
@@ -151,4 +158,6 @@ void Request::output() {
     std::cout << "_method : " << _method << std::endl;
     std::cout << "_dir : " << _dir << std::endl;
     std::cout << "_protocol : " << _protocol << std::endl;
+	cout << "_requestHeader : " << _requestHeader << endl;
+	cout << "_requestBody : " << _requestBody << endl;
 }

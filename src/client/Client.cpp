@@ -5,8 +5,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), _requestBuffer(""), \
-	_maxSize(newMaxSize) {
-//	cerr << "this is sockfd:" << _sockFD << ":\n";
+	_maxSize(newMaxSize), _requestMode(true) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -16,7 +15,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_contentType = rhs._contentType;
 	this->_requestBuffer = rhs._requestBuffer;
 	this->_maxSize = rhs._maxSize;
-	this->_clientRequest = rhs._clientRequest;
+	this->_request = rhs._request;
 	this->_response = rhs._response;
 	return *this;
 }
@@ -24,20 +23,22 @@ Client&	Client::operator=( const Client& rhs ) {
 // Output
 void	Client::output() {
 	std::cout << "SockFD : " << _sockFd << std::endl;
-//	std::cout << "fds : " << _fds << std::endl;
-//	std::cout << "location : " << _location << std::endl;
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-bool	Client::incomingRequest() {
+bool	Client::requestReceived() {
 	try {
 		this->fillRequestBuffer();
-		if (_clientRequest.appendBuffer(getRequestBuffer()) == false) {
+//		if (this->getRequestMode() == false) // check hier
+//			return false;
+		if (_request.appendBuffer(getRequestBuffer()) == false) {
+			cerr << "please arive here\n";
 			this->handleRequest();
+			this->resetRequest();
 			return true;
 		}
-		// else if postrequest
 		return false;
+		cout << "test if it comes here" << endl;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		Response	error(tmpMessage, getSockFd(), getContentType("html"));
@@ -52,10 +53,13 @@ void	Client::fillRequestBuffer() {
 	string	tmp;
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	if (recvError(rc))
+	if (recvError(rc)) {
 		perror("recv error");
+		return ;
+//		exit(-1);
+	}
 	tmp.assign(buffer, rc);
-	_requestBuffer.append(tmp);
+	_requestBuffer = tmp;
 }
 
 bool	Client::recvError(int rc) {
@@ -64,7 +68,8 @@ bool	Client::recvError(int rc) {
 		return true ;
 	}
 	if (rc == 0) {
-		cerr << "  Connection closed" << endl;
+		cerr << "  rc == 0" << endl;
+//		this->setRequestMode(false); // check hier
 		return true ;
 	}
 	return false ;
@@ -78,15 +83,17 @@ void	Client::handleRequest() {
 	string		extension;
 	string		contentType;
 
+	_request.output();
+
 //	cerr << "clientReq " << _request.getDir() << endl;
-	loca = getLocation(_clientRequest.getDir());
+	loca = getLocation(_request.getDir());
 	confFile = loca.getIndex();
 	if (!confFile.empty())
 		file.append(confFile); // page not foudn exception
 	else {
-		if (_clientRequest.getDir().empty())
+		if (_request.getDir().empty())
 			throw WSException::BadRequest();
-		file.append(_clientRequest.getDir()); // Response
+		file.append(_request.getDir()); // Response
 	}
 	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
@@ -108,18 +115,25 @@ void	Client::setResponse(string filePath, string contentType) {
 	_response = clientResponse;
 }
 
-bool	Client::outgoingResponse() {
+bool	Client::responseSend() { // moet ff wat logischer klinken
 	if (_response.getHasBody() == true) {
 		if (_response.getSendHeader() == false) {
 			_response.sendHeader();
-			return false;
+			return true;
 		}
 		_response.sendBody();
-		return true;
+		return false;
 	}
 	_response.sendHeader();
-	return true;
+	return false;
 }
+
+void	Client::resetRequest() {
+	Request	newRequest;
+
+	this->_request = newRequest;
+}
+
 
 
 

@@ -74,11 +74,12 @@ void	WebServ::disconnectClient(void *udata) {
 void	WebServ::connectNewClient() {
 	size_t			idx;
 
-	printf("New connection coming in...\n");
+	cerr << "WebServ::connectNewClient() : New connection coming in..." << endl;
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
 	idx = _sockFdIdxMap[_eventFd];
+	cerr << "WebServ::connectNewClient() : Client connected with server " << endl;
 }
 
 void	WebServ::setupClientWrite(Client *client) {
@@ -99,11 +100,24 @@ void	WebServ::setupClientRead(Client *client) {
 		perror("kevent client read");
 }
 
+void	WebServ::setupClientEOF(Client *client) {
+	struct kevent	newEvents[2];
+
+	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
+	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_EOF, 0, 0, client);
+	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+		perror("kevent client EOF");
+}
+
 void	WebServ::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		if (client->incomingRequest() == true)
+		cerr << "\nWebServ::incomingRequest() : new request comming in" << endl;
+		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
+		else if (client->getRequestMode() == false)
+			this->setupClientEOF(client);
+		cerr <<  endl;
 	}
 	else
 		perror("unknown request");
@@ -112,7 +126,7 @@ void	WebServ::incomingRequest(void *udata) {
 void	WebServ::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		if (client->outgoingResponse() == false) // nog maken
+		if (client->responseSend() == false) // nog maken
 			this->setupClientRead(client);
 	}
 	else

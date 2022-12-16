@@ -65,8 +65,8 @@ class Request
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
 		void	setHeaderContent();
-		void 	parseBody();
-		void 	parseHeader();
+		void 	parseBufferBody();
+		void 	parseBufferHeader();
 		void 	setupHeader();
 
 	/* ********
