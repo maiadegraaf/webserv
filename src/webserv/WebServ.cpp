@@ -57,9 +57,9 @@ void	WebServ::loopEvent( ) {
 			this->disconnectClient(event.udata);
 		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-		else if (event.filter & EVFILT_READ)
+		else if (event.filter == EVFILT_READ)
 			this->incomingRequest(event.udata);
-		else if (event.filter & EVFILT_WRITE)
+		else if (event.filter == EVFILT_WRITE)
 			this->outgoingResponse(event.udata);
 	}
 }
