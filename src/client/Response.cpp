@@ -1,8 +1,7 @@
 #include "Response.hpp"
-#include "Server.hpp"
 
 Response::Response(string errorMessage, int newSockFD, string contentType)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/") {
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/"), _hasBody(true), _sendHeader(false) { // checkout errorpage paths
 	stringstream	ss;
 	string			tmp;
 	ss << errorMessage;
@@ -16,20 +15,21 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 	appendToHead("\r\n");
 }
 
-Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize) // keep alive must be there
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize) {
+Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize)
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
 
-Response&	Response::operator=( const Response& rhs )
-{
+Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
 	this->_fileSize = rhs._fileSize;
 	this->_head = rhs._head;
 	this->_filePath = rhs._filePath;
+	this->_hasBody = rhs._hasBody;
+	this->_sendHeader = rhs._sendHeader;
 	return *this;
 }
  
@@ -40,13 +40,29 @@ void Response::output() {
 	std::cout << "fileSize : " << _fileSize << std::endl;
 }
 
-bool Response::sendResponse() {
+//bool Response::sendResponse() {
+//	int read = open(getFilePath().c_str(), O_RDONLY);
+//	send(getSockFD(), _head.c_str(), _head.size(), 0);
+//	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
+//		cerr << "send() failed " << errno << endl;
+//		return close(read), false;
+//	}
+//	close(read);
+//	return true;
+//}
+
+void	Response::sendHeader() {
+	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0)
+		perror("send header failed");
+	else
+		setSendHeader(true);
+}
+
+void	Response::sendBody() {
+//	cerr << "komonnnnn" << endl;
 	int read = open(getFilePath().c_str(), O_RDONLY);
-	send(getSockFD(), _head.c_str(), _head.size(), 0);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-		cerr << "send() failed " << errno << endl;
-		return close(read), false;
+		perror("sendfile body failed");
 	}
 	close(read);
-	return true;
 }

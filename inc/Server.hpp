@@ -21,11 +21,11 @@
 #include <sys/event.h>
 #include "webserv.h"
 #include "Config.hpp"
-#include "Response.hpp"
-#include "Request.hpp"
+//#include "Response.hpp"
+//#include "Request.hpp"
 #include "Client.hpp"
 #include "WSException.hpp"
-
+#include "Location.hpp"
 
 class Config;
 
@@ -52,8 +52,8 @@ class Server
 								_client_addr;
 		Config					*_conf;
 		struct kevent			_changeEvent[2];
-		map<string, string> 	_contentType,
-								_location;
+		map<string, string> 	_contentType;
+		map<string, Location>	_location;
 		bool 					_closeConnection;
 		size_t 					_maxSize;
 
@@ -68,13 +68,13 @@ class Server
  	* Getters *
  	* *********/
 	public:
-		bool 				getCloseConnection()					{ return this->_closeConnection; }
-		size_t 				getMaxSize()							{ return this->_maxSize; }
-		int					getSockFd()								{ return this->_sockFd; }
-		int					getAcceptFd()							{ return this->_acceptFd; }
-		map<string, string> getLocation()							{ return this->_location; }
-		map<string, string> getContentType()						{ return this->_contentType; }
-		int 				getKq()									{ return this->_kq; }
+		bool 						getCloseConnection() const					{ return this->_closeConnection; }
+		size_t 						getMaxSize() const							{ return this->_maxSize; }
+		int							getSockFd()	const							{ return this->_sockFd; }
+		int							getAcceptFd() const							{ return this->_acceptFd; }
+		const map<string, Location> &getLocation() const						{ return this->_location; }
+		const map<string, string> 	&getContentType() const						{ return this->_contentType; }
+		int 						getKq() const								{ return this->_kq; }
 
 	/* **************
  	* Functionality *
@@ -95,19 +95,6 @@ class Server
 		void		clientNewAcceptFd(int eventFd);
 		void		bindServerAcceptFdWithClient();
 
-	// ServerRun.cpp
-//		void		run();
-//		void 		newEvent();
-//		void 		creatingKqueue();
-//		void		loopEvent();
-//		// ClientResponse.cpp
-//		bool		clientRequest();
-//		string		receiveStrRequest();
-//		bool 		handleRequest(Request clientReq);
-//		void 		handleResponse(string filePath, string contentType);
-//		void 		handleCGIResponse(string filePath, string contentType);
-
 };
-
 
 #endif
