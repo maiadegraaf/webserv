@@ -54,8 +54,9 @@ void	Client::fillRequestBuffer() {
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
 	if (rc < 0) {
-		cerr << "recv() stopped reading " << endl;
+		cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
 		perror("recv error");
+		exit(-1);
 //		return true ;
 	}
 	if (rc == 0) {
