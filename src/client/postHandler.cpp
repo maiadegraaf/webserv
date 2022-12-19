@@ -6,7 +6,7 @@ void Client::parsePostPlainRequest(Request clientReq)
 {
 	string	req;
 	int i = 0;
-	stringstream ss(clientReq.getFile());
+	stringstream ss(clientReq.getBody());
 
 	while (getline(ss, req, '\n')) {
 		_postContent.push_back(vector<string>());
@@ -40,7 +40,7 @@ void Client::parsePostWwwRequest(Request clientReq)
 {
 	string	req;
 	int i = 0;
-	string data = clientReq.getFile();
+	string data = clientReq.getBody();
 	decryptWwwForm(data);
 	stringstream ss(data);
 
@@ -81,7 +81,7 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 
 	while (getline(*ss, *req, '\n'))
 	{
-		if (req->compare("--" + clientReq.getContentValue("boundary") + "--\r") == 0)
+		if (req->compare("--" + clientReq.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
 			break;
@@ -103,7 +103,7 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 void Client::parsePostMultipartRequest(Request clientReq)
 {
 	bool endOfReq = false;
-	string data = clientReq.getFile();
+	string data = clientReq.getBody();
 	stringstream ss(data);
 	int	content_nb = 0;
 	string	req;
@@ -116,10 +116,10 @@ void Client::parsePostMultipartRequest(Request clientReq)
 		ofstream outfile(_headerMultipart[content_nb]["name"]);
 		while (getline(ss, contentFile, '\n'))
 		{
-			if (contentFile.compare("--" + clientReq.getContentValue("boundary") + "\r") == 0) {
+			if (contentFile.compare("--" + clientReq.getHeaderValue("boundary") + "\r") == 0) {
 				break;
 			}
-			if (contentFile.compare("--" + clientReq.getContentValue("boundary") + "--\r") == 0)
+			if (contentFile.compare("--" + clientReq.getHeaderValue("boundary") + "--\r") == 0)
 			{
 				endOfReq = true;
 				break;

@@ -16,7 +16,6 @@ using namespace std;
 
 #include "ConfigParser.hpp"
 #include "Config.hpp"
-#include "Server.hpp"
 #include "Utils.h"
 
 //utils
