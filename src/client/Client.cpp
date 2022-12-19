@@ -17,6 +17,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
+	this->_requestMode = rhs._requestMode;
 	return *this;
 }
 
@@ -38,7 +39,6 @@ bool	Client::requestReceived() {
 			return true;
 		}
 		return false;
-		cout << "test if it comes here" << endl;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		Response	error(tmpMessage, getSockFd(), getContentType("html"));
@@ -53,27 +53,38 @@ void	Client::fillRequestBuffer() {
 	string	tmp;
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	if (recvError(rc)) {
+	if (rc < 0) {
+		cerr << "recv() stopped reading " << endl;
 		perror("recv error");
-		return ;
-//		exit(-1);
+//		return true ;
 	}
+	if (rc == 0) {
+		cerr << "everything read in the client" << endl;
+		return ;
+//		this->setRequestMode(false); // check hier
+//		return true ;
+	}
+//	if (recvError(rc)) {
+//		return ;
+////		exit(-1);
+//	}
 	tmp.assign(buffer, rc);
 	_requestBuffer = tmp;
 }
 
-bool	Client::recvError(int rc) {
-	if (rc < 0) {
-		cerr << "recv() stopped reading " << endl;
-		return true ;
-	}
-	if (rc == 0) {
-		cerr << "  rc == 0" << endl;
-//		this->setRequestMode(false); // check hier
-		return true ;
-	}
-	return false ;
-}
+//bool	Client::recvError(int rc) {
+//	if (rc < 0) {
+//		cerr << "recv() stopped reading " << endl;
+//		perror("recv error");
+//		return true ;
+//	}
+//	if (rc == 0) {
+//		cerr << "everything read in the client" << endl;
+////		this->setRequestMode(false); // check hier
+//		return true ;
+//	}
+//	return false ;
+//}
 
 void	Client::handleRequest() {
 	string		filePath("www/");
@@ -115,7 +126,7 @@ void	Client::setResponse(string filePath, string contentType) {
 	_response = clientResponse;
 }
 
-bool	Client::responseSend() { // moet ff wat logischer klinken
+bool	Client::responseSend() {
 	if (_response.getHasBody() == true) {
 		if (_response.getSendHeader() == false) {
 			_response.sendHeader();

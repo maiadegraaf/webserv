@@ -53,13 +53,13 @@ void	WebServ::loopEvent( ) {
 	for (int i = 0; i < _nrEvents; i++) {
 		event = _events[i];
 		_eventFd = event.ident;
-		if (event.flags == EV_EOF)
+		if (event.flags & EV_EOF)
 			this->disconnectClient(event.udata);
 		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-		else if (event.filter == EVFILT_READ)
+		else if (event.filter & EVFILT_READ)
 			this->incomingRequest(event.udata);
-		else if (event.filter == EVFILT_WRITE)
+		else if (event.filter & EVFILT_WRITE)
 			this->outgoingResponse(event.udata);
 	}
 }

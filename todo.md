@@ -20,7 +20,7 @@
 - [ ] create execve function
 - [ ] 
 
-#### Requirements List Subject
+#### Requirements List - Subject
 - [ ] (non)block/bouncing of a client
 - [ ] No errno in the code
 - [ ] Your HTTP response status codes must be accurate
@@ -28,7 +28,7 @@
 - [ ] Stress testing server
 - [ ] get post delete
 
-#### Configuration File Subject
+#### Configuration File - Subject
 - [X] Setup the server_names or not
 - [ ] The first server for a host:port will be the default for this host:port (that means
   it will answer to all the requests that don’t belong to an other server).
