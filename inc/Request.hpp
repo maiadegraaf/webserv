@@ -19,43 +19,55 @@ class Request
 		Request();
 		Request( const Request &rhs );
 		~Request();
-		Request& operator=( const Request &rhs );
+		Request &operator=( const Request &rhs );
 		Request(string input);
 
 	/* ************
 	 * Attributes *
 	 * ************/
 	private:
+		string				_buffer;
 		string				_method;
 		string				_dir;
 		string				_protocol;
 		vector<string>		_input;
-		map<string, string> _content;
-		string 				_file;
+		map<string, string> _header;
+		string 				_body;
+		bool 				_requestHeader,
+							_requestBody;
 
 	/* *********
 	 * Getters *
 	 * *********/
 	public:
-		string			getMethod()							{ return _method; }
-		string			getDir() 							{ return _dir; }
-		string			getProtocol()						{ return _protocol; }
-		string			getContentValue(string key)			{ return _content[key]; }
-		vector<string>	getInput()							{ return _input; }
-		string 			getFile()							{ return _file; }
+		string			getMethod()							{ return this->_method; }
+		string			getDir() 							{ return this->_dir; }
+		string			getProtocol()						{ return this->_protocol; }
+		string			getHeaderValue(string key)			{ return this->_header[key]; }
+		vector<string>	getInput()							{ return this->_input; }
+		string 			getBody()							{ return this->_body; }
+		bool 			getRequestHeader()					{ return this->_requestHeader; }
+		bool 			getRequestBody()					{ return this->_requestBody; }
 
 	/* *********
 	 * Setters *
 	 * *********/
 	public:
-		void	setMethod(string new_method)				{ _method = new_method; }
-		void	setDir(string new_dir)						{ _dir = new_dir; }
-		void	setProtocol(string new_protocol)			{ _protocol = new_protocol; }
-		void	setContentValue(string key, string value)	{ _content[key] = value; }
+		void	setMethod(string new_method)				{ this->_method = new_method; }
+		void	setDir(string new_dir)						{ this->_dir = new_dir; }
+		void	setProtocol(string new_protocol)			{ this->_protocol = new_protocol; }
+		void	setHeaderValue(string key, string value)	{ this->_header[key] = value; }
+		void 	setRequestHeader(bool nBool)				{ this->_requestHeader = nBool; }
+		void 	setRequestBody(bool nBool)					{ this->_requestBody = nBool; }
 
-		void	setInput(string input);
+
+//		void	setInput(string input);
+		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
-		void	setContent();
+		void	setHeaderContent();
+		void 	parseBufferBody();
+		void 	parseBufferHeader();
+		void 	setupHeader();
 
 	/* ********
 	 * Output *
