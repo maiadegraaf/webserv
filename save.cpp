@@ -543,19 +543,19 @@ void	Server::output() {
 }
 
 Webserv.cpp
-#include "WebServ.hpp"
+#include "ServerIO.hpp"
 // Constructor initializes attributes to 0 by default 
 
-WebServ::WebServ( const WebServ& rhs) {
+ServerIO::ServerIO( const ServerIO& rhs) {
 	*this = rhs;
 }
 
-WebServ&	WebServ::operator=( const WebServ& rhs ) {
+ServerIO&	ServerIO::operator=( const ServerIO& rhs ) {
 	(void)rhs;
 	return *this;
 }
 
-WebServ::WebServ(vector<Config> newConfig, map<string, string> newContentType)
+ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType)
 	:_config(newConfig), _contentType(newContentType) {
 	size_t	size = _config.size();
 
@@ -564,10 +564,10 @@ WebServ::WebServ(vector<Config> newConfig, map<string, string> newContentType)
 		_server.push_back(tmp);
 	}
 	_serverSize = size;
-	runWebServ();
+	runServerIO();
 }
 
-void	WebServ::runWebServ() {
+void	ServerIO::runServerIO() {
 	initKq();
 	while(1) {
 		newEvent();
@@ -575,7 +575,7 @@ void	WebServ::runWebServ() {
 	}
 }
 
-void	WebServ::initKq() {
+void	ServerIO::initKq() {
 	cout << "initializing kqueue..." << endl;
 	_kq = kqueue();
 	for (size_t idx = 0; idx < getServerSize(); idx++) {
@@ -584,7 +584,7 @@ void	WebServ::initKq() {
 	}
 }
 
-void	WebServ::newEvent() {
+void	ServerIO::newEvent() {
 	_nrEvents = kevent(getKq(), NULL, 0, _events, 2, NULL);
 	if (_nrEvents == -1) {
 		perror("kevent");
@@ -592,7 +592,7 @@ void	WebServ::newEvent() {
 	}
 }
 
-void	WebServ::loopEvent( ) {
+void	ServerIO::loopEvent( ) {
 	struct kevent	event;
 
 	for (int i = 0; i < _nrEvents; i++) {
@@ -609,14 +609,14 @@ void	WebServ::loopEvent( ) {
 	}
 }
 
-void	WebServ::disconnectClient(void *udata) {
+void	ServerIO::disconnectClient(void *udata) {
 	printf("Client has disconnected\n");
 	close(_eventFd);
 	Client *client = static_cast<Client *>(udata);
 	delete client;
 }
 
-void	WebServ::connectNewClient() {
+void	ServerIO::connectNewClient() {
 	size_t			idx;
 
 	printf("New connection coming in...\n");
@@ -625,7 +625,7 @@ void	WebServ::connectNewClient() {
 	_server[idx].bindServerAcceptFdWithClient();
 }
 
-void	WebServ::readOperation(void *udata) {
+void	ServerIO::readOperation(void *udata) {
 	size_t	idx = _sockFdIxMap[_eventFd]; // is idx correct for the opperation
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
@@ -643,10 +643,10 @@ void	WebServ::readOperation(void *udata) {
 	}
 }
 
-//void	WebServ::writeOperation()
+//void	ServerIO::writeOperation()
 
 // Output
-void WebServ::output() {
+void ServerIO::output() {
 	std::cout << "kq : " << _kq << std::endl;
 }
 

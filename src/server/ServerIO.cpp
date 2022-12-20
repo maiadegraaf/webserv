@@ -1,16 +1,16 @@
-#include "WebServ.hpp"
+#include "ServerIO.hpp"
 // Constructor initializes attributes to 0 by default 
 
-WebServ::WebServ( const WebServ& rhs) {
+ServerIO::ServerIO( const ServerIO& rhs) {
 	*this = rhs;
 }
 
-WebServ&	WebServ::operator=( const WebServ& rhs ) {
+ServerIO&	ServerIO::operator=( const ServerIO& rhs ) {
 	(void)rhs;
 	return *this;
 }
 
-WebServ::WebServ(vector<Config> newConfig, map<string, string> newContentType)
+ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType)
 	:_config(newConfig), _contentType(newContentType) {
 	size_t	size = _config.size();
 
@@ -19,10 +19,10 @@ WebServ::WebServ(vector<Config> newConfig, map<string, string> newContentType)
 		_server.push_back(tmp);
 	}
 	_serverSize = size;
-	runWebServ();
+	runServerIO();
 }
 
-void	WebServ::runWebServ() {
+void	ServerIO::runServerIO() {
 	initKq();
 	while(1) {
 		newEvent();
@@ -30,7 +30,7 @@ void	WebServ::runWebServ() {
 	}
 }
 
-void	WebServ::initKq() {
+void	ServerIO::initKq() {
 	cout << "initializing kqueue..." << endl;
 	_kq = kqueue();
 	for (size_t idx = 0; idx < getServerSize(); idx++) {
@@ -39,7 +39,7 @@ void	WebServ::initKq() {
 	}
 }
 
-void	WebServ::newEvent() {
+void	ServerIO::newEvent() {
 	_nrEvents = kevent(getKq(), NULL, 0, _events, 2, NULL);
 	if (_nrEvents == -1) {
 		perror("kevent");
@@ -47,7 +47,7 @@ void	WebServ::newEvent() {
 	}
 }
 
-void	WebServ::loopEvent( ) {
+void	ServerIO::loopEvent( ) {
 	struct kevent	event;
 
 	for (int i = 0; i < _nrEvents; i++) {
@@ -64,25 +64,25 @@ void	WebServ::loopEvent( ) {
 	}
 }
 
-void	WebServ::disconnectClient(void *udata) {
+void	ServerIO::disconnectClient(void *udata) {
 	printf("Client has disconnected\n");
 	close(_eventFd);
 	Client *client = static_cast<Client *>(udata);
 	delete client;
 }
 
-void	WebServ::connectNewClient() {
+void	ServerIO::connectNewClient() {
 	size_t			idx;
 
-	cerr << "WebServ::connectNewClient() : New connection coming in..." << endl;
+	cerr << "ServerIO::connectNewClient() : New connection coming in..." << endl;
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
 	idx = _sockFdIdxMap[_eventFd];
-	cerr << "WebServ::connectNewClient() : Client connected with server " << endl;
+	cerr << "ServerIO::connectNewClient() : Client connected with server " << endl;
 }
 
-void	WebServ::setupClientWrite(Client *client) {
+void	ServerIO::setupClientWrite(Client *client) {
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
@@ -91,7 +91,7 @@ void	WebServ::setupClientWrite(Client *client) {
 		perror("kevent client write");
 }
 
-void	WebServ::setupClientRead(Client *client) {
+void	ServerIO::setupClientRead(Client *client) {
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
@@ -100,7 +100,7 @@ void	WebServ::setupClientRead(Client *client) {
 		perror("kevent client read");
 }
 
-void	WebServ::setupClientEOF(Client *client) {
+void	ServerIO::setupClientEOF(Client *client) {
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
@@ -109,10 +109,10 @@ void	WebServ::setupClientEOF(Client *client) {
 		perror("kevent client EOF");
 }
 
-void	WebServ::incomingRequest(void *udata) {
+void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		cerr << "\nWebServ::incomingRequest() : new request comming in" << endl;
+		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
 		else if (client->getRequestMode() == false)
@@ -123,7 +123,7 @@ void	WebServ::incomingRequest(void *udata) {
 		perror("unknown request");
 }
 
-void	WebServ::outgoingResponse(void *udata) {
+void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
 		if (client->responseSend() == false) // nog maken
@@ -134,6 +134,6 @@ void	WebServ::outgoingResponse(void *udata) {
 }
 
 // Output
-void WebServ::output() {
+void ServerIO::output() {
 	std::cout << "kq : " << _kq << std::endl;
 }

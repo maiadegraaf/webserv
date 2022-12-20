@@ -1,5 +1,5 @@
 #include "Server.hpp"
-#include "WebServ.hpp"
+#include "ServerIO.hpp"
 #include "webserv.h"
 
 vector<Config> extractServer(const string& filename)
@@ -26,5 +26,5 @@ int main(int argc, char **argv)
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	vector<Config> conf = extractServer(argv[1]);
-	WebServ	webby(conf, returnContentType());
+	ServerIO	webby(conf, returnContentType());
 }
