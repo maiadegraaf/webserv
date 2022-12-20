@@ -26,15 +26,19 @@ Request&	Request::operator=( const Request& rhs )
 
 bool	Request::appendBuffer(string recvBuffer) {
 	_buffer.append(recvBuffer);
-
+//	cout << "recvbuff " << getRequestHeader() << " " << recvBuffer << endl;
 	if (this->getRequestHeader() == true) {
 		this->parseBufferHeader();
 		if (this->getRequestHeader() == false && this->getRequestBody() == false)
+		{
 			return false;
+		}
 		return true;
 	}
-	if (this->getRequestHeader() == false && this->getRequestBody() == true) {
+	else if (this->getRequestHeader() == false && this->getRequestBody() == true) {
+		cout << "it comes here bitch\n" << _buffer << endl;
 		this->parseBufferBody();
+		this->output();
 		if (this->getRequestBody() == false)
 			return false;
 		return true;
@@ -45,12 +49,18 @@ bool	Request::appendBuffer(string recvBuffer) {
 void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-//	cout << "test buffer:" << _buffer << endl;
+	cout << "test buffer:" << _buffer << endl;
 	while (getline(ss, tmp)) {
 		if (tmp.empty())
 			continue ;
 		else if (tmp.compare("\r") == 0) {
-//			cout << "this happens now" << endl;
+			cout << "this happens now" << endl;
+			while (getline(ss, tmp)) {
+				_body.append(tmp);
+				if (tmp.find("\r") != string::npos)
+					_body.append("\n");
+			}
+			cout << "body :" << _body << endl;
 			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
 		}
@@ -60,19 +70,25 @@ void	Request::parseBufferHeader() {
 			_buffer = tmp;
 			return ;
 		}
+//		tmp = tmp.substr(0, tmp.size() - 1);
 		_input.push_back(tmp);
 	}
 	_buffer.clear();
 }
 
 void	Request::setupHeader() {
+	stringstream ss(_body);
+	string tmp;
 	this->setAttributes();
 	this->setHeaderContent();
-	if (_header.find("Content-Length") != _header.end() && !getMethod().compare("POST"))
-		this->setRequestBody(true);
 	this->setRequestHeader(false);
-	this->output();
-//	_input.clear();
+	if (!getMethod().compare("POST")){
+		this->setRequestBody(true);
+		while (getline(ss, tmp)) {
+			if (tmp.compare("\r"))
+				this->setRequestBody(false);
+		}
+	}
 	_buffer.clear();
 }
 
@@ -80,9 +96,13 @@ void	Request::parseBufferBody() {
 	stringstream	ss(_buffer);
 	string			tmp;
 
+	cerr << "this is body: ";
+	cout << "\\033[1;31m"<< _buffer << "\\033[0m" << endl;
 	while (getline(ss, tmp)) {
 		if (tmp.find("\r") == string::npos) {
 			_buffer = tmp;
+			cerr << "this is body: ";
+			cout << _buffer << endl;
 			return ;
 		}
 		else if (tmp.compare("\r") == 0) {
@@ -91,24 +111,10 @@ void	Request::parseBufferBody() {
 		}
 		_body.append(tmp);
 		_body.append("\n");
+		cerr << "this is body: ";
+		cout << _buffer << endl;
 	}
 }
-//
-//Request::Request(string input) {
-//    setInput(input);
-//    setAttributes();
-//    setContent();
-//}
-//
-//// Setters
-//void Request::setInput(string input) {
-//    string vecPush;
-//    stringstream ss(input);
-//
-//    while (getline(ss, vecPush, '\n')) {
-//        _input.push_back(vecPush);
-//    }
-//}
 
 void	Request::setAttributes() {
 	stringstream 	ss(_input[0]);
@@ -144,7 +150,7 @@ void	Request::setHeaderContent() {
     size_t	size = _input.size();
 
     while (i < size) { // && _input[i].compare(0, 1,"\n")) {
-		cout << "setHeaderContent:" << _input[i] << endl;
+//		cout << "setHeaderContent:" << _input[i] << endl;
 		idx = _input[i].find(':', 0);
 		if (idx == string::npos)
 			break ;
@@ -173,4 +179,5 @@ void Request::output() {
     std::cout << "_protocol : " << _protocol << std::endl;
 	cout << "_requestHeader : " << _requestHeader << endl;
 	cout << "_requestBody : " << _requestBody << endl;
+	cout << "_body : " << _body << endl;
 }

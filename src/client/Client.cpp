@@ -107,18 +107,18 @@ void	Client::handleRequest() {
 			throw WSException::BadRequest();
 		file.append(_request.getDir()); // Response
 	}
-	filePath.append(file); // exception filePath;
-	extension = filePath.substr(filePath.find_last_of('.') + 1);
-//	if (extension.compare("php") == 0) {
+	if (_request.getMethod().compare("GET") == 0)
+	{
+		handleGetRequest(file, filePath);
+	}
+	else if (_request.getMethod().compare("POST") == 0) {
+		handlePostRequest(file, filePath, _request);
+	}
+	//	if (extension.compare("php") == 0) {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
 //	}
-	contentType = _contentType[extension];
-	if (!contentType.empty())
-		setResponse(filePath, contentType);
-	else
-		throw WSException::PageNotFound(); // not a supported extension
-	return ;
+
 }
 
 void	Client::setResponse(string filePath, string contentType) {
@@ -146,6 +146,45 @@ void	Client::resetRequest() {
 	this->_request = newRequest;
 }
 
+void Client::handleGetRequest(string file, string filePath)
+{
+	string contentType;
+	string extension;
+
+	filePath.append(file); // exception filePath;
+	extension = filePath.substr(filePath.find_last_of('.') + 1);
+	contentType = _contentType[extension];
+	if (!contentType.empty())
+		setResponse(filePath, contentType);
+	else
+		throw WSException::PageNotFound(); // not a supported extension
+	return ;
+}
+//
+//void Client::setPostContent(string input, int i) {
+//	_postContent.push_back(vector<string>());
+//
+//}
+
+void Client::handlePostRequest(string file, string filepath, Request clientReq)
+{
+//	string line;
+//	string len;
+//	string disp;
+//	string cont_type;
+//	string filename;
+//	string savePath;
+	(void )filepath;
+	(void )file;
+	string type = clientReq.getHeaderValue("Content-Type");
+
+	if (type.compare("text/plain") == 0)
+		parsePostPlainRequest(clientReq);
+	else if (type.compare("application/x-www-form-urlencoded") == 0)
+		parsePostWwwRequest(clientReq);
+	else if (type.compare("multipart/form-data") == 0)
+		parsePostMultipartRequest(clientReq);
+}
 
 
 
