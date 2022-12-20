@@ -1,6 +1,6 @@
 include Pretty.mk
 
-NAME			:=	webserve
+NAME			:=	webserv
 
 CPP_FLAGS		=	 -g -Wall -Werror -Wextra
 ifdef sanitize

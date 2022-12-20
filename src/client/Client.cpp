@@ -114,7 +114,7 @@ void	Client::handleRequest() {
 	else if (_request.getMethod().compare("POST") == 0) {
 		handlePostRequest(file, filePath, _request);
 	}
-	//	if (extension.compare("php") == 0) {
+//		if (extension.compare("php") == 0) {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
 //	}

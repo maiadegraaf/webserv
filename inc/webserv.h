@@ -12,6 +12,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <dirent.h>
 using namespace std;
 
 #include "ConfigParser.hpp"
@@ -27,6 +28,7 @@ void	printStr(const string& str);
 string	findNextWord(const string &line, size_t pos);
 string  findFirstWord(int i, vector<string> v);
 bool	fileAccess(string filename);
+bool	directoryAccess(const string& directory);
 
 //utils/error map
 map<int, string> setupErrorPages();

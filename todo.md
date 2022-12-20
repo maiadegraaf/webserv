@@ -6,8 +6,8 @@
 - [x] If node is empty fill with default or throw error.
 - [x] Copy constructors
 - [ ] Check ints are really ints
-- [ ] Add GET POST DEL etc
-- [ ] Auto index?
+- [x] Add GET POST DEL etc
+- [x] Auto index?
 - [ ] 
 
 #### Server
@@ -24,7 +24,7 @@
 - [ ] (non)block/bouncing of a client
 - [ ] No errno in the code
 - [ ] Your HTTP response status codes must be accurate
-- [ ] Autoindex in location?
+- [x] Autoindex in location?
 - [ ] Stress testing server
 - [ ] get post delete
 
@@ -32,7 +32,7 @@
 - [X] Setup the server_names or not
 - [ ] The first server for a host:port will be the default for this host:port (that means
   it will answer to all the requests that don’t belong to an other server).
-- [ ] Limit client body size
+- [x] Limit client body size
 - [ ] setup location 
 - [ ] CGI executor
 - [ ] Send EOF
