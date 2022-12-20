@@ -13,9 +13,34 @@ a:visited {
     color: lightcoral;
 }
 
+h1 {
+    margin: auto;
+    text-align: center;
+    height: 110px;
+    padding: 100px;
+    background-color: lightsteelblue;
+    color: darkslateblue;
+}
+
 a:hover {
     color: lightgoldenrodyellow;
 }
+
+body {
+    margin: 20px 20px 20px 20px;
+}
+
+ul {
+    list-style-type: "👉🏻 ";
+    margin-left: 40px;
+    padding-left: 40px;
+}
+
+/*li:before {*/
+/*    content: "➡";*/
+/*    margin-left:  20px;*/
+/*    margin-right: 10px;*/
+/*}*/
 
 .footer {
     position: fixed;
