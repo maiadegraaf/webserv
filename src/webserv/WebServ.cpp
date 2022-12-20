@@ -31,7 +31,7 @@ void	WebServ::runWebServ() {
 }
 
 void	WebServ::initKq() {
-	cout << "initializing kqueue..." << endl;
+	//cout << "initializing kqueue..." << endl;
 	_kq = kqueue();
 	for (size_t idx = 0; idx < getServerSize(); idx++) {
 		_server[idx].setupKq(getKq());
@@ -74,12 +74,12 @@ void	WebServ::disconnectClient(void *udata) {
 void	WebServ::connectNewClient() {
 	size_t			idx;
 
-	cerr << "WebServ::connectNewClient() : New connection coming in..." << endl;
+	//cerr << "WebServ::connectNewClient() : New connection coming in..." << endl;
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
 	idx = _sockFdIdxMap[_eventFd];
-	cerr << "WebServ::connectNewClient() : Client connected with server " << endl;
+	//cerr << "WebServ::connectNewClient() : Client connected with server " << endl;
 }
 
 void	WebServ::setupClientWrite(Client *client) {
@@ -112,12 +112,12 @@ void	WebServ::setupClientEOF(Client *client) {
 void	WebServ::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		cerr << "\nWebServ::incomingRequest() : new request comming in" << endl;
+		//cerr << "\nWebServ::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
 		else if (client->getRequestMode() == false)
 			this->setupClientEOF(client);
-		cerr <<  endl;
+		//cerr <<  endl;
 	}
 	else
 		perror("unknown request");
@@ -135,5 +135,5 @@ void	WebServ::outgoingResponse(void *udata) {
 
 // Output
 void WebServ::output() {
-	std::cout << "kq : " << _kq << std::endl;
+	//cout << "kq : " << _kq << std::endl;
 }

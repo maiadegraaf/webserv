@@ -117,7 +117,7 @@ void	Request::setAttributes() {
     if (!tmp.empty())
         throw WSException::BadRequest();
 	if (!tmp.compare("HTTP/1.1")) {
-		cerr << " http version "  << tmp << endl;
+		//cerr << " http version "  << tmp << endl;
 		throw WSException::HTTPVersionNotAvailable();
 	}
     setProtocol(tmp);
@@ -155,9 +155,9 @@ void	Request::reset() {
 
 // Output
 //void Request::output() {
-//    std::cout << "_method : " << _method << std::endl;
-//    std::cout << "_dir : " << _dir << std::endl;
-//    std::cout << "_protocol : " << _protocol << std::endl;
+//    //cout << "_method : " << _method << std::endl;
+//    //cout << "_dir : " << _dir << std::endl;
+//    //cout << "_protocol : " << _protocol << std::endl;
 //}
 
 Request.hpp
@@ -274,16 +274,16 @@ Response&	Response::operator=( const Response& rhs ) {
  
 // Output
 void Response::output() {
-	std::cout << "sockFD : " << _sockFD << std::endl;
-	cout << "head : " << _head << endl;
-	std::cout << "fileSize : " << _fileSize << std::endl;
+	//cout << "sockFD : " << _sockFD << std::endl;
+	//cout << "head : " << _head << endl;
+	//cout << "fileSize : " << _fileSize << std::endl;
 }
 
 bool Response::sendResponse() {
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	send(getSockFD(), _head.c_str(), _head.size(), 0);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-		cerr << "send() failed " << errno << endl;
+		//cerr << "send() failed " << errno << endl;
 		return close(read), false;
 	}
 	close(read);
@@ -418,7 +418,7 @@ void	Server::clientNewAcceptFd(int eventFd) {
 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 	if (fcntl(_acceptFd, F_SETFL, O_NONBLOCK) < 0) {
-		cerr << "fcntl failed: to make the acceptFd unblocking" << endl;
+		//cerr << "fcntl failed: to make the acceptFd unblocking" << endl;
 		close(_acceptFd);
 		exit(-1);
 	}
@@ -490,7 +490,7 @@ void Server::setup() {
 void	Server::setupSockFd() {
 	_sockFd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_sockFd < 0) {
-		cerr << "could not create socket (server)" << endl;
+		//cerr << "could not create socket (server)" << endl;
 		exit(-1);
 	}
 }
@@ -499,7 +499,7 @@ void	Server::setupSocketOpt() {
 	int on = 1;
 
 	if (setsockopt(getSockFd(), SOL_SOCKET,  SO_REUSEADDR, (char *)&on, sizeof(on)) < 0) {
-		cerr << "setsockopt() failed" << endl;
+		//cerr << "setsockopt() failed" << endl;
 		close(getSockFd());
 		exit(-1);
 	}
@@ -507,7 +507,7 @@ void	Server::setupSocketOpt() {
 
 void	Server::setupNonBlock() {
 	if (fcntl(getSockFd(), F_SETFL, O_NONBLOCK) < 0) {
-		cerr << "fcntl failed: to make the socket unblocking" << endl;
+		//cerr << "fcntl failed: to make the socket unblocking" << endl;
 		close(getSockFd());
 		exit(-1);
 	}
@@ -522,7 +522,7 @@ void Server::setAddr() {
 
 void	Server::bindSocket() {
 	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, sizeof(_servAddr)) < 0) {
-		cerr << "Error binding socket to local address" << endl;
+		//cerr << "Error binding socket to local address" << endl;
 		close(getSockFd());
 		exit(-1);
 	}
@@ -530,16 +530,16 @@ void	Server::bindSocket() {
 
 void	Server::listenSocket() {
 	if (listen(getSockFd(), 32) < 0) {
-		cerr << "Listen failed" << endl;
+		//cerr << "Listen failed" << endl;
 		close(getSockFd());
 		exit(-1);
 	}
 }
 
 void	Server::output() {
-	cout << "acceptFd: " << getAcceptFd() << endl;
-	cout << "kq: " << getKq() << endl;
-	cout << "fd or sockfd: " << getSockFd() << endl;
+	//cout << "acceptFd: " << getAcceptFd() << endl;
+	//cout << "kq: " << getKq() << endl;
+	//cout << "fd or sockfd: " << getSockFd() << endl;
 }
 
 Webserv.cpp
@@ -576,7 +576,7 @@ void	WebServ::runWebServ() {
 }
 
 void	WebServ::initKq() {
-	cout << "initializing kqueue..." << endl;
+	//cout << "initializing kqueue..." << endl;
 	_kq = kqueue();
 	for (size_t idx = 0; idx < getServerSize(); idx++) {
 		_server[idx].setupKq(getKq());
@@ -629,8 +629,8 @@ void	WebServ::readOperation(void *udata) {
 	size_t	idx = _sockFdIxMap[_eventFd]; // is idx correct for the opperation
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		cerr << "doing the request\n";
-		cerr << "eventFd :" << _eventFd << endl;
+		//cerr << "doing the request\n";
+		//cerr << "eventFd :" << _eventFd << endl;
 		if (client->clientInRequest() == false) { // this is only for read
 			_server[idx].setResponse(&client->getResponse()); // more elaborate on Get Post Delete
 			_server[idx].setKqRead();
@@ -647,7 +647,7 @@ void	WebServ::readOperation(void *udata) {
 
 // Output
 void WebServ::output() {
-	std::cout << "kq : " << _kq << std::endl;
+	//cout << "kq : " << _kq << std::endl;
 }
 
 Client.cpp
@@ -674,10 +674,10 @@ Client&	Client::operator=( const Client& rhs ) {
 
 // Output
 void	Client::output() {
-	std::cout << "SockFD : " << _sockFD << std::endl;
-//	std::cout << "fds : " << _fds << std::endl;
-//	std::cout << "location : " << _location << std::endl;
-	std::cout << "strRequest : " << _strRequest << std::endl;
+	//cout << "SockFD : " << _sockFD << std::endl;
+//	//cout << "fds : " << _fds << std::endl;
+//	//cout << "location : " << _location << std::endl;
+	//cout << "strRequest : " << _strRequest << std::endl;
 }
 
 bool	Client::clientInRequest() {
@@ -731,14 +731,14 @@ void	Client::fillRequestBuffer() {
 
 bool	Client::recvError(int rc) {
 	if (rc < 0) {
-		cerr << errno << ": errno\n";
+		//cerr << errno << ": errno\n";
 		perror("recv()");
-		cerr << "recv() stopped reading " << endl;
+		//cerr << "recv() stopped reading " << endl;
 		this->setCloseConnection(true);
 		return true ;
 	}
 	if (rc == 0) {
-		cerr << "  Connection closed" << endl;
+		//cerr << "  Connection closed" << endl;
 		this->setCloseConnection(true);
 		return true ;
 	}
@@ -753,7 +753,7 @@ void	Client::setupResponse() { // should we use a --> const Request &ref ??
 	string		extension;
 	string		contentType;
 
-	cerr << "clientReq " << _request.getDir() << endl;
+	//cerr << "clientReq " << _request.getDir() << endl;
 	loca = getLocation(_request.getDir());
 	confFile = loca.getIndex();
 	if (!confFile.empty())

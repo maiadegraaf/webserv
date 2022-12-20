@@ -25,14 +25,14 @@ string findNextWord(const string &line, size_t pos)
 	size_t end = line.find_first_of(" \t", start);
 	if (start == string::npos)
 	{
-		cerr << line;
+		//cerr << line;
 		failure(": does not contain enough information.");
 	}
 	if (end == string::npos)
 		end = line.find_first_of(';', start);
 	if (end == string::npos)
 	{
-		cerr << line;
+		//cerr << line;
 		failure(": could not identify terminating semi-colon");
 	}
 	return(line.substr(start, end - start));

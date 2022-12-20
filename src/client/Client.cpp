@@ -23,11 +23,12 @@ Client&	Client::operator=( const Client& rhs ) {
 
 // Output
 void	Client::output() {
-	std::cout << "SockFD : " << _sockFd << std::endl;
-	std::cout << "strRequest : " << _requestBuffer << std::endl;
+	//cout << "SockFD : " << _sockFd << std::endl;
+	//cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
 bool	Client::requestReceived() {
+	cerr << _request.getMethod() << endl;
 	try {
 		this->fillRequestBuffer();
 //		if (this->getRequestMode() == false) // check hier
@@ -54,13 +55,13 @@ void	Client::fillRequestBuffer() {
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
 	if (rc < 0) {
-		cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
+		//cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
 		perror("recv error");
 		exit(-1);
 //		return true ;
 	}
 	if (rc == 0) {
-		cerr << "everything read in the client" << endl;
+		//cerr << "everything read in the client" << endl;
 		return ;
 //		this->setRequestMode(false); // check hier
 //		return true ;
@@ -75,12 +76,12 @@ void	Client::fillRequestBuffer() {
 
 //bool	Client::recvError(int rc) {
 //	if (rc < 0) {
-//		cerr << "recv() stopped reading " << endl;
+//		//cerr << "recv() stopped reading " << endl;
 //		perror("recv error");
 //		return true ;
 //	}
 //	if (rc == 0) {
-//		cerr << "everything read in the client" << endl;
+//		//cerr << "everything read in the client" << endl;
 ////		this->setRequestMode(false); // check hier
 //		return true ;
 //	}
@@ -97,7 +98,8 @@ void	Client::handleRequest() {
 
 	_request.output();
 
-//	cerr << "clientReq " << _request.getDir() << endl;
+//	//cerr << "clientReq " << _request.getDir() << endl;
+	cout << _request.getMethod() << endl;
 	loca = getLocation(_request.getDir());
 	confFile = loca.getIndex();
 	if (!confFile.empty())
@@ -107,12 +109,11 @@ void	Client::handleRequest() {
 			throw WSException::BadRequest();
 		file.append(_request.getDir()); // Response
 	}
-	if (_request.getMethod().compare("GET") == 0)
-	{
+	if (_request.getMethod().compare("GET") == 0) {
 		handleGetRequest(file, filePath);
 	}
 	else if (_request.getMethod().compare("POST") == 0) {
-		handlePostRequest(file, filePath, _request);
+		handlePostRequest(file, filePath);
 	}
 	//	if (extension.compare("php") == 0) {
 //		handleCGIResponse(filePath, _contentType["html"]);
@@ -166,7 +167,7 @@ void Client::handleGetRequest(string file, string filePath)
 //
 //}
 
-void Client::handlePostRequest(string file, string filepath, Request clientReq)
+void Client::handlePostRequest(string file, string filepath)
 {
 //	string line;
 //	string len;
@@ -176,14 +177,14 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 //	string savePath;
 	(void )filepath;
 	(void )file;
-	string type = clientReq.getHeaderValue("Content-Type");
+	string type = _request.getHeaderValue("Content-Type");
 
 	if (type.compare("text/plain") == 0)
-		parsePostPlainRequest(clientReq);
+		parsePostPlainRequest();
 	else if (type.compare("application/x-www-form-urlencoded") == 0)
-		parsePostWwwRequest(clientReq);
+		parsePostWwwRequest();
 	else if (type.compare("multipart/form-data") == 0)
-		parsePostMultipartRequest(clientReq);
+		parsePostMultipartRequest();
 }
 
 
@@ -228,7 +229,7 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 //	string extension;
 //	string contentType;
 //
-//	cerr << "clientReq " << clientReq.getDir() << endl;
+//	//cerr << "clientReq " << clientReq.getDir() << endl;
 //	loca = getLocation(clientReq.getDir());
 //	confFile = loca.getIndex();
 //	if (!confFile.empty())

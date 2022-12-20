@@ -63,12 +63,12 @@ void Location::output()
             "PUT",
             "PATCH"
     };
-    cout << "index : " << _index << endl;
-    if (_autoIndex)
-        cout << "autoIndex : on" << endl;
-    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
-        cout << methods[i->first] << " : " << i->second << endl;
-    cout << "upload : " << _upload << endl;
+    //cout << "index : " << _index << endl;
+//    if (_autoIndex)
+        //cout << "autoIndex : on" << endl;
+//    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
+        //cout << methods[i->first] << " : " << i->second << endl;
+    //cout << "upload : " << _upload << endl;
 }
 
 
@@ -110,7 +110,7 @@ void Location::setMethod(const ConfigParser &confP, int line)
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {
-            cerr << s;
+            //cerr << s;
             failure(" is not an accepted method");
         }
         _method[determineMethod(s)] = true;

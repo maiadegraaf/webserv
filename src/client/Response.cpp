@@ -35,16 +35,16 @@ Response&	Response::operator=( const Response& rhs ) {
  
 // Output
 void Response::output() {
-	std::cout << "sockFD : " << _sockFD << std::endl;
-	cout << "head : " << _head << endl;
-	std::cout << "fileSize : " << _fileSize << std::endl;
+	//cout << "sockFD : " << _sockFD << std::endl;
+	//cout << "head : " << _head << endl;
+	//cout << "fileSize : " << _fileSize << std::endl;
 }
 
 //bool Response::sendResponse() {
 //	int read = open(getFilePath().c_str(), O_RDONLY);
 //	send(getSockFD(), _head.c_str(), _head.size(), 0);
 //	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-//		cerr << "send() failed " << errno << endl;
+//		//cerr << "send() failed " << errno << endl;
 //		return close(read), false;
 //	}
 //	close(read);
@@ -59,7 +59,7 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-//	cerr << "komonnnnn" << endl;
+//	//cerr << "komonnnnn" << endl;
 	int read = open(getFilePath().c_str(), O_RDONLY);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		perror("sendfile body failed");

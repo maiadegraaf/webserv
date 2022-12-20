@@ -197,7 +197,7 @@ echo "void $1::output()\n{" >> $1.cpp
 for i in "${@:2}"; do
     if [ $((c%2)) -eq 0 ] 
     then
-        echo "  std::cout << \"$i : \" << _$i << std::endl; " >> $1.cpp
+        echo "  //cout << \"$i : \" << _$i << std::endl; " >> $1.cpp
     fi
     c=$((c+1))
 done

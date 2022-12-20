@@ -26,17 +26,16 @@ Request&	Request::operator=( const Request& rhs )
 
 bool	Request::appendBuffer(string recvBuffer) {
 	_buffer.append(recvBuffer);
-//	cout << "recvbuff " << getRequestHeader() << " " << recvBuffer << endl;
+//	//cout << "recvbuff " << getRequestHeader() << " " << recvBuffer << endl;
 	if (this->getRequestHeader() == true) {
 		this->parseBufferHeader();
-		if (this->getRequestHeader() == false && this->getRequestBody() == false)
-		{
+		if (this->getRequestHeader() == false && this->getRequestBody() == false) {
 			return false;
 		}
 		return true;
 	}
 	else if (this->getRequestHeader() == false && this->getRequestBody() == true) {
-		cout << "it comes here bitch\n" << _buffer << endl;
+		//cout << "it comes here bitch\n" << _buffer << endl;
 		this->parseBufferBody();
 		this->output();
 		if (this->getRequestBody() == false)
@@ -49,24 +48,24 @@ bool	Request::appendBuffer(string recvBuffer) {
 void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-	cout << "test buffer:" << _buffer << endl;
+	//cout << "test buffer:" << _buffer << endl;
 	while (getline(ss, tmp)) {
 		if (tmp.empty())
 			continue ;
 		else if (tmp.compare("\r") == 0) {
-			cout << "this happens now" << endl;
+			//cout << "this happens now" << endl;
 			while (getline(ss, tmp)) {
 				_body.append(tmp);
 				if (tmp.find("\r") != string::npos)
 					_body.append("\n");
 			}
-			cout << "body :" << _body << endl;
+			//cout << "body :" << _body << endl;
 			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
 		}
 		else if (tmp.find("\r") == string::npos) {
-//			cout << "this is tmp:" << tmp ;
-//			cerr << ":inside\n";
+//			//cout << "this is tmp:" << tmp ;
+//			//cerr << ":inside\n";
 			_buffer = tmp;
 			return ;
 		}
@@ -77,17 +76,17 @@ void	Request::parseBufferHeader() {
 }
 
 void	Request::setupHeader() {
-	stringstream ss(_body);
-	string tmp;
+//	stringstream ss(_body);
+	string 	tmp;
+	size_t 	contentLength;
 	this->setAttributes();
 	this->setHeaderContent();
 	this->setRequestHeader(false);
 	if (!getMethod().compare("POST")){
 		this->setRequestBody(true);
-		while (getline(ss, tmp)) {
-			if (tmp.compare("\r"))
-				this->setRequestBody(false);
-		}
+		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
+		if (contentLength == _body.size())
+			this->setRequestBody(false);
 	}
 	_buffer.clear();
 }
@@ -96,13 +95,12 @@ void	Request::parseBufferBody() {
 	stringstream	ss(_buffer);
 	string			tmp;
 
-	cerr << "this is body: ";
-	cout << "\\033[1;31m"<< _buffer << "\\033[0m" << endl;
+	//cerr << "this is body: ";
 	while (getline(ss, tmp)) {
 		if (tmp.find("\r") == string::npos) {
 			_buffer = tmp;
-			cerr << "this is body: ";
-			cout << _buffer << endl;
+			//cerr << "this is body: ";
+			//cout << _buffer << endl;
 			return ;
 		}
 		else if (tmp.compare("\r") == 0) {
@@ -111,8 +109,8 @@ void	Request::parseBufferBody() {
 		}
 		_body.append(tmp);
 		_body.append("\n");
-		cerr << "this is body: ";
-		cout << _buffer << endl;
+		//cerr << "this is body: ";
+		//cout << _buffer << endl;
 	}
 }
 
@@ -126,6 +124,7 @@ void	Request::setAttributes() {
 		throw WSException::MethodNotAllowed();
 	}
 	setMethod(tmp);
+	cerr << getMethod() << endl;
 	getline(ss, tmp, ' ');
 	if (tmp.empty())
 		throw WSException::BadRequest();
@@ -134,7 +133,7 @@ void	Request::setAttributes() {
 	if (tmp.empty())
 		throw WSException::BadRequest();
 	if (tmp.compare("HTTP/1.1\r")) {
-		cerr << " http version "  << tmp << endl;
+		//cerr << " http version "  << tmp << endl;
 		throw WSException::HTTPVersionNotAvailable();
 	}
 	setProtocol(tmp);
@@ -150,7 +149,7 @@ void	Request::setHeaderContent() {
     size_t	size = _input.size();
 
     while (i < size) { // && _input[i].compare(0, 1,"\n")) {
-//		cout << "setHeaderContent:" << _input[i] << endl;
+//		//cout << "setHeaderContent:" << _input[i] << endl;
 		idx = _input[i].find(':', 0);
 		if (idx == string::npos)
 			break ;
@@ -174,10 +173,10 @@ void	Request::setHeaderContent() {
 
 // Output
 void Request::output() {
-    std::cout << "_method : " << _method << std::endl;
-    std::cout << "_dir : " << _dir << std::endl;
-    std::cout << "_protocol : " << _protocol << std::endl;
-	cout << "_requestHeader : " << _requestHeader << endl;
-	cout << "_requestBody : " << _requestBody << endl;
-	cout << "_body : " << _body << endl;
+    //cout << "_method : " << _method << std::endl;
+    //cout << "_dir : " << _dir << std::endl;
+    //cout << "_protocol : " << _protocol << std::endl;
+	//cout << "_requestHeader : " << _requestHeader << endl;
+	//cout << "_requestBody : " << _requestBody << endl;
+	//cout << "_body : " << _body << endl;
 }
