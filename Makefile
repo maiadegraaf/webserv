@@ -1,6 +1,6 @@
 include Pretty.mk
 
-NAME			:=	webserv
+NAME			:=	webserve
 
 CPP_FLAGS		=	 -g -Wall -Werror -Wextra
 ifdef sanitize
@@ -39,6 +39,7 @@ SRC				=	main.cpp \
                     utils/utils_Maia.cpp \
                     utils/Utils.cpp \
                     client/Request.cpp \
+                    client/postHandler.cpp \
                     client/Response.cpp \
                     client/CGIResponse.cpp \
                     client/Client.cpp \

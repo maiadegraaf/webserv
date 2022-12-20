@@ -34,7 +34,9 @@ class Client {
 											_len;
 		map<string, string>					_contentType;
 		map<string, Location>		        _location;
+		vector< map<string, string> >		_headerMultipart;
 		string 								_requestBuffer;
+		vector< vector<string> >			_postContent;
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
@@ -50,14 +52,15 @@ class Client {
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
 		bool 				getRequestMode()													{ return this->_requestMode; }
-
+		vector< vector<string> >	getPostContent()											{ return _postContent; }
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
 		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
-
+		void 		setPostContent(string input, int i);
+		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
 	/* **************
  	* Functionality *
  	* ***************/
@@ -68,9 +71,22 @@ class Client {
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
 		void		setResponse(string filePath, string contentType);
-
 		bool 		responseSend();
 		void 		resetRequest();
+		void 		clientRequest();
+		string		receiveStrRequest();
+		void		handleGetRequest(string file, string filepath);
+		void		handlePostRequest(string file, string filepath, Request clientReq);
+		void		handleDeleteRequest();
+		void		handleResponse(string filePath, string contentType);
+		void		handleCGIResponse(string filePath, string contentType);
+		void		parsePostPlainRequest(Request clientReq);
+		void 		parsePostWwwRequest(Request clientReq);
+		void 		parsePostMultipartRequest(Request clientReq);
+		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq);
+		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
+		void		createFileStorePost(int i);
+		void 		decryptWwwForm(string &data);
 
 };
 
