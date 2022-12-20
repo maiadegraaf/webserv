@@ -59,8 +59,6 @@ class Request
 		void	setHeaderValue(string key, string value)	{ this->_header[key] = value; }
 		void 	setRequestHeader(bool nBool)				{ this->_requestHeader = nBool; }
 		void 	setRequestBody(bool nBool)					{ this->_requestBody = nBool; }
-
-
 //		void	setInput(string input);
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
