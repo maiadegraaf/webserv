@@ -40,5 +40,5 @@ CMakeLists.txt
 createClass.sh
 test
 .dSYM
-/webserve
+/webserv
 .DS_store
