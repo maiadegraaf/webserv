@@ -48,9 +48,13 @@ public:
 
 	void checkIfComplete();
 
-	void checkFileAccess(string filename);
+//	void checkFileAccess(string filename);
 
-// MemberFunction Typedef
+	vector<string>		listDirectory(const string& dirRoot) const;
+	static bool				indexChecker(vector<string> dirLs);
+	void				createIndexFile(vector<string> dirLs, string dirRoot);
+
+	// MemberFunction Typedef
 	typedef void (Config::* ConfMemFuncPtr)(const ConfigParser&, int);
 };
 

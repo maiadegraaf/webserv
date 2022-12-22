@@ -71,7 +71,6 @@ void Location::output()
     cout << "upload : " << _upload << endl;
 }
 
-
 void Location::setIndex(const ConfigParser &confP, int line)
 {
     string type = "index";
@@ -149,5 +148,11 @@ void Location::determineCase(const string& word, const ConfigParser &confP, int 
 			break;
 		}
 	}
+}
+
+void Location::checkIfComplete(void) {
+    if (_autoIndex && _index.empty())
+        setIndex("index.html");
+
 }
 

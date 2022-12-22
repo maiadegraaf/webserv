@@ -1,5 +1,5 @@
-#ifndef WEBSERV_HPP
-#define WEBSERV_HPP
+#ifndef SERVERIO_HPP
+#define SERVERIO_HPP
 #include <iostream>
 #include <string>
 #include "Config.hpp"
@@ -8,17 +8,17 @@
 using namespace std;
  
 // Class definition 
-class WebServ
+class ServerIO
 {
 	/* *******************
 	 * (Con/De)structors *
  	* *******************/
 	public:
-		WebServ()																	{}
-		~WebServ()																	{}
-		WebServ(vector<Config> newConfig, map<string, string> newContentType);
-		WebServ( const WebServ &rhs);
-		WebServ& operator=( const WebServ &rhs);
+		ServerIO()																	{}
+		~ServerIO()																	{}
+		ServerIO(vector<Config> newConfig, map<string, string> newContentType);
+		ServerIO( const ServerIO &rhs);
+		ServerIO& operator=( const ServerIO &rhs);
 
 	/* ************
  	* Attributes *
@@ -45,7 +45,7 @@ class WebServ
  	* Functionality *
  	* ***************/
 	public:
-		void	runWebServ();
+		void	runServerIO();
 		void	initKq();
 		void 	newEvent();
 		void	loopEvent();

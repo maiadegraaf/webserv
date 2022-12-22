@@ -13,7 +13,7 @@ Config::Config(const ConfigParser &confP)
 		string word = confP.findFirstWord(i);
 		determineCase(word, confP, i);
 	}
-    output();
+//    output();
 	checkIfComplete();
 }
 
@@ -136,26 +136,6 @@ void Config::setLocation(const ConfigParser &confP, int line)
     tmp.setServerContent(confP.subVector(start, end - 1));
     Location    oneL(tmp);
     _location[loc] = oneL;
-//	string	type = "location";
-//	size_t	end = confP.at(line).find(type) + type.length();
-//	string	loc = findNextWord(input[line], end);
-//	string	ind;
-//	for(int i = line + 1; input[i].find('}') == string::npos; i++)
-//	{
-//		type = "index";
-//		size_t indLoc = input[i].find(type);
-//		if (indLoc != string::npos)
-//		{
-//			ind = findNextWord(input[i], indLoc + type.length());
-//			break;
-//		}
-//	}
-//	if (!ind.empty() && !loc.empty())
-//		_location[loc] = ind;
-//	else if (!loc.empty() && ind.empty())
-//		_location[loc] = "index.html";
-//	else
-//		failure("Index initialized incorrectly");
 }
 
 void Config::setCgi(const ConfigParser &confP, int line)
@@ -225,17 +205,70 @@ void Config::determineCase(const string& word, const ConfigParser &confP, int li
 	}
 }
 
+vector<string>		Config::listDirectory(const string& dirRoot) const
+{
+	DIR *dir = opendir((dirRoot.c_str()));
+	struct dirent *ent;
+	vector<string> dirLs;
+	if (dir)
+	{
+		while ((ent = readdir (dir)) != NULL) {
+			dirLs.push_back(ent->d_name);
+		}
+		closedir (dir);
+	}
+	else
+		failure(dirRoot.c_str());
+	return dirLs;
+}
+
+bool	Config::indexChecker(vector<string> dirLs)
+{
+	for(size_t j = 0; j < dirLs.size(); j++)
+	{
+		if (dirLs[j] == "index.html")
+			return true;
+	}
+	return false;
+}
+
+void Config::createIndexFile(vector<string> dirLs, string dirRoot)
+{
+	ofstream file(dirRoot + "/index.html", ios::out);
+	if (!file.is_open())
+	{
+		cerr << "failed to open file" << endl;
+		exit(EXIT_FAILURE);
+	}
+	string title = dirRoot.substr(dirRoot.find_last_of('/'), dirRoot.size() - dirRoot.find_last_of('/'));
+	file << "<!DOCTYPE html>" << endl;
+	file << "<html lang=\"en\">" << endl;
+	file << "<head>" << endl;
+	file << "\t<title>Index of " << title << "</title>" << endl;
+	file << "\t<meta charset=\"UTF-8\">" << endl;
+	file << "</head>" << endl;
+	file << "<body>" << endl;
+	file << "\t<h1>" << endl;
+	file << "\t\tIndex of " << title << endl;
+	file << "\t</h1>" << endl;
+	file << "\t<hr />" << endl;
+	for(size_t i = 1; i < dirLs.size() && file.is_open(); i++)
+	{
+		file << "\t\t" << "<a href=\"" << dirLs[i] << "\">" << dirLs[i] << "</a>" << endl;
+		file << "\t\t<br>" << endl;
+	}
+	file << "\t<hr />" << endl;
+	file << "</body>" << endl;
+	file << "</html>" << endl;
+	file.close();
+}
+
 void	Config::checkIfComplete()
 {
 	if (_root.empty())
 		failure("Root is a required field.");
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
-//	for (Location::iterator i = _location.begin(); i != _location.end(); i++)
-//	{
-//		if (!fileAccess(_root + '/' + i->second))
-//			failure(i->second.c_str());
-//	}
     for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
 	{
 		if (!fileAccess(_root + '/' + i->second))
@@ -243,5 +276,19 @@ void	Config::checkIfComplete()
 			if (!fileAccess(i->second))
 				failure(i->second.c_str());
 		}
+	}
+	for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
+	{
+		string	dirRoot = DIRECTORY + getRoot() + i->first;
+		if (!directoryAccess(dirRoot))
+			failure(dirRoot.c_str());
+		if (i->second.getAutoIndex())
+		{
+			vector<string> dirLs = listDirectory(dirRoot);
+			if (!indexChecker(dirLs))
+				createIndexFile(dirLs, dirRoot);
+		}
+		if (i->second.getIndex().empty())
+			i->second.setIndex(i->first + "/index.html");
 	}
 }
