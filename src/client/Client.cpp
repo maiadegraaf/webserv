@@ -107,18 +107,31 @@ void	Client::handleRequest() {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
+	this->testFilePath(filePath);
 	if (_request.getMethod().compare("GET") == 0) {
+//		extension = filePath.substr(filePath.find(".") + 1);
+//		if (extension.compare("php") == 0) {
+//			handleCGIResponse(filePath, _contentType["html"]);
+//			return ;
+//		}
 		handleGetRequest(filePath);
 	}
 	else if (_request.getMethod().compare("POST") == 0) {
 		handlePostRequest(filePath, _request);
 	}
-//		if (extension.compare("php") == 0) {
-//		handleCGIResponse(filePath, _contentType["html"]);
-//		return ;
-//	}
-
 }
+
+void	Client::testFilePath(string filePath) {
+	int	testPathFd;
+
+	testPathFd = open(filePath.c_str(), O_RDONLY);
+	if (testPathFd < 0) {
+		perror(filePath.append(": 404 page not found").c_str());
+		throw WSException::PageNotFound();
+	}
+	close(testPathFd);
+}
+
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
@@ -197,7 +210,7 @@ void Client::handlePostRequest(string filepath, Request clientReq)
 //
 //void	Client::handleCGIResponse(string filePath, string contentType) {
 //	off_t _len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
+//	Response	clientResponse(filePath, "200 OK", contentType, _sockFd, _len); // different lenght constructor for cgi
 //	if (!clientResponse.sendResponse())
 //		setCloseConnection(true);
 //	_strRequest.clear();

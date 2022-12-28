@@ -1,0 +1,35 @@
+URL=http://localhost:8080
+
+# locations
+$(URL)/
+$(URL)/about/
+$(URL)/test/
+
+# root files
+$(URL)/about.html
+$(URL)/index.html
+
+# about
+$(URL)/about/about.php
+$(URL)/about/index.php
+
+# css
+$(URL)/css/css.css
+
+# errors
+$(URL)/error/400.html
+$(URL)/error/403.html
+$(URL)/error/404.html
+$(URL)/error/413.html
+$(URL)/error/500.html
+$(URL)/error/505.html
+$(URL)/error/501.html
+
+# photo
+$(URL)/photo/favicon.ico
+$(URL)/photo/giphy.gif
+$(URL)/photo/picture.png
+
+# test
+$(URL)/test/index.html
+$(URL)/test/test.txt

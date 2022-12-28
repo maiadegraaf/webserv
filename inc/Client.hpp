@@ -61,7 +61,8 @@ class Client {
 		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
-	/* **************
+
+		/* **************
  	* Functionality *
  	* ***************/
 	public:
@@ -70,6 +71,7 @@ class Client {
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
+		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
 		bool 		responseSend();
 		void 		resetRequest();
