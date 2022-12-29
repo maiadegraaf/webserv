@@ -5,13 +5,14 @@ $(URL)/
 $(URL)/about/
 $(URL)/test/
 
+
 # root files
-$(URL)/about.html
-$(URL)/index.html
+$(URL)/www/about.html
+$(URL)/www/index.html
 
 # about
-$(URL)/about/about.php
-$(URL)/about/index.php
+$(URL)/www/about/about.php
+$(URL)/www/about/index.php
 
 # css
 $(URL)/css/css.css
