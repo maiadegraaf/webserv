@@ -10,6 +10,7 @@ void Client::parsePostPlainRequest()
 
 	while (getline(ss, req, '\n')) {
 		cerr << req << endl;
+		req.erase(remove( req.begin(), req.end(), '\r' ),req.end());
 		_postContent.push_back(vector<string>());
 		_postContent[i].push_back(req.substr(0, req.find("=")));
 		_postContent[i].push_back(req.substr(req.find("=") + 1, req.length()));
@@ -82,6 +83,7 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 
 	while (getline(*ss, *req, '\n'))
 	{
+		cout << "hallooo" << endl;
 		if (req->compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
@@ -114,7 +116,7 @@ void Client::parsePostMultipartRequest()
 		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
 			break;
-		ofstream outfile(_headerMultipart[content_nb]["name"]);
+//		ofstream outfile(_headerMultipart[content_nb]["name"]);
 		while (getline(ss, contentFile, '\n'))
 		{
 			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "\r") == 0) {
@@ -125,11 +127,14 @@ void Client::parsePostMultipartRequest()
 				endOfReq = true;
 				break;
 			}
-			outfile << contentFile;
-			outfile << endl;
+//			outfile << contentFile;
+//			outfile << endl;
 		}
-		outfile.close();
+//		outfile.close();
+		cout << content_nb << endl;
+		cout << endOfReq << endl;
 		content_nb++;
+		sleep(1);
 	}
 }
 
