@@ -1,6 +1,4 @@
 #include "Client.hpp"
-// Constructor initializes attributes to 0 by default
-
 
 Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
@@ -121,6 +119,15 @@ void	Client::handleRequest() {
 
 }
 
+//void	Client::handleCGIResponse(string filePath, string contentType) {
+//	off_t len = fileSize(filePath.c_str());
+//	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
+//
+//	_response = clientResponse;
+//
+//}
+
+
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
@@ -133,7 +140,10 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
-		_response.sendBody();
+		if (_response.getContentType() == "php")
+			_response.CGIResponse();
+		else
+			_response.sendBody();
 		return false;
 	}
 	_response.sendHeader();
@@ -157,9 +167,7 @@ void Client::handleGetRequest(string file, string filePath)
 	if (!contentType.empty())
 		setResponse(filePath, contentType);
 	else
-		throw WSException::PageNotFound(); // not a supported extension
-	return ;
-}
+		throw WSException::PageNotFound(); }
 //
 //void Client::setPostContent(string input, int i) {
 //	_postContent.push_back(vector<string>());
@@ -264,10 +272,3 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 //	_strRequest.clear();
 //}
 //
-//void	Client::handleCGIResponse(string filePath, string contentType) {
-//	off_t _len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
-//	if (!clientResponse.sendResponse())
-//		setCloseConnection(true);
-//	_strRequest.clear();
-//}

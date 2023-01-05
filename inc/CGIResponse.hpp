@@ -9,7 +9,6 @@ class Response;
 class CGIResponse : protected Response
 {
 private:
-
 	string _type;
 
 public:

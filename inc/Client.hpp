@@ -7,6 +7,7 @@
 #include "Request.hpp"
 #include "WSException.hpp"
 #include "Location.hpp"
+#include "CGIResponse.hpp"
 
 //class Response;
 
