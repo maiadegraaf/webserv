@@ -1,7 +1,7 @@
 #include "Response.hpp"
 
 Response::Response(string errorMessage, int newSockFD, string contentType)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/"), _hasBody(true), _sendHeader(false) { // checkout errorpage paths
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/"), _contentType(contentType), _hasBody(true), _sendHeader(false) { // checkout errorpage paths
 	stringstream	ss;
 	string			tmp;
 	ss << errorMessage;
@@ -16,7 +16,7 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 }
 
 Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _hasBody(true), _sendHeader(false) {
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
@@ -65,4 +65,64 @@ void	Response::sendBody() {
 		perror("sendfile body failed");
 	}
 	close(read);
+}
+
+extern char **environ;
+
+bool Response::exec()
+{
+	char *split[2];
+	string filePath = getFilePath();
+
+	split[0] = new char[getFilePath().length() + 1];
+	strcpy(split[0], filePath.c_str());
+	split[1] = NULL;
+	execve(split[0], split, environ);
+	perror("");
+	return (EXIT_FAILURE);
+}
+
+// cmd handler from minishell
+//void	dup_cmd(int end[2], int fd_in)
+//{
+//	if (dup2(fd_in, STDIN_FILENO) < 0)
+//		;
+////		ft_error(4, tools);
+//	close(end[0]);
+//	if (dup2(end[1], STDOUT_FILENO) < 0)
+//		;
+////		ft_error(4, tools);
+//	close(end[1]);
+////	handle_cmd(cmd, tools);
+//}
+
+bool Response::CGIResponse()
+{
+	int pid = fork();
+	if (pid == 0)
+	{
+		if (dup2(getSockFD(), STDOUT_FILENO) < 0)
+			failure("");
+		close(getSockFD());
+		exec();
+	}
+	close(getSockFD());
+//	int end[2];
+//	pipe(end);
+//	int pid = fork();
+//	if (pid == 0)
+//	{
+//		if (dup2(end[0], getSockFD()) < 0)
+//			failure("");
+//		if (dup2(end[1], STDOUT_FILENO) < 0)
+//			failure("");
+//		close(end[1]);
+//		close(end[0]);
+//		exec();
+//	}
+//	close(end[1]);
+//	close(end[0]);
+	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
+	while(waitpid(pid, NULL, WUNTRACED) != -1);
+	return true;
 }

@@ -43,6 +43,7 @@ class Response
 		string		_head;
 		string		_filePath;
 		off_t 		_fileSize;
+		string 		_contentType;
 		bool 		_hasBody, // new
 					_sendHeader; // new
 
@@ -50,12 +51,13 @@ class Response
 	 * Getters *
 	 * *********/
 	public:
-		int		getSockFD()								{ return _sockFD; }
-		string	getHead()								{ return _head; }
-		string	getFilePath()							{ return _filePath; }
-		off_t 	getFileSize()							{ return _fileSize; }
-		bool 	getHasBody()							{ return _hasBody; }
-		bool 	getSendHeader()							{ return _sendHeader; }
+		int				getSockFD()								{ return _sockFD; }
+		string			getHead()								{ return _head; }
+		string			getFilePath()							{ return _filePath; }
+		off_t 			getFileSize()							{ return _fileSize; }
+		bool 			getHasBody()							{ return _hasBody; }
+		bool 			getSendHeader()							{ return _sendHeader; }
+		const string	&getContentType() const 				{ return _contentType; }
 
 
 	/* *********
@@ -73,6 +75,13 @@ class Response
 
 		void 	setHasBody(bool nBool)							{ this->_hasBody = nBool; }
 		void 	setSendHeader(bool nBool)						{ this->_sendHeader = nBool; }
+
+	/* ****
+	* CGI *
+	* *****/
+
+	bool exec();
+	bool CGIResponse();
 
 	/* ********
 	 * Output *
