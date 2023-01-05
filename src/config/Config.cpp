@@ -254,7 +254,7 @@ void Config::createIndexFile(vector<string> dirLs, string dirRoot)
 	file << "\t<hr />" << endl;
 	for(size_t i = 1; i < dirLs.size() && file.is_open(); i++)
 	{
-		file << "\t\t" << "<a href=\"" << dirLs[i] << "\">" << dirLs[i] << "</a>" << endl;
+		file << "\t\t" << "<a href=\"" << title << "/"<< dirLs[i] << "\">" << dirLs[i] << "</a>" << endl;
 		file << "\t\t<br>" << endl;
 	}
 	file << "\t<hr />" << endl;
