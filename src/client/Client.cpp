@@ -107,7 +107,7 @@ void	Client::handleRequest() {
 	if (_request.getMethod() == "GET")
 	{
 		if (extension(file) == "php") {
-			handleCGIResponse(filePath, _contentType["php"], _request.getDir() + '/' + file);
+			handleCGIResponse(filePath, "php", _request.getDir() + '/' + file);
 			return ;
 		}
 		handleGetRequest(file, filePath);
@@ -121,7 +121,7 @@ void	Client::handleCGIResponse(const string& filePath, const string& contentType
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
 	clientResponse.setFilePath(clientResponse.CGIResponse(file));
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
-	clientResponse.setNewHeader("200 OK", "html");
+	clientResponse.setNewHeader("200 OK", contentType);
 	_response = clientResponse;
 }
 
@@ -137,10 +137,9 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
-//		if (_response.getContentType() == "php")
-//			_response.CGIResponse();
-//		else
 		_response.sendBody();
+		if (_response.getContentType() == "php")
+			remove(_response.getFilePath().c_str());
 		return false;
 	}
 	_response.sendHeader();
