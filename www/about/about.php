@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <link rel="icon" href="data:,">
+    <link rel="shortcut icon" type="image/x-icon" href="photo/favicon.ico">
     <link rel="stylesheet" href="css/css.css">
     <title>Simple-Web-Server html-file</title>
 </head>

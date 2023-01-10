@@ -1,6 +1,6 @@
 #include "Response.hpp"
 
-Response::Response(string errorMessage, int newSockFD, string contentType)
+Response::Response(const string& errorMessage, int newSockFD, const string& contentType)
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/"), _contentType(contentType), _hasBody(true), _sendHeader(false) { // checkout errorpage paths
 	stringstream	ss;
 	string			tmp;
@@ -15,7 +15,7 @@ Response::Response(string errorMessage, int newSockFD, string contentType)
 	appendToHead("\r\n");
 }
 
-Response::Response(string filePath, string message, string contentType, int newSockFD, off_t fileSize)
+Response::Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize)
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
@@ -32,7 +32,16 @@ Response&	Response::operator=( const Response& rhs ) {
 	this->_sendHeader = rhs._sendHeader;
 	return *this;
 }
- 
+
+void Response::setNewHeader(const string& message, const string& contentType)
+{
+	setHead("HTTP/1.1");
+	appendToHeadNL(message);
+	appendObjectToHead("Content-Type: ", contentType);
+	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
+	appendToHead("\r\n");
+}
+
 // Output
 void Response::output() {
 	std::cout << "sockFD : " << _sockFD << std::endl;
@@ -59,8 +68,10 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-//	cerr << "komonnnnn" << endl;
+	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
+	cerr << getFilePath() << endl;
 	int read = open(getFilePath().c_str(), O_RDONLY);
+	cerr << read << endl;
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		perror("sendfile body failed");
 	}
@@ -69,10 +80,10 @@ void	Response::sendBody() {
 
 extern char **environ;
 
-bool Response::exec()
+bool Response::exec(const string& file)
 {
 	char *split[2];
-	string filePath = getFilePath();
+	string filePath = getFilePath() + file;
 
 	split[0] = new char[getFilePath().length() + 1];
 	strcpy(split[0], filePath.c_str());
@@ -82,47 +93,23 @@ bool Response::exec()
 	return (EXIT_FAILURE);
 }
 
-// cmd handler from minishell
-//void	dup_cmd(int end[2], int fd_in)
-//{
-//	if (dup2(fd_in, STDIN_FILENO) < 0)
-//		;
-////		ft_error(4, tools);
-//	close(end[0]);
-//	if (dup2(end[1], STDOUT_FILENO) < 0)
-//		;
-////		ft_error(4, tools);
-//	close(end[1]);
-////	handle_cmd(cmd, tools);
-//}
-
-bool Response::CGIResponse()
+string Response::CGIResponse(const string& file)
 {
+	static int i = 0;
+	string tmp =  getFilePath() + "tmpFile_" + to_string(i++) + ".html";
+	char *filename = const_cast<char *>(tmp.c_str());
+	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (fd < 0)
+		failure("");
 	int pid = fork();
 	if (pid == 0)
 	{
-		if (dup2(getSockFD(), STDOUT_FILENO) < 0)
+		if (dup2(fd, STDOUT_FILENO) < 0)
 			failure("");
-		close(getSockFD());
-		exec();
+		close(fd);
+		exec(file);
 	}
-	close(getSockFD());
-//	int end[2];
-//	pipe(end);
-//	int pid = fork();
-//	if (pid == 0)
-//	{
-//		if (dup2(end[0], getSockFD()) < 0)
-//			failure("");
-//		if (dup2(end[1], STDOUT_FILENO) < 0)
-//			failure("");
-//		close(end[1]);
-//		close(end[0]);
-//		exec();
-//	}
-//	close(end[1]);
-//	close(end[0]);
-//	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
+	close(fd);
 	while(waitpid(pid, NULL, WUNTRACED) != -1);
-	return true;
+	return tmp;
 }
