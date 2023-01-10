@@ -24,7 +24,7 @@ void	Server::clientNewAcceptFd(int eventFd) {
 void	Server::bindServerAcceptFdWithClient() {
 	struct kevent	newEvents[2];
 
-	Client *newClient = new Client(getAcceptFd(), getLocation(), getContentType(), getMaxSize());
+	Client *newClient = new Client(getAcceptFd(), getLocation(), _conf->getRoot(), _conf->get getContentType(), getMaxSize());
 	EV_SET(&newEvents[0], getAcceptFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, newClient);
 	EV_SET(&newEvents[1], getAcceptFd(), EVFILT_WRITE, EV_ADD | EV_DISABLE, 0, 0, newClient);
 	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0) {

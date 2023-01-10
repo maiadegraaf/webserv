@@ -2,10 +2,10 @@
 // Constructor initializes attributes to 0 by default
 
 
-Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
+Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, string	newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
-	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), _requestBuffer(""), \
-	_maxSize(newMaxSize), _requestMode(true) {
+	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -89,7 +89,7 @@ void	Client::fillRequestBuffer() {
 
 void	Client::handleRequest() {
 	Location	location;
-	string		filePath("www/");
+	string		filePath(getRoot().append("/"));
 	string 		path;
 //	string		file;
 //	string		extension;

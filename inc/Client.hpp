@@ -22,8 +22,8 @@ class Client {
 		Client& operator=( const Client &rhs);
 		Client()
 			: _sockFd(-1), _requestBuffer(""), _maxSize(0) 										{}
-		Client(int newSockFd, map<string, Location> newLocation, \
-			map<string, string> newContentType, size_t newMaxSize);
+		Client(int newSockFd, map<string, Location> newLocation, string newRoot, string	newErrorPages, \
+		map<string, string> newContentType, size_t newMaxSize);
 
 
 	/* ************
@@ -35,7 +35,9 @@ class Client {
 		map<string, string>					_contentType;
 		map<string, Location>		        _location;
 		vector< map<string, string> >		_headerMultipart;
-		string 								_requestBuffer;
+		string 								_requestBuffer,
+											_root,
+											_errorPages;
 		vector< vector<string> >			_postContent;
 		size_t								_maxSize;
 		Request								_request;
@@ -52,7 +54,8 @@ class Client {
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
 		bool 				getRequestMode()													{ return this->_requestMode; }
-		vector< vector<string> >	getPostContent()											{ return _postContent; }
+		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
+		string				getRoot() const														{ return this->_root; }
 	/* *********
  	* Setters *
  	* *********/
