@@ -37,7 +37,6 @@ public:
 	int findClosingBracket(size_t i, size_t pos);
     int findClosingBracket(size_t i, size_t pos) const;
 
-
     string findFirstWord(int i) const;
 
     vector<string> subVector(int first, int last);

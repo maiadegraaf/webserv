@@ -29,6 +29,7 @@ string	findNextWord(const string &line, size_t pos);
 string  findFirstWord(int i, vector<string> v);
 bool	fileAccess(string filename);
 bool	directoryAccess(const string& directory);
+string	extension(string filename);
 
 //utils/error map
 map<int, string> setupErrorPages();

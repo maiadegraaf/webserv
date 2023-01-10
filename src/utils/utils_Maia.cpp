@@ -70,3 +70,12 @@ string findFirstWord(int i, vector<string> v)
         return "";
     return(v[i].substr(start, end - start));
 }
+
+string extension(string filename)
+{
+	size_t start = filename.find_first_of('.');
+	if (start == string::npos)
+		return "";
+	start++;
+	return(filename.substr(start, filename.size() - start));
+}

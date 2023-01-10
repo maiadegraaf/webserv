@@ -122,7 +122,7 @@ bool Response::CGIResponse()
 //	}
 //	close(end[1]);
 //	close(end[0]);
-	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
+//	send(getSockFD(), getHead().c_str(), getHead().size(), 0);
 	while(waitpid(pid, NULL, WUNTRACED) != -1);
 	return true;
 }

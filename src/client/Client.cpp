@@ -90,7 +90,6 @@ void	Client::handleRequest() {
 	string 		confFile;
 	Location	loca;
 	string		file;
-	string		extension;
 	string		contentType;
 
 	_request.output();
@@ -107,25 +106,25 @@ void	Client::handleRequest() {
 	}
 	if (_request.getMethod().compare("GET") == 0)
 	{
+		if (extension(file) == "php") {
+			handleCGIResponse(filePath, _contentType["php"]);
+			return ;
+		}
 		handleGetRequest(file, filePath);
 	}
 	else if (_request.getMethod().compare("POST") == 0) {
 		handlePostRequest(file, filePath, _request);
 	}
-//		if (extension.compare("php") == 0) {
-//		handleCGIResponse(filePath, _contentType["html"]);
-//		return ;
-//	}
 
 }
 
-//void	Client::handleCGIResponse(string filePath, string contentType) {
-//	off_t len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
-//
-//	_response = clientResponse;
-//
-//}
+void	Client::handleCGIResponse(string filePath, string contentType) {
+	off_t len = fileSize(filePath.c_str());
+	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
+
+	_response = clientResponse;
+
+}
 
 
 void	Client::setResponse(string filePath, string contentType) {
