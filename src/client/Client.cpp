@@ -2,7 +2,7 @@
 // Constructor initializes attributes to 0 by default
 
 
-Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, string	newErrorPages,  map<string, string> newContentType, \
+Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
 	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) {
@@ -41,7 +41,11 @@ bool	Client::requestReceived() {
 		return false;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		Response	error(tmpMessage, getSockFd(), getContentType("html"));
+		string		filePath("default/");
+		int 		errorNr = atoi(tmpMessage.c_str());
+		filePath.append(getErrorPageValue(errorNr));
+		cout << "this is Filepath :" << filePath << endl;
+		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
 		return true;
 	}

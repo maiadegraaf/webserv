@@ -115,8 +115,8 @@ void	ServerIO::incomingRequest(void *udata) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
-		else if (client->getRequestMode() == false)
-			this->setupClientEOF(client);
+//		else if (client->getRequestMode() == false)
+//			this->setupClientEOF(client);
 		cerr <<  endl;
 	}
 	else
