@@ -53,7 +53,7 @@ void	ServerIO::loopEvent( ) {
 	for (int i = 0; i < _nrEvents; i++) {
 		event = _events[i];
 		_eventFd = event.ident;
-		if (event.flags & EV_EOF)
+		if (event.flags & EV_EOF || event.flags == 1)
 			this->disconnectClient(event.udata);
 		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
@@ -83,6 +83,7 @@ void	ServerIO::connectNewClient() {
 }
 
 void	ServerIO::setupClientWrite(Client *client) {
+//	return ;
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
@@ -92,6 +93,7 @@ void	ServerIO::setupClientWrite(Client *client) {
 }
 
 void	ServerIO::setupClientRead(Client *client) {
+//	return;
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
@@ -112,6 +114,8 @@ void	ServerIO::setupClientEOF(Client *client) {
 void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (client) {
+		// if (client->requestMode == true)
+//			this->requestRecieved();
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
@@ -126,6 +130,8 @@ void	ServerIO::incomingRequest(void *udata) {
 void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
+		// if (client->requestMode == false) incorperate this tommorow
+			// this->responseSend();
 		if (client->responseSend() == false) // nog maken
 			this->setupClientRead(client);
 	}
