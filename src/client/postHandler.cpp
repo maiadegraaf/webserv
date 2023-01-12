@@ -9,15 +9,16 @@ void Client::parsePostPlainRequest()
 	stringstream ss(_request.getBody());
 
 	while (getline(ss, req, '\n')) {
-		cerr << req << endl;
 		req.erase(remove( req.begin(), req.end(), '\r' ),req.end());
 		_postContent.push_back(vector<string>());
 		_postContent[i].push_back(req.substr(0, req.find("=")));
 		_postContent[i].push_back(req.substr(req.find("=") + 1, req.length()));
+		cerr << "postContent:: " << _postContent[i][1] << endl;
 		i++;
 	}
 	while (i-- > 0)
 		createFileStorePost(i);
+	cerr << "testvdtevtegtd" << getLocation(_request.getDir()).getUpload() << endl;
 }
 
 void Client::decryptWwwForm(string &data)
@@ -83,7 +84,7 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 
 	while (getline(*ss, *req, '\n'))
 	{
-		cout << "hallooo" << endl;
+		cerr << "1:" << *req << endl;
 		if (req->compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
@@ -112,6 +113,7 @@ void Client::parsePostMultipartRequest()
 	string	req;
 	string	contentFile;
 
+	cerr << data << endl;
 	while (1) {
 		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
@@ -119,6 +121,7 @@ void Client::parsePostMultipartRequest()
 //		ofstream outfile(_headerMultipart[content_nb]["name"]);
 		while (getline(ss, contentFile, '\n'))
 		{
+			cerr << "2: " << contentFile << endl;
 			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "\r") == 0) {
 				break;
 			}
@@ -140,8 +143,10 @@ void Client::parsePostMultipartRequest()
 
 void Client::createFileStorePost(int i)
 {
-	ofstream outfile (_postContent[i][0]);
+	string uploadPath = getLocation(_request.getDir()).getUpload();
+	uploadPath.append(_postContent[i][0]);
 
+	ofstream outfile (uploadPath);
 	outfile << _postContent[i][1];
 	outfile.close();
 }

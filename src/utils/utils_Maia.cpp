@@ -51,6 +51,17 @@ bool fileAccess(string filename)
 	return false;
 }
 
+bool directoryAccess(const string& directory)
+{
+	DIR *dir = opendir(directory.c_str());
+	if (dir)
+	{
+		closedir (dir);
+		return true;
+	}
+	return false;
+}
+
 string findFirstWord(int i, vector<string> v)
 {
     size_t start = v[i].find_first_not_of(" \t");

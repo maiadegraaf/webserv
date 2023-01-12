@@ -87,6 +87,7 @@ class Client {
 		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
+		void		setPostResponse(string contentType);
 
 };
 

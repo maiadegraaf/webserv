@@ -4,42 +4,41 @@
 <head>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/css.css">
+    <meta charset="UTF-8">
 <!--    <link rel="icon" href="data:,">-->
     <link rel="shortcut icon" type="image/x-icon" href="photo/favicon.ico">
     <title>Simple-Web-Server html-file</title>
 </head>
 <body>
-    <header>
-        <br>
+    <h1>
         <center>
             whats good in the hood
         </center>
-    </header>
+    </h1>
 <!--    <img src="photo/picture.png"><img>-->
+    <h3>
+        Table of Contents
+    </h3>
+    <ul>
+
+        <li><a href="/about">Go to ABOUT</a></li>
+        <li><a href="/test">Go to TEST</a></li>
+    </ul>
     <br><br><br>
-    <a href="/about">&#10145 Go to ABOUT</a>
-
-    <label for="avatar">Choose a profile picture:</label>
-
-    <input type="file"
-           id="avatar" name="avatar"
-           accept="image/png, image/jpeg">
-    This is the content of index.html
-    <img src="photo/picture.png"><img>
-    <a href="/about">test</a>
-    <h1>text plain</h1>
+    <h3>text plain</h3>
     <form action="http://localhost:8080/" method="post" enctype="text/plain">
         <p><input type="text" name="text1" value="text default">
+        <p><input type="text" name="text2" value="text">
         <p><input type="file" name="file1">
         <p><button type="submit" value="Send Request">Submit</button>
     </form>
-    <h1>x-www form</h1>
+    <h3>x-www form</h3>
     <form action="http://localhost:8080/" method="post" enctype="application/x-www-form-urlencoded">
         <p><input type="text" name="text1" value="text default">
         <p><input type="file" name="file1">
         <p><button type="submit" value="Send Request">Submit</button>
     </form>
-    <h1>multipart form</h1>
+    <h3>multipart form</h3>
     <form action="http://localhost:8080/" method="post" enctype="multipart/form-data">
         <p><input type="text" name="text1" value="text default">
         <p><input type="file" name="file1">

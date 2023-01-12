@@ -34,7 +34,7 @@ bool	Client::requestReceived() {
 //		if (this->getRequestMode() == false) // check hier
 //			return false;
 		if (_request.appendBuffer(getRequestBuffer()) == false) {
-			cerr << "please arive here\n";
+			cerr << "please arrive here\n";
 			this->handleRequest();
 			this->resetRequest();
 			return true;
@@ -111,11 +111,14 @@ void	Client::handleRequest() {
 	}
 	if (_request.getMethod().compare("GET") == 0) {
 		handleGetRequest(file, filePath);
+		cout << "this is a GETTT" << endl;
 	}
 	else if (_request.getMethod().compare("POST") == 0) {
 		handlePostRequest(file, filePath);
+		cout << "this is a POSTTT" << endl;
 	}
-	//	if (extension.compare("php") == 0) {
+	cout << "get Mthod: -> " << _request.getMethod() << endl << endl;
+//		if (extension.compare("php") == 0) {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
 //	}
@@ -125,6 +128,12 @@ void	Client::handleRequest() {
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
+	_response = clientResponse;
+}
+
+void	Client::setPostResponse(string contentType) {
+	off_t		len = 0;
+	Response	clientResponse("201 Created", contentType, getSockFd(), len);
 	_response = clientResponse;
 }
 
@@ -155,6 +164,7 @@ void Client::handleGetRequest(string file, string filePath)
 	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	contentType = _contentType[extension];
+	cerr << "contentType: " << contentType << endl;
 	if (!contentType.empty())
 		setResponse(filePath, contentType);
 	else
@@ -169,22 +179,21 @@ void Client::handleGetRequest(string file, string filePath)
 
 void Client::handlePostRequest(string file, string filepath)
 {
-//	string line;
-//	string len;
-//	string disp;
-//	string cont_type;
-//	string filename;
-//	string savePath;
 	(void )filepath;
 	(void )file;
 	string type = _request.getHeaderValue("Content-Type");
 
+	cerr << type << endl;
 	if (type.compare("text/plain") == 0)
+	{
 		parsePostPlainRequest();
+		cerr << "sdfdsfdfsfdsfds" << endl;
+	}
 	else if (type.compare("application/x-www-form-urlencoded") == 0)
 		parsePostWwwRequest();
 	else if (type.compare("multipart/form-data") == 0)
 		parsePostMultipartRequest();
+	setPostResponse(type);
 }
 
 

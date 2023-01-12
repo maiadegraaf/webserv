@@ -26,7 +26,6 @@ Request&	Request::operator=( const Request& rhs )
 
 bool	Request::appendBuffer(string recvBuffer) {
 	_buffer.append(recvBuffer);
-//	//cout << "recvbuff " << getRequestHeader() << " " << recvBuffer << endl;
 	if (this->getRequestHeader() == true) {
 		this->parseBufferHeader();
 		if (this->getRequestHeader() == false && this->getRequestBody() == false) {
@@ -35,7 +34,6 @@ bool	Request::appendBuffer(string recvBuffer) {
 		return true;
 	}
 	else if (this->getRequestHeader() == false && this->getRequestBody() == true) {
-		//cout << "it comes here bitch\n" << _buffer << endl;
 		this->parseBufferBody();
 		this->output();
 		if (this->getRequestBody() == false)
@@ -48,7 +46,7 @@ bool	Request::appendBuffer(string recvBuffer) {
 void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-	//cout << "test buffer:" << _buffer << endl;
+	cout << "test buffer:" << _buffer << endl;
 	while (getline(ss, tmp)) {
 		if (tmp.empty())
 			continue ;
@@ -59,7 +57,7 @@ void	Request::parseBufferHeader() {
 				if (tmp.find("\r") != string::npos)
 					_body.append("\n");
 			}
-			//cout << "body :" << _body << endl;
+			cout << "body :" << _body << endl;
 			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
 		}
@@ -78,16 +76,16 @@ void	Request::parseBufferHeader() {
 void	Request::setupHeader() {
 //	stringstream ss(_body);
 	string 	tmp;
-	size_t 	contentLength;
+//	size_t 	contentLength;
 	this->setAttributes();
 	this->setHeaderContent();
 	this->setRequestHeader(false);
-	if (!getMethod().compare("POST")){
-		this->setRequestBody(true);
-		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
-		if (contentLength == _body.size())
-			this->setRequestBody(false);
-	}
+//	if (!getMethod().compare("POST")){
+//		this->setRequestBody(true);
+//		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
+//		if (contentLength == _body.size())
+//			this->setRequestBody(false);
+//	}
 	_buffer.clear();
 }
 

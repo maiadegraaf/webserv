@@ -71,7 +71,6 @@ void Location::output()
     //cout << "upload : " << _upload << endl;
 }
 
-
 void Location::setIndex(const ConfigParser &confP, int line)
 {
     string type = "index";
@@ -124,6 +123,7 @@ void Location::setUpload(const ConfigParser &confP, int line)
     string type = "upload";
     size_t indLoc = confP.at(line).find(type);
     _upload = findNextWord(confP.at(line), indLoc + type.length());
+	cerr << "upload : " << _upload << endl;
 }
 
 void Location::determineCase(const string& word, const ConfigParser &confP, int line)
@@ -149,5 +149,11 @@ void Location::determineCase(const string& word, const ConfigParser &confP, int 
 			break;
 		}
 	}
+}
+
+void Location::checkIfComplete(void) {
+    if (_autoIndex && _index.empty())
+        setIndex("index.html");
+
 }
 

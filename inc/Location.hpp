@@ -61,8 +61,10 @@ public:
 // Output 
 	void output();
 
-    e_method determineMethod(string s);
+    static e_method determineMethod(string s);
     void determineCase(const string& word, const ConfigParser &confP, int line);
+
+    void checkIfComplete(void);
 
 	// Typedef Member function
 	typedef void (Location::* LocMemFuncPtr)(const ConfigParser&, int);
