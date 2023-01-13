@@ -62,11 +62,12 @@ class Client {
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
+		void 		setRequestModeFalse()														{ this->_requestMode = false; }
+		void 		setRequestModeTrue()														{ this->_requestMode = true; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
 
-		/* **************
+	/* **************
  	* Functionality *
  	* ***************/
 	public:
