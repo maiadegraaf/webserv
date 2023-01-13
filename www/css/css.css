@@ -60,12 +60,18 @@ a:active {
 
 
 .center {
-    margin: 0;
     position: absolute;
     top: 50%;
     left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.center-text-box{
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%);
 }
 
 .title-container {
@@ -81,20 +87,38 @@ a:active {
     text-align: center;
 }
 
-
+.subtitle-container {
+    font-size: 100%;
+    width: 80%;
+    color: var(--baby-pink);
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*z-index: 2;*/
+    /*width: 100%;*/
+    padding: 10px;
+    text-align: center;
+}
 
 button {
     margin: 10px;
     font-family: inherit;
     width: 80%;
+    color: var(--midnight-green-eagle-green);
+}
+
+.home {
+    width: 100%;
 }
 
 /* Fill button styling */
 .fill {
+    border-radius: 5px;
     font-size: 20px;
     font-weight: 200;
     letter-spacing: 1px;
-    padding: 13px 50px 13px;
+    padding: 13px 40px 13px;
     outline: 0;
     border: 1px solid var(--midnight-green-eagle-green);
     cursor: pointer;
@@ -103,6 +127,7 @@ button {
 }
 
 .fill::after {
+    border-radius: 5px;
     content: "";
     background-color: var(--baby-pink);
     width: 100%;
@@ -121,12 +146,19 @@ button {
 /* End of Fill Button  */
 
 .box {
-    padding: 10px;
-    /*background-color: var(--baby-pink);*/
+    position: relative;
     color: var(--midnight-green-eagle-green);
-    width: 100%;
-    z-index: -2;
-    text-align: center;
+    text-align: justify;
+}
+
+.box.text {
+    width: 2000px;
+}
+
+.box.background {
+    padding: 20px;
+    border-radius: 5px;
+    background-color: var(--light-periwinkle-2);
 }
 
 table.aTable {
@@ -139,9 +171,16 @@ table.aTable td, table.aTable th {
 }
 
 ul {
-    list-style-type: "👉🏻 ";
-    margin-left: 40px;
-    padding-left: 40px;
+    list-style-type: "∿ ";
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+br {
+    margin-bottom: 10px;
 }
 
 .closing {

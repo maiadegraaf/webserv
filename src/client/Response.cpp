@@ -70,7 +70,8 @@ void	Response::sendHeader() {
 void	Response::sendBody() {
 	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
 	cerr << getFilePath() << endl;
-	int read = open(getFilePath().c_str(), O_RDONLY);
+    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
+    int read = open(getFilePath().c_str(), O_RDONLY);
 	cerr << read << endl;
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		perror("sendfile body failed");
