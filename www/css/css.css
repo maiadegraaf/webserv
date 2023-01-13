@@ -69,13 +69,14 @@ a:active {
 }
 
 .title-container {
+    font-size: 300%;
     color: var(--baby-pink);
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2;
-    width: 40%;
+    /*z-index: 2;*/
+    /*width: 100%;*/
     padding: 10px;
     text-align: center;
 }
@@ -83,8 +84,9 @@ a:active {
 
 
 button {
-    margin: 50px;
+    margin: 10px;
     font-family: inherit;
+    width: 80%;
 }
 
 /* Fill button styling */
@@ -93,9 +95,8 @@ button {
     font-weight: 200;
     letter-spacing: 1px;
     padding: 13px 50px 13px;
-    outline: 1px;
-    border: 1px;
-    border-color: var(--midnight-green-eagle-green);
+    outline: 0;
+    border: 1px solid var(--midnight-green-eagle-green);
     cursor: pointer;
     position: relative;
     background-color: rgba(0, 0, 0, 0);
@@ -103,7 +104,7 @@ button {
 
 .fill::after {
     content: "";
-    background-color: #f7a1a1;
+    background-color: var(--baby-pink);
     width: 100%;
     z-index: -1;
     position: absolute;
@@ -121,11 +122,10 @@ button {
 
 .box {
     padding: 10px;
-    background-color: var(--baby-pink);
+    /*background-color: var(--baby-pink);*/
     color: var(--midnight-green-eagle-green);
     width: 100%;
     z-index: -2;
-    font-size: 30px;
     text-align: center;
 }
 
@@ -144,13 +144,11 @@ ul {
     padding-left: 40px;
 }
 
-.footer {
+.closing {
     position: fixed;
-    left: 0;
-    bottom: 0;
+    bottom: 5%;
     width: 100%;
-    background-color: lightsteelblue;
-    color: white;
+    color: var(--light-periwinkle);
     text-align: center;
 }
 
