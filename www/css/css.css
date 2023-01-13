@@ -1,33 +1,141 @@
+
+:root{
+    /* CSS HEX */
+    --baby-pink: #FBCDCDff;
+    --light-periwinkle: #CDCDE0ff;
+    --light-periwinkle-2: #C3C4DAff;
+    --air-superiority-blue: #7BA4C0ff;
+    --midnight-green-eagle-green: #024A63ff;
+}
+
 html {
-    background-color: darkslateblue;
-    color: mintcream;
-    font-family: "American Typewriter", serif;
-    font-size: xxx-large;
+    background-color: var(--light-periwinkle-2);
+    background-image:url(../photo/sunrise.gif);
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: "Iowan Old Style";
 }
 
+/* unvisited link */
 a:link {
-    color: lightsteelblue;
+    color: var(--midnight-green-eagle-green);
 }
 
+/* visited link */
 a:visited {
-    color: lightcoral;
+    color: var(--air-superiority-blue);
 }
 
-h1 {
-    margin: auto;
-    text-align: center;
-    height: 110px;
-    padding: 100px;
-    background-color: lightsteelblue;
-    color: darkslateblue;
-}
-
+/* mouse over link */
 a:hover {
-    color: lightgoldenrodyellow;
+      color: var(--light-periwinkle);
 }
 
-body {
-    margin: 20px 20px 20px 20px;
+/* selected link */
+a:active {
+    color: blue;
+}
+
+.wordart {
+    font-family: Arial, sans-serif;
+    font-size: 4em;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.wordart.blues .text {
+    font-family: "Comic Sans MS", sans-serif;
+    color: var(--baby-pink);
+    -webkit-text-stroke: 0.01em var(--midnight-green-eagle-green);
+    filter: progid:DXImageTransform.Microsoft.Glow(Color=var(--midnight-green-eagle-green),Strength=1);
+    text-shadow: 0.13em -0.13em 0px var(--midnight-green-eagle-green);
+    letter-spacing: -0.05em;
+}
+
+
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.title-container {
+    font-size: 300%;
+    color: var(--baby-pink);
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*z-index: 2;*/
+    /*width: 100%;*/
+    padding: 10px;
+    text-align: center;
+}
+
+
+
+button {
+    margin: 10px;
+    font-family: inherit;
+    width: 80%;
+}
+
+/* Fill button styling */
+.fill {
+    font-size: 20px;
+    font-weight: 200;
+    letter-spacing: 1px;
+    padding: 13px 50px 13px;
+    outline: 0;
+    border: 1px solid var(--midnight-green-eagle-green);
+    cursor: pointer;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.fill::after {
+    content: "";
+    background-color: var(--baby-pink);
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    top: 7px;
+    left: 7px;
+    transition: 0.2s;
+}
+
+.fill:hover::after {
+    top: 0px;
+    left: 0px;
+}
+/* End of Fill Button  */
+
+.box {
+    padding: 10px;
+    /*background-color: var(--baby-pink);*/
+    color: var(--midnight-green-eagle-green);
+    width: 100%;
+    z-index: -2;
+    text-align: center;
+}
+
+table.aTable {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+table.aTable td, table.aTable th {
+    padding: 4px 4px;
 }
 
 ul {
@@ -36,19 +144,11 @@ ul {
     padding-left: 40px;
 }
 
-/*li:before {*/
-/*    content: "➡";*/
-/*    margin-left:  20px;*/
-/*    margin-right: 10px;*/
-/*}*/
-
-.footer {
+.closing {
     position: fixed;
-    left: 0;
-    bottom: 0;
+    bottom: 5%;
     width: 100%;
-    background-color: lightsteelblue;
-    color: white;
+    color: var(--light-periwinkle);
     text-align: center;
 }
 
@@ -61,3 +161,5 @@ input,
 label {
     margin: .4rem 0;
 }
+
+/* Start https://www.cursors-4u.com */ * {cursor: url(https://cur.cursors-4u.net/cursors/cur-9/cur265.cur), auto !important;} /* End https://www.cursors-4u.com */

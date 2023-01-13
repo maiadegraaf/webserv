@@ -19,7 +19,7 @@ using namespace std;
 #include "Config.hpp"
 #include "Utils.h"
 
-#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
+//#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
 
 //utils
 void	failure(const char *message);
