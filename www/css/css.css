@@ -120,7 +120,7 @@ button {
     letter-spacing: 1px;
     padding: 13px 40px 13px;
     outline: 0;
-    border: 1px solid var(--midnight-green-eagle-green);
+    border: 1px inset var(--light-periwinkle-2);
     cursor: pointer;
     position: relative;
     background-color: rgba(0, 0, 0, 0);

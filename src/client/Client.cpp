@@ -139,7 +139,10 @@ bool	Client::responseSend() {
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
-			remove(_response.getFilePath().c_str());
+        {
+			cerr << "HELLO" << endl;
+            remove(_response.getFilePath().c_str());
+        }
 		return false;
 	}
 	_response.sendHeader();
