@@ -267,6 +267,8 @@ void	Config::checkIfComplete()
 {
 	if (_root.empty())
 		failure("Root is a required field.");
+	if (!directoryAccess(_root))
+		failure(_root.c_str());
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
     for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)

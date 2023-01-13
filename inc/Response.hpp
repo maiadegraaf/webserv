@@ -30,8 +30,8 @@ class Response
 		Response&	operator=( const Response &rhs);
 
 		// Error & Regular construction
-        Response(string errorMessage, int newSockFD, string contentType);
-        Response(string filePath, string message, string contentType, \
+        Response(const string& errorMessage, int newSockFD, const string& contentType);
+        Response(const string& filePath, const string& message, const string& contentType, \
 		int newSockFD, off_t fileSize);
 //		Response(const Request &request, int newSockFD); // new
 
@@ -80,8 +80,8 @@ class Response
 	* CGI *
 	* *****/
 
-	bool exec();
-	bool CGIResponse();
+	bool exec(const string& file);
+	string CGIResponse(const string& file);
 
 	/* ********
 	 * Output *
@@ -92,6 +92,8 @@ class Response
 		void 	sendBody();
 //		bool	sendResponse();
 //		bool 	sendCGI();
+
+	void setNewHeader(const string& message, const string& contentType);
 };
  
 #endif

@@ -19,7 +19,7 @@ using namespace std;
 #include "Config.hpp"
 #include "Utils.h"
 
-#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
+//#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
 
 //utils
 void	failure(const char *message);
@@ -29,6 +29,7 @@ string	findNextWord(const string &line, size_t pos);
 string  findFirstWord(int i, vector<string> v);
 bool	fileAccess(string filename);
 bool	directoryAccess(const string& directory);
+string	extension(string filename);
 
 //utils/error map
 map<int, string> setupErrorPages();

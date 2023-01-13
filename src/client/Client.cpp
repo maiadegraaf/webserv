@@ -86,11 +86,10 @@ void	Client::fillRequestBuffer() {
 //}
 
 void	Client::handleRequest() {
-	string		filePath("www/");
+	string		filePath("www/"); // TODO: Change to ROOT.
 	string 		confFile;
 	Location	loca;
 	string		file;
-	string		extension;
 	string		contentType;
 
 	_request.output();
@@ -105,28 +104,26 @@ void	Client::handleRequest() {
 			throw WSException::BadRequest();
 		file.append(_request.getDir()); // Response
 	}
-	if (_request.getMethod().compare("GET") == 0)
+	if (_request.getMethod() == "GET")
 	{
+		if (extension(file) == "php") {
+			handleCGIResponse(filePath, "php", _request.getDir() + '/' + file);
+			return ;
+		}
 		handleGetRequest(file, filePath);
 	}
-	else if (_request.getMethod().compare("POST") == 0) {
+	else if (_request.getMethod() == "POST") {
 		handlePostRequest(file, filePath, _request);
 	}
-//		if (extension.compare("php") == 0) {
-//		handleCGIResponse(filePath, _contentType["html"]);
-//		return ;
-//	}
-
 }
 
-//void	Client::handleCGIResponse(string filePath, string contentType) {
-//	off_t len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
-//
-//	_response = clientResponse;
-//
-//}
-
+void	Client::handleCGIResponse(const string& filePath, const string& contentType, const string& file) {
+	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse(file));
+	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
+	clientResponse.setNewHeader("200 OK", contentType);
+	_response = clientResponse;
+}
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
@@ -140,10 +137,9 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
+		_response.sendBody();
 		if (_response.getContentType() == "php")
-			_response.CGIResponse();
-		else
-			_response.sendBody();
+			remove(_response.getFilePath().c_str());
 		return false;
 	}
 	_response.sendHeader();
