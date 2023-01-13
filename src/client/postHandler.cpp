@@ -18,7 +18,6 @@ void Client::parsePostPlainRequest()
 	}
 	while (i-- > 0)
 		createFileStorePost(i);
-	cerr << "testvdtevtegtd" << getLocation(_request.getDir()).getUpload() << endl;
 }
 
 void Client::decryptWwwForm(string &data)

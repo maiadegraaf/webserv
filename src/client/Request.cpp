@@ -25,6 +25,8 @@ Request&	Request::operator=( const Request& rhs )
 }
 
 bool	Request::appendBuffer(string recvBuffer) {
+	cout << "recv buffer:" << recvBuffer << endl;
+
 	_buffer.append(recvBuffer);
 	if (this->getRequestHeader() == true) {
 		this->parseBufferHeader();
@@ -34,10 +36,16 @@ bool	Request::appendBuffer(string recvBuffer) {
 		return true;
 	}
 	else if (this->getRequestHeader() == false && this->getRequestBody() == true) {
-		this->parseBufferBody();
+		cout << "check" << endl;
+		stringstream ss(_buffer);
+		this->parseBufferBody(&ss);
 		this->output();
+		cout << "check" << endl;
 		if (this->getRequestBody() == false)
+		{
+			cout << "come here check" << endl;
 			return false;
+		}
 		return true;
 	}
 	return false;
@@ -46,20 +54,29 @@ bool	Request::appendBuffer(string recvBuffer) {
 void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-	cout << "test buffer:" << _buffer << endl;
+	string			tmpBody;
 	while (getline(ss, tmp)) {
 		if (tmp.empty())
 			continue ;
 		else if (tmp.compare("\r") == 0) {
-			//cout << "this happens now" << endl;
-			while (getline(ss, tmp)) {
-				_body.append(tmp);
-				if (tmp.find("\r") != string::npos)
-					_body.append("\n");
-			}
-			cout << "body :" << _body << endl;
+//			//cout << "this happens now" << endl;
+			this->parseBufferBody(&ss);
 			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
+			//			while (getline(ss, tmp)) {
+//				this->setRequestBody(true);
+////				_body.append(tmp);
+//				if (tmp.find("\r") != string::npos)
+//					_body.append("\n");
+//				else if (tmp.compare("\r") == 0) {
+//					this->setRequestBody(false);
+//					break ;
+//				}
+//				_body.append(tmp);
+//				_body.append("\n");
+//			}
+//			cout << "body :" << _body << endl;
+//			return ;
 		}
 		else if (tmp.find("\r") == string::npos) {
 //			//cout << "this is tmp:" << tmp ;
@@ -76,10 +93,14 @@ void	Request::parseBufferHeader() {
 void	Request::setupHeader() {
 //	stringstream ss(_body);
 	string 	tmp;
-//	size_t 	contentLength;
+	size_t 	contentLength;
 	this->setAttributes();
 	this->setHeaderContent();
 	this->setRequestHeader(false);
+	if (!getMethod().compare("POST")) {
+		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str())
+		setRequestBody(true);
+	}
 //	if (!getMethod().compare("POST")){
 //		this->setRequestBody(true);
 //		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
@@ -89,26 +110,25 @@ void	Request::setupHeader() {
 	_buffer.clear();
 }
 
-void	Request::parseBufferBody() {
-	stringstream	ss(_buffer);
+void	Request::parseBufferBody(stringstream *ss) {
+//	stringstream	ss(_buffer);
+//	stringstream ss = *inputSs;
 	string			tmp;
 
-	//cerr << "this is body: ";
-	while (getline(ss, tmp)) {
+	while (getline(*ss, tmp)) {
 		if (tmp.find("\r") == string::npos) {
+			cout << "parseBUfferBody : " << _body << endl;
 			_buffer = tmp;
-			//cerr << "this is body: ";
-			//cout << _buffer << endl;
 			return ;
 		}
 		else if (tmp.compare("\r") == 0) {
+			cout << "read everything in body : "<< _body << endl;
 			this->setRequestBody(false);
 			return ;
 		}
+//		else if ()
 		_body.append(tmp);
 		_body.append("\n");
-		//cerr << "this is body: ";
-		//cout << _buffer << endl;
 	}
 }
 

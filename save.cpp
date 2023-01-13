@@ -701,7 +701,7 @@ void	Client::fillRequestBuffer() {
 
 	rc = recv(_sockFD, buffer, sizeof(buffer), 0);
 	if (recvError(rc))
-		exit(-1) ;
+		exit(-1);
 	_requestBuffer.append(tmp);
 }
 

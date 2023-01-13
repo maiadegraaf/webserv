@@ -1,5 +1,5 @@
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
 #include <iostream>
 #include <string>
@@ -64,7 +64,7 @@ class Request
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
 		void	setHeaderContent();
-		void 	parseBufferBody();
+		void 	parseBufferBody(stringstream *ss);
 		void 	parseBufferHeader();
 		void 	setupHeader();
 

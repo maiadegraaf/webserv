@@ -34,7 +34,6 @@ bool	Client::requestReceived() {
 //		if (this->getRequestMode() == false) // check hier
 //			return false;
 		if (_request.appendBuffer(getRequestBuffer()) == false) {
-			cerr << "please arrive here\n";
 			this->handleRequest();
 			this->resetRequest();
 			return true;
@@ -185,10 +184,7 @@ void Client::handlePostRequest(string file, string filepath)
 
 	cerr << type << endl;
 	if (type.compare("text/plain") == 0)
-	{
 		parsePostPlainRequest();
-		cerr << "sdfdsfdfsfdsfds" << endl;
-	}
 	else if (type.compare("application/x-www-form-urlencoded") == 0)
 		parsePostWwwRequest();
 	else if (type.compare("multipart/form-data") == 0)
