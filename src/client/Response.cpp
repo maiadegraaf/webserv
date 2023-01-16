@@ -1,13 +1,7 @@
 #include "Response.hpp"
 
-Response::Response(const string& errorMessage, int newSockFD, const string& contentType)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath("www/error/"), _contentType(contentType), _hasBody(true), _sendHeader(false) { // checkout errorpage paths
-	stringstream	ss;
-	string			tmp;
-	ss << errorMessage;
-	getline(ss, tmp, ' '); //TODO: filepath moet nog hierin komen als defualt anders wordt gemaakt van de errors
-	_filePath.append(tmp); // TODO: check voor nieuwe error
-	_filePath.append(".html");
+Response::Response(string errorMessage,string errorFilePath, int newSockFD, string contentType)
+	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(errorFilePath), _hasBody(true), _sendHeader(false) {
 	setFileSize(fileSize(_filePath.c_str()));
 	appendToHeadNL(errorMessage);
 	appendObjectToHead("Content-Type: ", contentType);
@@ -44,9 +38,10 @@ void Response::setNewHeader(const string& message, const string& contentType)
 
 // Output
 void Response::output() {
-	std::cout << "sockFD : " << _sockFD << std::endl;
+	cout << "sockFD : " << _sockFD << std::endl;
 	cout << "head : " << _head << endl;
-	std::cout << "fileSize : " << _fileSize << std::endl;
+	cout << "fileSize : " << _fileSize << std::endl;
+	cout << "filePath : " << _filePath << std::endl;
 }
 
 //bool Response::sendResponse() {
