@@ -13,7 +13,7 @@ void Client::parsePostPlainRequest()
 		_postContent.push_back(vector<string>());
 		_postContent[i].push_back(req.substr(0, req.find("=")));
 		_postContent[i].push_back(req.substr(req.find("=") + 1, req.length()));
-		cerr << "postContent:: " << _postContent[i][1] << endl;
+//		cerr << "postContent:: " << _postContent[i][1] << endl;
 		i++;
 	}
 	while (i-- > 0)
@@ -83,7 +83,7 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 
 	while (getline(*ss, *req, '\n'))
 	{
-		cerr << "1:" << *req << endl;
+//		cerr << "1:" << *req << endl;
 		if (req->compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
@@ -112,7 +112,7 @@ void Client::parsePostMultipartRequest()
 	string	req;
 	string	contentFile;
 
-	cerr << data << endl;
+//	cerr << data << endl;
 	while (1) {
 		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
@@ -120,7 +120,7 @@ void Client::parsePostMultipartRequest()
 //		ofstream outfile(_headerMultipart[content_nb]["name"]);
 		while (getline(ss, contentFile, '\n'))
 		{
-			cerr << "2: " << contentFile << endl;
+//			cerr << "2: " << contentFile << endl;
 			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "\r") == 0) {
 				break;
 			}

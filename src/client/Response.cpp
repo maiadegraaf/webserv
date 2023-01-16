@@ -66,7 +66,7 @@ void	Response::sendHeader() {
 		perror("send header failed");
 	else
 		setSendHeader(true);
-	std::cerr << "[" << _head << "]\n";
+//	std::cerr << "[" << _head << "]\n";
 }
 
 void	Response::sendBody() {

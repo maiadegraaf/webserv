@@ -28,11 +28,9 @@ void	Client::output() {
 }
 
 bool	Client::requestReceived() {
-	cerr << _request.getMethod() << endl;
 	try {
 		this->fillRequestBuffer();
-//		if (this->getRequestMode() == false) // check hier
-//			return false;
+
 		if (_request.appendBuffer(getRequestBuffer()) == false) {
 			this->handleRequest();
 			this->resetRequest();
@@ -52,25 +50,27 @@ void	Client::fillRequestBuffer() {
 	char    buffer[200];
 	string	tmp;
 
-	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	if (rc < 0) {
-		//cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
-		perror("recv error");
-		exit(-1);
-//		return true ;
-	}
-	if (rc == 0) {
-		//cerr << "everything read in the client" << endl;
-		return ;
+	while (1)
+	{
+		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
+		if (rc == 0) {
+			return ;
 //		this->setRequestMode(false); // check hier
 //		return true ;
+		}
+		if (rc < 0) {
+			//cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
+//			perror("recv error");
+//			exit(-1);
+			return;
+		}
+
+		cerr << "---------------" << endl;
+		cerr << "\033[1;32m" << buffer << "\033[0m" << endl;
+		tmp.assign(buffer, rc);
+		_requestBuffer.append(tmp);
+		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
 	}
-//	if (recvError(rc)) {
-//		return ;
-////		exit(-1);
-//	}
-	tmp.assign(buffer, rc);
-	_requestBuffer = tmp;
 }
 
 //bool	Client::recvError(int rc) {
@@ -98,7 +98,7 @@ void	Client::handleRequest() {
 	_request.output();
 
 //	//cerr << "clientReq " << _request.getDir() << endl;
-	cout << _request.getMethod() << endl;
+//	cout << _request.getMethod() << endl;
 	loca = getLocation(_request.getDir());
 	confFile = loca.getIndex();
 	if (!confFile.empty())
@@ -116,7 +116,7 @@ void	Client::handleRequest() {
 		handlePostRequest(file, filePath);
 		cout << "this is a POSTTT" << endl;
 	}
-	cout << "get Mthod: -> " << _request.getMethod() << endl << endl;
+//	cout << "get Mthod: -> " << _request.getMethod() << endl << endl;
 //		if (extension.compare("php") == 0) {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
@@ -163,7 +163,7 @@ void Client::handleGetRequest(string file, string filePath)
 	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	contentType = _contentType[extension];
-	cerr << "contentType: " << contentType << endl;
+//	cerr << "contentType: " << contentType << endl;
 	if (!contentType.empty())
 		setResponse(filePath, contentType);
 	else
@@ -182,7 +182,7 @@ void Client::handlePostRequest(string file, string filepath)
 	(void )file;
 	string type = _request.getHeaderValue("Content-Type");
 
-	cerr << type << endl;
+//	cerr << type << endl;
 	if (type.compare("text/plain") == 0)
 		parsePostPlainRequest();
 	else if (type.compare("application/x-www-form-urlencoded") == 0)

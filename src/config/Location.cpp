@@ -123,7 +123,7 @@ void Location::setUpload(const ConfigParser &confP, int line)
     string type = "upload";
     size_t indLoc = confP.at(line).find(type);
     _upload = findNextWord(confP.at(line), indLoc + type.length());
-	cerr << "upload : " << _upload << endl;
+//	cerr << "upload : " << _upload << endl;
 }
 
 void Location::determineCase(const string& word, const ConfigParser &confP, int line)
