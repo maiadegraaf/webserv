@@ -2,7 +2,7 @@
 :root{
     /* CSS HEX */
     --baby-pink: #FBCDCDff;
-    --light-periwinkle: #CDCDE0ff;
+    --light-periwinkle: #ddddea;
     --light-periwinkle-2: #C3C4DAff;
     --air-superiority-blue: #7BA4C0ff;
     --midnight-green-eagle-green: #024A63ff;
@@ -16,7 +16,9 @@ html {
     background-size: cover;
     background-repeat: no-repeat;
     font-family: "Iowan Old Style";
+    cursor: url(https://cur.cursors-4u.net/cursors/cur-9/cur265.cur), auto !important;
 }
+
 
 /* unvisited link */
 a:link {
@@ -30,12 +32,12 @@ a:visited {
 
 /* mouse over link */
 a:hover {
-      color: var(--light-periwinkle);
+    color: var(--baby-pink);
 }
 
 /* selected link */
 a:active {
-    color: blue;
+    color: var(--baby-pink);
 }
 
 .wordart {
@@ -58,6 +60,40 @@ a:active {
     letter-spacing: -0.05em;
 }
 
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: 2px solid var(--midnight-green-eagle-green);
+    background: var(--light-periwinkle);
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 10px;
+    color: var(--midnight-green-eagle-green);
+    cursor: url(../photo/pointer.cur), pointer;
+    transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+    background: var(--midnight-green-eagle-green);
+    color: var(--baby-pink);
+}
+
+input[type=submit] {
+    margin-right: 20px;
+    border: 2px solid var(--midnight-green-eagle-green);
+    background: var(--light-periwinkle);
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 10px;
+    color: var(--midnight-green-eagle-green);
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+    float: right;
+}
+
+input[type=submit]:hover {
+    background: var(--midnight-green-eagle-green);
+    color: var(--baby-pink);
+}
 
 .center {
     position: absolute;
@@ -201,4 +237,3 @@ label {
     margin: .4rem 0;
 }
 
-/* Start https://www.cursors-4u.com */ * {cursor: url(https://cur.cursors-4u.net/cursors/cur-9/cur265.cur), auto !important;} /* End https://www.cursors-4u.com */
