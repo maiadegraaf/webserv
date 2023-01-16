@@ -76,23 +76,24 @@ void	Response::sendBody() {
 
 extern char **environ;
 
-bool Response::exec(const string& file)
+bool Response::exec()
 {
 	char *split[2];
-	string filePath = getFilePath() + file;
 
 	split[0] = new char[getFilePath().length() + 1];
-	strcpy(split[0], filePath.c_str());
+	strcpy(split[0], getFilePath().c_str());
 	split[1] = NULL;
+	cerr << ">>" << split[0] << "<<" << endl;
 	execve(split[0], split, environ);
 	perror("");
+	cerr << "FILE PATH: " << getFilePath() << endl;
 	return (EXIT_FAILURE);
 }
 
-string Response::CGIResponse(const string& file)
+string Response::CGIResponse()
 {
-	static int i = 0;
-	string tmp =  getFilePath() + "tmpFile_" + to_string(i++) + ".html";
+	string subFilePath = getFilePath().substr(0, getFilePath().length() - 4);
+	string tmp =  subFilePath + "tmpFile" + ".html";
 	char *filename = const_cast<char *>(tmp.c_str());
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
@@ -103,7 +104,7 @@ string Response::CGIResponse(const string& file)
 		if (dup2(fd, STDOUT_FILENO) < 0)
 			failure("");
 		close(fd);
-		exec(file);
+		exec();
 	}
 	close(fd);
 	while(waitpid(pid, NULL, WUNTRACED) != -1);

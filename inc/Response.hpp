@@ -31,8 +31,7 @@ class Response
 
 		// Error & Regular construction
         Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
-        Response(string filePath, string message, string contentType, \
-		int newSockFD, off_t fileSize);
+		Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize);
 //		Response(const Request &request, int newSockFD); // new
 
 	/* ************
@@ -80,8 +79,8 @@ class Response
 	* CGI *
 	* *****/
 
-	bool exec(const string& file);
-	string CGIResponse(const string& file);
+	bool exec();
+	string CGIResponse();
 
 	/* ********
 	 * Output *

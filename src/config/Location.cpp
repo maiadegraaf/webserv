@@ -151,8 +151,8 @@ void Location::determineCase(const string& word, const ConfigParser &confP, int 
 }
 
 void Location::checkIfComplete(void) {
-    if (_autoIndex && _index.empty())
+    if (_autoIndex && _index.empty())	{
         setIndex("index.html");
-
+	}
 }
 

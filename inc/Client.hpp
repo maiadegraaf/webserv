@@ -87,7 +87,7 @@ class Client {
 		void		handlePostRequest(string filepath, Request clientReq);
 		void		handleDeleteRequest();
 		void		handleResponse(string filePath, string contentType);
-		void		handleCGIResponse(const string& filePath, const string& contentType, const string& file);
+		void		handleCGIResponse(const string& filePath, const string& contentType);
 		void		parsePostPlainRequest(Request clientReq);
 		void 		parsePostWwwRequest(Request clientReq);
 		void 		parsePostMultipartRequest(Request clientReq);

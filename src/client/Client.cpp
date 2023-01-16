@@ -102,9 +102,8 @@ void	Client::handleRequest() {
 //	cerr << "clientReq " << _request.getDir() << endl;
 	location = getLocation(_request.getDir());
 	path = location.getIndex();
-	cout << "path :" << path << endl;
 	if (!path.empty())
-		filePath.append(path); // page not foudn exception
+		filePath.append(_request.getDir() + '/' + path); // page not foudn exception
 	else {
 		if (_request.getDir().empty())
 			throw WSException::BadRequest();
@@ -112,20 +111,20 @@ void	Client::handleRequest() {
 	}
 	if (_request.getMethod() == "GET")
 	{
-		if (extension(file) == "php") {
-			handleCGIResponse(filePath, "php", _request.getDir() + '/' + file);
+		if (extension(filePath) == "php") {
+			handleCGIResponse(filePath, "php");
 			return ;
 		}
-		handleGetRequest(file, filePath);
+		handleGetRequest(filePath);
 	}
 	else if (_request.getMethod() == "POST") {
-		handlePostRequest(file, filePath, _request);
+		handlePostRequest(filePath, _request);
 	}
 }
 
-void	Client::handleCGIResponse(const string& filePath, const string& contentType, const string& file) {
+void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse(file));
+	clientResponse.setFilePath(clientResponse.CGIResponse());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader("200 OK", contentType);
 	_response = clientResponse;
