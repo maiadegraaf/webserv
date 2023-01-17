@@ -113,7 +113,6 @@ void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 
 	if (client) {
-//		cerr << client->getRequestBuffer() << endl;
 		cerr << "\nServerIO::incomingRequest() : new request coming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);

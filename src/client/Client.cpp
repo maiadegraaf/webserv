@@ -30,13 +30,12 @@ void	Client::output() {
 bool	Client::requestReceived() {
 	try {
 		this->fillRequestBuffer();
-
-		if (_request.appendBuffer(getRequestBuffer()) == false) {
-			this->handleRequest();
-			this->resetRequest();
-			return true;
-		}
-		return false;
+		stringstream ss(getRequestBuffer());
+		_request.setSS(&ss);
+		_request.parseBuffer();
+		this->handleRequest();
+		this->resetRequest();
+		return true;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		Response	error(tmpMessage, getSockFd(), getContentType("html"));
@@ -53,20 +52,10 @@ void	Client::fillRequestBuffer() {
 	while (1)
 	{
 		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-		if (rc == 0) {
-			return ;
-//		this->setRequestMode(false); // check hier
-//		return true ;
-		}
-		if (rc < 0) {
-			//cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
-//			perror("recv error");
-//			exit(-1);
-			return;
-		}
-
-		cerr << "---------------" << endl;
-		cerr << "\033[1;32m" << buffer << "\033[0m" << endl;
+		if (rc == 0)
+			break ;
+		if (rc < 0)
+			break ;
 		tmp.assign(buffer, rc);
 		_requestBuffer.append(tmp);
 		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
@@ -121,7 +110,7 @@ void	Client::handleRequest() {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
 //	}
-
+	this->resetRequest();
 }
 
 void	Client::setResponse(string filePath, string contentType) {

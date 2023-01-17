@@ -24,75 +24,74 @@ Request&	Request::operator=( const Request& rhs )
     return *this;
 }
 
-bool	Request::appendBuffer(string recvBuffer) {
-	_buffer.append(recvBuffer);
-
-	if (this->getRequestHeader() == true) {
-		stringstream	ss(_buffer);
-		setSS(&ss);
-		while (!_ss->str().empty()){
-			this->parseBufferHeader();
+//void	Request::organizeParsingRequest() {
 //			if (this->getRequestHeader() == false && this->getRequestBody() == false) {
 //				return false;
-//			}
+//		co	}
 //			return true;
-		}
-	}
 //	else if (this->getRequestHeader() == false && this->getRequestBody() == true) {
-////		cout << "check" << endl;
+//		cout << "check" << endl;
 //		stringstream ss(_buffer);
 //		this->parseBufferBody(&ss);
 //		this->output();
-////		cout << "check" << endl;
+//		cout << "check" << endl;
 //		if (this->getRequestBody() == false)
 //		{
-////			cout << "come here check" << endl;
+//			cout << "come here check" << endl;
 //			return false;
 //		}
 //		return true;
 //	}
+//	return false;
+//}
+
+bool Request::checkIfBody() {
+	string	tmp;
+	int		line = _ss->tellg();
+
+	getline(*_ss, tmp);
+	if (tmp.find("GET") == string::npos && !tmp.empty()) {
+		cout << "body fcnt" << tmp << endl;
+		_ss->seekg(line , ios_base::beg);
+		return true;
+	}
+	_ss->seekg(line , ios_base::beg);
 	return false;
 }
 
-void	Request::parseBufferHeader() {
+bool Request::checkIfHeader() {
+	string	tmp;
+	int		line = _ss->tellg();
+
+	getline(*_ss, tmp);
+	if (tmp.find("GET") != string::npos)
+	{
+		cout << "Header fcnt" << tmp << endl;
+		_ss->seekg(line , ios_base::beg);
+		return true;
+	}
+	_ss->seekg(line , ios_base::beg);
+	return false;
+}
+
+void	Request::parseBuffer() {
 	string			tmp;
-	cerr << "buff" << _buffer << endl;
 
 	while (getline(*_ss, tmp)) {
-		cerr << "tmp->" << tmp << endl;
+		cerr << "\033[1;33m tmp-> " << tmp << "\033[0m" << endl;
 		if (tmp.empty())
-		{
-			cerr << "EMPTYYY" << endl;
 			continue ;
-		}
 		if (tmp.compare("\r") == 0) {
-			this->setupHeader();// buffer moet iets van tmp zijn
-			//cout << "this happens now" << endl;
-//			this->parseBufferBody(&ss);
-//			return ;
-//						while (getline(ss, tmp)) {
-//				this->setRequestBody(true);
-////				_body.append(tmp);
-//				if (tmp.find("\r") != string::npos)
-//					_body.append("\n");
-//				else if (tmp.compare("\r") == 0) {
-//					this->setRequestBody(false);
-//					break ;
-//				}
-//				_body.append(tmp);
-//				_body.append("\n");
-//			}
-//			cout << "body :" << _body << endl;
-//			_buffer.clear();
-			return ;
+			this->setupHeader();
+			if (checkIfHeader() == true) {
+				break;
+			}
+			else if (checkIfBody() == true) {
+				this->parseBufferBody();
+			}
+			else
+				return;
 		}
-		else if (tmp.find("\r") == string::npos) {
-			cout << "this is tmp:" << tmp ;
-//			//cerr << ":inside\n";
-			_buffer = tmp;
-//			return ;
-		}
-//		tmp = tmp.substr(0, tmp.size() - 1);
 		_input.push_back(tmp);
 	}
 }
@@ -117,23 +116,12 @@ void	Request::setupHeader() {
 //	_buffer.clear();
 }
 
-void	Request::parseBufferBody(stringstream *ss) {
-//	stringstream	ss(_buffer);
-//	stringstream ss = *inputSs;
+void	Request::parseBufferBody() {
 	string			tmp;
 
-	while (getline(*ss, tmp)) {
-		if (tmp.find("\r") == string::npos) {
-//			cout << "parseBUfferBody : " << _body << endl;
-			_buffer = tmp;
-			return ;
-		}
-		else if (tmp.compare("\r") == 0) {
-//			cout << "read everything in body : "<< _body << endl;
-			this->setRequestBody(false);
-			return ;
-		}
-//		else if ()
+	while (getline(*_ss, tmp)) {
+		if (checkIfHeader() == true)
+			break;
 		_body.append(tmp);
 		_body.append("\n");
 	}

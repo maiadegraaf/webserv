@@ -48,8 +48,9 @@ class Request
 		string			getHeaderValue(string key)			{ return this->_header[key]; }
 		vector<string>	getInput()							{ return this->_input; }
 		string 			getBody()							{ return this->_body; }
-		bool 			getRequestHeader()					{ return this->_requestHeader; }
+		void 			organizeParsingRequest();
 		bool 			getRequestBody()					{ return this->_requestBody; }
+		stringstream*	getSS()								{ return this->_ss; }
 
 	/* *********
 	 * Setters *
@@ -62,13 +63,16 @@ class Request
 		void 	setRequestHeader(bool nBool)				{ this->_requestHeader = nBool; }
 		void 	setRequestBody(bool nBool)					{ this->_requestBody = nBool; }
 		void	setSS(stringstream *ss)						{ this->_ss = ss; }
-//		void	setInput(string input);
+
+	//		void	setInput(string input);
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
 		void	setHeaderContent();
-		void 	parseBufferBody(stringstream *ss);
-		void 	parseBufferHeader();
+		void 	parseBufferBody();
+		void 	parseBuffer();
 		void 	setupHeader();
+		bool	checkIfBody();
+		bool	checkIfHeader();
 
 	/* ********
 	 * Output *
