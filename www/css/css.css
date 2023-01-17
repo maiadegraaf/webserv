@@ -28,11 +28,13 @@ a:link {
 /* visited link */
 a:visited {
     color: var(--air-superiority-blue);
+    cursor: pointer;
 }
 
 /* mouse over link */
 a:hover {
     color: var(--baby-pink);
+    cursor: pointer;
 }
 
 /* selected link */
@@ -68,7 +70,7 @@ input[type=file]::file-selector-button {
     font-weight: bold;
     border-radius: 10px;
     color: var(--midnight-green-eagle-green);
-    cursor: url(../photo/pointer.cur), pointer;
+    cursor: pointer;
     transition: background .2s ease-in-out;
 }
 
@@ -141,11 +143,32 @@ button {
     margin: 10px;
     font-family: inherit;
     width: 80%;
+    cursor: pointer;
     color: var(--midnight-green-eagle-green);
 }
 
 .home {
     width: 100%;
+}
+
+h3 {
+    text-align: center;
+}
+
+.delete {
+    border: 2px solid var(--midnight-green-eagle-green);
+    background: var(--light-periwinkle);
+    font-weight: bold;
+    border-radius: 10px;
+    width: 60px;
+    color: var(--midnight-green-eagle-green);
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+}
+
+.delete:hover {
+    background: var(--midnight-green-eagle-green);
+    color: var(--baby-pink);
 }
 
 /* Fill button styling */
@@ -157,7 +180,6 @@ button {
     padding: 13px 40px 13px;
     outline: 0;
     border: 1px inset var(--light-periwinkle-2);
-    cursor: pointer;
     position: relative;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -204,6 +226,16 @@ table.aTable {
 }
 table.aTable td, table.aTable th {
     padding: 4px 4px;
+}
+
+table.filesList {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+table.filesList td, table.filesList th {
+    padding: 4px 50px;
 }
 
 ul {

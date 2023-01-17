@@ -120,6 +120,9 @@ void	Client::handleRequest() {
 	else if (_request.getMethod() == "POST") {
 		handlePostRequest(filePath, _request);
 	}
+//	else if (_request.getMethod() == "DELETE" && location.getMethod()[DELETE]) {
+////		handleDeleteRequest();
+//	}
 }
 
 void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
@@ -145,10 +148,7 @@ bool	Client::responseSend() {
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
-        {
-			cerr << "HELLO" << endl;
             remove(_response.getFilePath().c_str());
-        }
 		return false;
 	}
 	_response.sendHeader();
@@ -181,7 +181,7 @@ void Client::handleGetRequest(string filePath)
 //
 //}
 
-void Client::handlePostRequest(string filepath, Request clientReq)
+void Client::handlePostRequest(const string& filepath, Request clientReq)
 {
 //	string line;
 //	string len;
@@ -199,6 +199,11 @@ void Client::handlePostRequest(string filepath, Request clientReq)
 		parsePostWwwRequest(clientReq);
 	else if (type.compare("multipart/form-data") == 0)
 		parsePostMultipartRequest(clientReq);
+}
+
+void Client::handleDeleteRequest(const string& filepath, const Request& clientReq) {
+	(void) filepath;
+	(void) clientReq;
 }
 
 //

@@ -24,6 +24,7 @@ Response&	Response::operator=( const Response& rhs ) {
 	this->_filePath = rhs._filePath;
 	this->_hasBody = rhs._hasBody;
 	this->_sendHeader = rhs._sendHeader;
+	this->_contentType = rhs._contentType;
 	return *this;
 }
 
