@@ -23,8 +23,8 @@ class Client {
 		Client& operator=( const Client &rhs);
 		Client()
 			: _sockFd(-1), _requestBuffer(""), _maxSize(0) 										{}
-		Client(int newSockFd, map<string, Location> newLocation, \
-			map<string, string> newContentType, size_t newMaxSize);
+		Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages, \
+		map<string, string> newContentType, size_t newMaxSize);
 
 
 	/* ************
@@ -36,7 +36,9 @@ class Client {
 		map<string, string>					_contentType;
 		map<string, Location>		        _location;
 		vector< map<string, string> >		_headerMultipart;
-		string 								_requestBuffer;
+		string 								_requestBuffer,
+											_root;
+		map<int, string>					_errorPages;
 		vector< vector<string> >			_postContent;
 		size_t								_maxSize;
 		Request								_request;
@@ -48,20 +50,24 @@ class Client {
  	* *********/
 	public:
 		int					getSockFd() const													{ return this->_sockFd; }
-		const string		&getContentType(string key)											{ return this->_contentType[key]; }
-		Location			&getLocation(string key)											{ return this->_location[key]; }
+		const string		&getContentType(const string &key)									{ return this->_contentType[key]; }
+		Location			&getLocation(const string &key)										{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
 		bool 				getRequestMode()													{ return this->_requestMode; }
-		vector< vector<string> >	getPostContent()											{ return _postContent; }
+		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
+		string				getRoot() const														{ return this->_root; }
+		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
+		void 		setRequestModeFalse()														{ this->_requestMode = false; }
+		void 		setRequestModeTrue()														{ this->_requestMode = true; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
+
 	/* **************
  	* Functionality *
  	* ***************/
@@ -71,16 +77,17 @@ class Client {
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
+		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
 		bool 		responseSend();
 		void 		resetRequest();
 		void 		clientRequest();
 		string		receiveStrRequest();
-		void		handleGetRequest(string file, string filepath);
-		void		handlePostRequest(string file, string filepath, Request clientReq);
-		void		handleDeleteRequest();
+		void		handleGetRequest(string filepath);
+		void		handlePostRequest(const string& filepath, Request clientReq);
+		void		handleDeleteRequest(const string& filepath, const Request& clientReq);
 		void		handleResponse(string filePath, string contentType);
-		void		handleCGIResponse(const string& filePath, const string& contentType, const string& file);
+		void		handleCGIResponse(const string& filePath, const string& contentType);
 		void		parsePostPlainRequest(Request clientReq);
 		void 		parsePostWwwRequest(Request clientReq);
 		void 		parsePostMultipartRequest(Request clientReq);

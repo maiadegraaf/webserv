@@ -1,9 +1,9 @@
 #include "Client.hpp"
 
-Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
+Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
-	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), _requestBuffer(""), \
-	_maxSize(newMaxSize), _requestMode(true) {
+	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -39,7 +39,11 @@ bool	Client::requestReceived() {
 		return false;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		Response	error(tmpMessage, getSockFd(), getContentType("html"));
+		string		filePath("default/");
+		int 		errorNr = atoi(tmpMessage.c_str());
+		filePath.append(getErrorPageValue(errorNr));
+		cout << "this is Filepath :" << filePath << endl;
+		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
 		return true;
 	}
@@ -86,40 +90,44 @@ void	Client::fillRequestBuffer() {
 //}
 
 void	Client::handleRequest() {
-	string		filePath("www/"); // TODO: Change to ROOT.
-	string 		confFile;
-	Location	loca;
-	string		file;
-	string		contentType;
+	Location	location;
+	string		filePath(getRoot().append("/"));
+	string 		path;
+//	string		file;
+//	string		extension;
+//	string		contentType;
 
 	_request.output();
 
 //	cerr << "clientReq " << _request.getDir() << endl;
-	loca = getLocation(_request.getDir());
-	confFile = loca.getIndex();
-	if (!confFile.empty())
-		file.append(confFile); // page not foudn exception
+	location = getLocation(_request.getDir());
+	path = location.getIndex();
+	if (!path.empty())
+		filePath.append(_request.getDir() + '/' + path); // page not foudn exception
 	else {
 		if (_request.getDir().empty())
 			throw WSException::BadRequest();
-		file.append(_request.getDir()); // Response
+		filePath.append(_request.getDir()); // Response
 	}
 	if (_request.getMethod() == "GET")
 	{
-		if (extension(file) == "php") {
-			handleCGIResponse(filePath, "php", _request.getDir() + '/' + file);
+		if (extension(filePath) == "php") {
+			handleCGIResponse(filePath, "php");
 			return ;
 		}
-		handleGetRequest(file, filePath);
+		handleGetRequest(filePath);
 	}
 	else if (_request.getMethod() == "POST") {
-		handlePostRequest(file, filePath, _request);
+		handlePostRequest(filePath, _request);
 	}
+//	else if (_request.getMethod() == "DELETE" && location.getMethod()[DELETE]) {
+////		handleDeleteRequest();
+//	}
 }
 
-void	Client::handleCGIResponse(const string& filePath, const string& contentType, const string& file) {
+void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse(file));
+	clientResponse.setFilePath(clientResponse.CGIResponse());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader("200 OK", contentType);
 	_response = clientResponse;
@@ -128,6 +136,7 @@ void	Client::handleCGIResponse(const string& filePath, const string& contentType
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
+	clientResponse.output();
 	_response = clientResponse;
 }
 
@@ -139,7 +148,7 @@ bool	Client::responseSend() {
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
-			remove(_response.getFilePath().c_str());
+            remove(_response.getFilePath().c_str());
 		return false;
 	}
 	_response.sendHeader();
@@ -152,25 +161,27 @@ void	Client::resetRequest() {
 	this->_request = newRequest;
 }
 
-void Client::handleGetRequest(string file, string filePath)
+void Client::handleGetRequest(string filePath)
 {
 	string contentType;
 	string extension;
 
-	filePath.append(file); // exception filePath;
+//	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	contentType = _contentType[extension];
 	if (!contentType.empty())
 		setResponse(filePath, contentType);
 	else
-		throw WSException::PageNotFound(); }
+		throw WSException::PageNotFound(); // not a supported extension
+	return ;
+}
 //
 //void Client::setPostContent(string input, int i) {
 //	_postContent.push_back(vector<string>());
 //
 //}
 
-void Client::handlePostRequest(string file, string filepath, Request clientReq)
+void Client::handlePostRequest(const string& filepath, Request clientReq)
 {
 //	string line;
 //	string len;
@@ -179,7 +190,7 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 //	string filename;
 //	string savePath;
 	(void )filepath;
-	(void )file;
+//	(void )file;
 	string type = clientReq.getHeaderValue("Content-Type");
 
 	if (type.compare("text/plain") == 0)
@@ -190,75 +201,11 @@ void Client::handlePostRequest(string file, string filepath, Request clientReq)
 		parsePostMultipartRequest(clientReq);
 }
 
+void Client::handleDeleteRequest(const string& filepath, const Request& clientReq) {
+	(void) filepath;
+	(void) clientReq;
+}
 
-
-//void	Client::clientRequest() {
-//	try {
-//		Request	clientReq(receiveStrRequest());
-//		handleRequest(clientReq);
-//	} catch (exception &e) {
-//		string		tmpMessage(e.what());
-//		Response	error(tmpMessage, _sockFD, getContentType("html"));
-//		error.sendResponse();
-//	}
-//}
-//
-//string	Client::receiveStrRequest() {
-//	int     rc;
-//	char    buffer[100];
-//	string	request("");
-//	string	tmp;
-//
-//	while (1) {
-//		rc = recv(_sockFD, buffer, sizeof(buffer), 0);
-//		if (recvError(rc))
-//			break ;
-////		_len = rc;
-//		tmp.assign(buffer, rc);
-//		request.append(tmp);
-//	}
-//	if (request.size() > getMaxSize())
-//		throw WSException::PayloadTooLarge();
-//	if (request.size() == 0)
-//		throw WSException::BadRequest();
-//	return request;
-//}
-
-//void	Client::handleRequest(Request clientReq) { // should we use a --> const Request &ref ??
-//	string filePath("www/");
-//	string confFile;
-//	Location loca;
-//	string file;
-//	string extension;
-//	string contentType;
-//
-//	cerr << "clientReq " << clientReq.getDir() << endl;
-//	loca = getLocation(clientReq.getDir());
-//	confFile = loca.getIndex();
-//	if (!confFile.empty())
-//		file.append(confFile); // page not foudn exception
-//	else {
-//		if (clientReq.getDir().empty())
-//			throw WSException::BadRequest();
-//		file.append(clientReq.getDir()); // Response
-//	}
-//	filePath.append(file); // exception filePath;
-//	extension = filePath.substr(filePath.find_last_of('.') + 1);
-//	if (extension.compare("php") == 0) {
-//		handleCGIResponse(filePath, _contentType["html"]);
-////		if (getCloseConnection() == true)
-////			return ;
-//		return ;
-//	}
-//	contentType = _contentType[extension];
-//	if (!contentType.empty()) {
-//		handleResponse(filePath, contentType);
-////		if (getCloseConnection() == true)
-////			return ;
-//	} else
-//		throw WSException::PageNotFound(); // not a supported extension
-//	return ;
-//}
 //
 //void	Client::handleResponse(string filePath, string contentType) {
 //	off_t _len = fileSize(filePath.c_str());

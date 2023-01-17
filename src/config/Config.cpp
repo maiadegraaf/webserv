@@ -289,8 +289,13 @@ void	Config::checkIfComplete()
 			vector<string> dirLs = listDirectory(dirRoot);
 			if (!indexChecker(dirLs))
 				createIndexFile(dirLs, dirRoot);
+			if (i->second.getIndex().empty())
+				i->second.setIndex(i->first + "/index.html");
 		}
-		if (i->second.getIndex().empty())
-			i->second.setIndex(i->first + "/index.html");
+		if (!fileAccess(getRoot() + i->first + '/' + i->second.getIndex()))
+			failure((getRoot() + i->first + '/' + i->second.getIndex()).c_str());
+		if (i->second.getMethod()[POST] && (i->second.getUpload().empty() || !directoryAccess(dirRoot + i->second.getUpload()))){
+			failure("Post request indicated and upload directory is not specified or does not exist");
+		}
 	}
 }

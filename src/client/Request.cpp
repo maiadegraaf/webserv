@@ -29,8 +29,7 @@ bool	Request::appendBuffer(string recvBuffer) {
 //	cout << "recvbuff " << getRequestHeader() << " " << recvBuffer << endl;
 	if (this->getRequestHeader() == true) {
 		this->parseBufferHeader();
-		if (this->getRequestHeader() == false && this->getRequestBody() == false)
-		{
+		if (this->getRequestHeader() == false && this->getRequestBody() == false) {
 			return false;
 		}
 		return true;

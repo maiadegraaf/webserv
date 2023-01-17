@@ -1,5 +1,4 @@
 # Todo
-### TODO
 
 #### Config Parser
 - [x] Check if file exists
@@ -22,11 +21,13 @@
 
 #### Requirements List - Subject
 - [ ] (non)block/bouncing of a client
-- [ ] No errno in the code
+- [x] No errno in the code
 - [ ] Your HTTP response status codes must be accurate
 - [x] Autoindex in location?
 - [ ] Stress testing server
-- [ ] get post delete
+- [ ] Get
+- [ ] Post
+- [ ] Delete
 
 #### Configuration File - Subject
 - [X] Setup the server_names or not
