@@ -84,17 +84,18 @@ class Client {
 		void 		clientRequest();
 		string		receiveStrRequest();
 		void		handleGetRequest(string filepath);
-		void		handlePostRequest(const string& filepath, Request clientReq);
+		void		handlePostRequest(string file);
 		void		handleDeleteRequest(const string& filepath, const Request& clientReq);
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(const string& filePath, const string& contentType);
-		void		parsePostPlainRequest(Request clientReq);
-		void 		parsePostWwwRequest(Request clientReq);
-		void 		parsePostMultipartRequest(Request clientReq);
-		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq);
+		void		parsePostPlainRequest();
+		void 		parsePostWwwRequest();
+		void 		parsePostMultipartRequest();
+		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, bool *endOfReq);
 		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
+		void		setPostResponse(string contentType);
 
 };
 

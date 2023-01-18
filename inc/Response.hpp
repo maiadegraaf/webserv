@@ -30,7 +30,8 @@ class Response
 		Response&	operator=( const Response &rhs);
 
 		// Error & Regular construction
-        Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
+		Response(string message, string contentType, int newSockFD, off_t fileSize);
+		Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
 		Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize);
 //		Response(const Request &request, int newSockFD); // new
 

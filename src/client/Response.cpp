@@ -17,6 +17,17 @@ Response::Response(const string& filePath, const string& message, const string& 
 	appendToHead("\r\n");
 }
 
+
+Response::Response(string message, string contentType, int newSockFD, off_t fileSize)
+		: _sockFD(newSockFD), _head("HTTP/1.1 "), _fileSize(fileSize), _hasBody(false), _sendHeader(false) {
+	appendToHeadNL(message);
+	(void)contentType;
+	appendObjectToHead("Content-Length: ", "29");
+	appendToHead("\r\n");
+	appendObjectToHead("content uploaded successfully", "\r\n");
+	appendToHead("\r\n");
+}
+
 Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
 	this->_fileSize = rhs._fileSize;
@@ -64,11 +75,7 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
-	cerr << getFilePath() << endl;
-    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
-    int read = open(getFilePath().c_str(), O_RDONLY);
-	cerr << read << endl;
+	int read = open(getFilePath().c_str(), O_RDONLY);
 	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
 		perror("sendfile body failed");
 	}

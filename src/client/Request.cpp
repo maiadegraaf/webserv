@@ -53,20 +53,16 @@ void	Request::parseBufferHeader() {
 		cout << "\033[1;31m"<< tmp << "\033[0m" << endl;
 		if (tmp.empty())
 			continue ;
-		else if (tmp.compare("\r") == 0) {
+		else if (tmp.find("\r") == 0) {
 			cout << "this happens now" << endl;
-			while (getline(ss, tmp)) {
-				_body.append(tmp);
-				if (tmp.find("\r") != string::npos)
-					_body.append("\n");
-			}
-			cout << "\033[1;33m" << "body :" << _body << "\033[0m" << endl;
-			this->setupHeader();// buffer moet iets van tmp zijn
+			this->setupHeader();
 			return ;
 		}
 		else if (tmp.find("\r") == string::npos) {
 //			cout << "this is tmp:" << tmp ;
 //			cerr << ":inside\n";
+			cout << "\033[1;33m" << "tmp :" << tmp << "\033[0m" << endl;
+
 			_buffer = tmp;
 			return ;
 		}
@@ -97,7 +93,7 @@ void	Request::parseBufferBody() {
 	string			tmp;
 
 	cerr << "this is body: ";
-	cout << "\\033[1;31m"<< _buffer << "\\033[0m" << endl;
+	cout << "\033[1;31m"<< _buffer << "\033[0m" << endl;
 	while (getline(ss, tmp)) {
 		if (tmp.find("\r") == string::npos) {
 			_buffer = tmp;
@@ -109,6 +105,8 @@ void	Request::parseBufferBody() {
 		}
 		_body.append(tmp);
 		_body.append("\n");
+		cerr << "this is body: ";
+		cout << _buffer << endl;
 	}
 }
 

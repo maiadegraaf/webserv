@@ -86,7 +86,7 @@ void	Server::listenSocket() {
 }
 
 void	Server::output() {
-	cout << "acceptFd: " << getAcceptFd() << endl;
-	cout << "kq: " << getKq() << endl;
-	cout << "fd or sockfd: " << getSockFd() << endl;
+	//cout << "acceptFd: " << getAcceptFd() << endl;
+	//cout << "kq: " << getKq() << endl;
+	//cout << "fd or sockfd: " << getSockFd() << endl;
 }
