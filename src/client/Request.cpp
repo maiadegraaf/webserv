@@ -48,8 +48,9 @@ bool	Request::appendBuffer(string recvBuffer) {
 void	Request::parseBufferHeader() {
 	stringstream	ss(_buffer);
 	string			tmp;
-	cout << "test buffer:" << _buffer << endl;
+
 	while (getline(ss, tmp)) {
+		cout << "\033[1;31m"<< tmp << "\033[0m" << endl;
 		if (tmp.empty())
 			continue ;
 		else if (tmp.compare("\r") == 0) {
@@ -59,7 +60,7 @@ void	Request::parseBufferHeader() {
 				if (tmp.find("\r") != string::npos)
 					_body.append("\n");
 			}
-			cout << "body :" << _body << endl;
+			cout << "\033[1;33m" << "body :" << _body << "\033[0m" << endl;
 			this->setupHeader();// buffer moet iets van tmp zijn
 			return ;
 		}
@@ -100,8 +101,6 @@ void	Request::parseBufferBody() {
 	while (getline(ss, tmp)) {
 		if (tmp.find("\r") == string::npos) {
 			_buffer = tmp;
-			cerr << "this is body: ";
-			cout << _buffer << endl;
 			return ;
 		}
 		else if (tmp.compare("\r") == 0) {
@@ -110,8 +109,6 @@ void	Request::parseBufferBody() {
 		}
 		_body.append(tmp);
 		_body.append("\n");
-		cerr << "this is body: ";
-		cout << _buffer << endl;
 	}
 }
 

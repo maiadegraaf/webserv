@@ -1,0 +1,63 @@
+html {
+    background-color: darkslateblue;
+    color: mintcream;
+    font-family: "American Typewriter", serif;
+    font-size: xxx-large;
+}
+
+a:link {
+    color: lightsteelblue;
+}
+
+a:visited {
+    color: lightcoral;
+}
+
+h1 {
+    margin: auto;
+    text-align: center;
+    height: 110px;
+    padding: 100px;
+    background-color: lightsteelblue;
+    color: darkslateblue;
+}
+
+a:hover {
+    color: lightgoldenrodyellow;
+}
+
+body {
+    margin: 20px 20px 20px 20px;
+}
+
+ul {
+    list-style-type: "👉🏻 ";
+    margin-left: 40px;
+    padding-left: 40px;
+}
+
+/*li:before {*/
+/*    content: "➡";*/
+/*    margin-left:  20px;*/
+/*    margin-right: 10px;*/
+/*}*/
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: lightsteelblue;
+    color: white;
+    text-align: center;
+}
+
+label {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+}
+
+input,
+label {
+    margin: .4rem 0;
+}
