@@ -89,22 +89,23 @@ extern char **environ;
 
 bool Response::exec()
 {
-	char *split[2];
-
-	split[0] = new char[getFilePath().length() + 1];
-	strcpy(split[0], getFilePath().c_str());
-	split[1] = NULL;
-	cerr << ">>" << split[0] << "<<" << endl;
+	char **split = splitStr(getFilePath());
 	execve(split[0], split, environ);
 	perror("");
-	cerr << "FILE PATH: " << getFilePath() << endl;
 	return (EXIT_FAILURE);
 }
 
 string Response::CGIResponse()
 {
-	string subFilePath = getFilePath().substr(0, getFilePath().length() - 4);
-	string tmp =  subFilePath + "tmpFile" + ".html";
+	string tmp;
+	if (_contentType == "php")
+	{
+		string subFilePath = getFilePath().substr(0, getFilePath().find_last_of('.') - 1);
+		tmp =  subFilePath + "tmpFile" + ".html";
+	}
+	else
+		tmp = "deleted_file.html";
+	cerr << tmp << endl;
 	char *filename = const_cast<char *>(tmp.c_str());
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)

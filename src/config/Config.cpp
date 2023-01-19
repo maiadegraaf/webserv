@@ -13,7 +13,7 @@ Config::Config(const ConfigParser &confP)
 		string word = confP.findFirstWord(i);
 		determineCase(word, confP, i);
 	}
-//    output();
+    output();
 	checkIfComplete();
 }
 
@@ -68,7 +68,7 @@ void Config::setAddress(const ConfigParser &confP, int line)
 {
 	string	type = "listen";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string	s = findNextWord(confP.at(line), end);
+	string	s = findNextWord(confP.at(line), end, true);
 	int tmp = stoi(s);
 	if (tmp < 0)
 		failure("Listen must be a positive integer.");
@@ -83,7 +83,7 @@ void Config::setServer_name(const ConfigParser &confP, int line)
 	size_t	end = confP.at(line).find(type) + type.length();
 	for(size_t i = 0; i < confP.at(line).length(); i++)
 	{
-		string s = findNextWord(confP.at(line), end);
+		string s = findNextWord(confP.at(line), end, true);
 		_serverName.push_back(s);
 		end = confP.at(line).find(s) + s.length();
 		i += end;
@@ -94,14 +94,14 @@ void Config::setRoot(const ConfigParser &confP, int line)
 {
 	string	type = "root";
 	size_t	end = confP.at(line).find(type) + type.length();
-	_root = findNextWord(confP.at(line), end);
+	_root = findNextWord(confP.at(line), end, true);
 }
 
 void Config::setMaxSize(const ConfigParser &confP, int line)
 {
 	string	type = "client_max_body_size";
 	size_t	end = confP.at(line).find(type) + type.length();
-	_maxSize = stoull(findNextWord(confP.at(line), end));
+	_maxSize = stoull(findNextWord(confP.at(line), end, true));
 	string	myLine = confP.at(line);
 	for (size_t i = confP.at(line).find(type) + type.length(); i < myLine.size(); i++) {
 		if (isalpha(myLine[i])) {
@@ -122,7 +122,7 @@ void Config::setLocation(const ConfigParser &confP, int line)
 {
     string	type = "location";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string	loc = findNextWord(confP.at(line), end);
+	string	loc = findNextWord(confP.at(line), end, true);
     size_t brackLoc = confP.at(line).find('{');
     int start = line;
     if (brackLoc == confP.at(line).length() - 1 || brackLoc == string::npos)
@@ -142,15 +142,15 @@ void Config::setCgi(const ConfigParser &confP, int line)
 {
 	string	type = "cgi";
 	size_t end = confP.at(line).find(type) + type.length();
-	_cgi = findNextWord(confP.at(line), end);
+	_cgi = findNextWord(confP.at(line), end, true);
 }
 
 void Config::setErrorPage(const ConfigParser &confP, int line)
 {
 	string	type = "error_page";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string tmp = findNextWord(confP.at(line), end);
-	string page = findNextWord(confP.at(line), confP.at(line).find(tmp) + tmp.length());
+	string tmp = findNextWord(confP.at(line), end, true);
+	string page = findNextWord(confP.at(line), confP.at(line).find(tmp) + tmp.length(), true);
 	_errorPage[stoi(tmp)] = page;
 }
 
@@ -203,6 +203,7 @@ void Config::determineCase(const string& word, const ConfigParser &confP, int li
 			break;
 		}
 	}
+//	failure(("Can't recognize word: " + word).c_str() );
 }
 
 vector<string>		Config::listDirectory(const string& dirRoot) const

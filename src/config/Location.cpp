@@ -63,26 +63,26 @@ void Location::output()
             "PUT",
             "PATCH"
     };
-    //cout << "index : " << _index << endl;
-//    if (_autoIndex)
-        //cout << "autoIndex : on" << endl;
-//    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
-        //cout << methods[i->first] << " : " << i->second << endl;
-    //cout << "upload : " << _upload << endl;
+    cout << "index : " << _index << endl;
+    if (_autoIndex)
+        cout << "autoIndex : on" << endl;
+    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
+        cout << methods[i->first] << " : " << i->second << endl;
+    cout << "upload : " << _upload << endl;
 }
 
 void Location::setIndex(const ConfigParser &confP, int line)
 {
     string type = "index";
     size_t indLoc = confP.at(line).find(type);
-    _index = findNextWord(confP.at(line), indLoc + type.length());
+    _index = findNextWord(confP.at(line), indLoc + type.length(), true);
 }
 
 void Location::setAutoIndex(const ConfigParser &confP, int line)
 {
     string type = "autoindex";
     size_t indLoc = confP.at(line).find(type);
-    string tmp = findNextWord(confP.at(line), indLoc + type.length());
+    string tmp = findNextWord(confP.at(line), indLoc + type.length(), true);
     if (tmp.compare("ON") == 0)
         _autoIndex = true;
     else if (tmp.compare("OFF") != 0)
@@ -105,11 +105,11 @@ void Location::setMethod(const ConfigParser &confP, int line)
     size_t	end = confP.at(line).find(type) + type.length();
     for(size_t i = 0; i < confP.at(line).length(); i++)
     {
-        string s = findNextWord(confP.at(line), end);
+        string s = findNextWord(confP.at(line), end, true);
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {
-            //cerr << s;
+            cerr << s;
             failure(" is not an accepted method");
         }
         _method[determineMethod(s)] = true;
@@ -122,8 +122,7 @@ void Location::setUpload(const ConfigParser &confP, int line)
 {
     string type = "upload";
     size_t indLoc = confP.at(line).find(type);
-    _upload = findNextWord(confP.at(line), indLoc + type.length());
-//	cerr << "upload : " << _upload << endl;
+    _upload = findNextWord(confP.at(line), indLoc + type.length(), true);
 }
 
 void Location::determineCase(const string& word, const ConfigParser &confP, int line)

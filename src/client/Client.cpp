@@ -1,5 +1,4 @@
 #include "Client.hpp"
-// Constructor initializes attributes to 0 by default
 
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
@@ -101,7 +100,7 @@ void	Client::handleRequest() {
 	}
 	if (_request.getMethod() == "GET")
 	{
-		if (extension(filePath) == "php") {
+		if ( filePath.find("php") != string::npos ) {
 			handleCGIResponse(filePath, "php");
 			this->resetRequest();
 			return ;
@@ -111,9 +110,9 @@ void	Client::handleRequest() {
 	else if (_request.getMethod() == "POST") {
 		handlePostRequest(filePath);
 	}
-//	else if (_request.getMethod() == "DELETE" && location.getMethod()[DELETE]) {
-////		handleDeleteRequest();
-//	}
+	else if (_request.getMethod() == "DELETE") {
+		handleDeleteRequest(filePath, _request);
+	}
 	this->resetRequest();
 }
 
@@ -127,7 +126,7 @@ void	Client::handleCGIResponse(const string& filePath, const string& contentType
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
+	Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
 	clientResponse.output();
 	_response = clientResponse;
 }
@@ -193,24 +192,14 @@ void Client::handlePostRequest(string filepath)
 	setPostResponse(type);
 }
 
-void Client::handleDeleteRequest(const string& filepath, const Request& clientReq) {
-	(void) filepath;
-	(void) clientReq;
+void Client::handleDeleteRequest(string filePath, Request clientReq) {
+	string type = clientReq.getHeaderValue("Content-Type");
+	if (!fileAccess(filePath))
+		throw WSException::BadRequest();
+	Response	clientResponse(filePath.insert(0, "/bin/rm -f "), "200 OK", type, getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse());
+	setDeleteHTMLResponse(clientResponse.getFilePath());
+	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
+	clientResponse.setNewHeader(" 200 OK", type);
+	_response = clientResponse;
 }
-
-//
-//void	Client::handleResponse(string filePath, string contentType) {
-//	off_t _len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len);
-//	if (!clientResponse.sendResponse())
-//		setCloseConnection(true);
-//	_strRequest.clear();
-//}
-//
-//void	Client::handleCGIResponse(string filePath, string contentType) {
-//	off_t _len = fileSize(filePath.c_str());
-//	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
-//	if (!clientResponse.sendResponse())
-//		setCloseConnection(true);
-//	_strRequest.clear();
-//}
