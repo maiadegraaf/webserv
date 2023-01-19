@@ -83,7 +83,6 @@ void	ServerIO::connectNewClient() {
 }
 
 void	ServerIO::setupClientWrite(Client *client) {
-//	return ;
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
@@ -93,7 +92,6 @@ void	ServerIO::setupClientWrite(Client *client) {
 }
 
 void	ServerIO::setupClientRead(Client *client) {
-//	return;
 	struct kevent	newEvents[2];
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
@@ -113,14 +111,13 @@ void	ServerIO::setupClientEOF(Client *client) {
 
 void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
+
 	if (client) {
-		// if (client->requestMode == true)
-//			this->requestRecieved();
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			this->setupClientWrite(client);
-//		else if (client->getRequestMode() == false)
-//			this->setupClientEOF(client);
+		else if (client->getRequestMode() == false)
+			this->setupClientEOF(client);
 		cerr <<  endl;
 	}
 	else
@@ -130,8 +127,6 @@ void	ServerIO::incomingRequest(void *udata) {
 void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		// if (client->requestMode == false) incorperate this tommorow
-			// this->responseSend();
 		if (client->responseSend() == false) // nog maken
 			this->setupClientRead(client);
 	}

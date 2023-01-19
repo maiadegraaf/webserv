@@ -50,7 +50,7 @@ void CGIResponse::setType(string newType) { _type = newType; }
 // Output
 void CGIResponse::output()
 {
-  std::cout << "type : " << _type << std::endl;
+  //cout << "type : " << _type << std::endl;
 }
 
 extern char **environ;

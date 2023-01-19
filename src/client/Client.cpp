@@ -1,9 +1,10 @@
 #include "Client.hpp"
+// Constructor initializes attributes to 0 by default
 
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) , _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -28,15 +29,13 @@ void	Client::output() {
 bool	Client::requestReceived() {
 	try {
 		this->fillRequestBuffer();
-//		if (this->getRequestMode() == false) // check hier
-//			return false;
-		if (_request.appendBuffer(getRequestBuffer()) == false) {
-			cerr << "please arive here\n";
-			this->handleRequest();
-			this->resetRequest();
-			return true;
-		}
-		return false;
+		stringstream ss(getRequestBuffer());
+		_request.setSS(&ss);
+		_request.parseBuffer();
+		this->handleRequest();
+//		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
+		_requestBuffer.clear();
+		return true;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath("default/");
@@ -54,25 +53,16 @@ void	Client::fillRequestBuffer() {
 	char    buffer[200];
 	string	tmp;
 
-	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	if (rc < 0) {
-		cerr << "recv() sockfFd :" << getSockFd() << ": stopped reading " << endl;
-		perror("recv error");
-		exit(-1);
-//		return true ;
+	while (1)
+	{
+		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
+		if (rc <= 0)
+			break ;
+		tmp.assign(buffer, rc);
+		_requestBuffer.append(tmp);
+//		cerr << "\033[1;36m" <<" ------------------- "<< "\033[0m" << endl;
+//		cerr << "\033[1;32m" << _requestBuffer << "\033[0m" << endl;
 	}
-	if (rc == 0) {
-		cerr << "everything read in the client" << endl;
-		return ;
-//		this->setRequestMode(false); // check hier
-//		return true ;
-	}
-//	if (recvError(rc)) {
-//		return ;
-////		exit(-1);
-//	}
-	tmp.assign(buffer, rc);
-	_requestBuffer = tmp;
 }
 
 //bool	Client::recvError(int rc) {
@@ -97,7 +87,7 @@ void	Client::handleRequest() {
 //	string		extension;
 //	string		contentType;
 
-	_request.output();
+//	_request.output();
 
 //	cerr << "clientReq " << _request.getDir() << endl;
 	location = getLocation(_request.getDir());
@@ -113,16 +103,18 @@ void	Client::handleRequest() {
 	{
 		if (extension(filePath) == "php") {
 			handleCGIResponse(filePath, "php");
+			this->resetRequest();
 			return ;
 		}
 		handleGetRequest(filePath);
 	}
 	else if (_request.getMethod() == "POST") {
-		handlePostRequest(filePath, _request);
+		handlePostRequest(filePath);
 	}
 //	else if (_request.getMethod() == "DELETE" && location.getMethod()[DELETE]) {
 ////		handleDeleteRequest();
 //	}
+	this->resetRequest();
 }
 
 void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
@@ -137,6 +129,12 @@ void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
 	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), len);
 	clientResponse.output();
+	_response = clientResponse;
+}
+
+void	Client::setPostResponse(string contentType) {
+	off_t		len = 0;
+	Response	clientResponse("201 Created", contentType, getSockFd(), len);
 	_response = clientResponse;
 }
 
@@ -181,24 +179,18 @@ void Client::handleGetRequest(string filePath)
 //
 //}
 
-void Client::handlePostRequest(const string& filepath, Request clientReq)
+void Client::handlePostRequest(string filepath)
 {
-//	string line;
-//	string len;
-//	string disp;
-//	string cont_type;
-//	string filename;
-//	string savePath;
 	(void )filepath;
-//	(void )file;
-	string type = clientReq.getHeaderValue("Content-Type");
+	string type = _request.getHeaderValue("Content-Type");
 
 	if (type.compare("text/plain") == 0)
-		parsePostPlainRequest(clientReq);
+		parsePostPlainRequest();
 	else if (type.compare("application/x-www-form-urlencoded") == 0)
-		parsePostWwwRequest(clientReq);
+		parsePostWwwRequest();
 	else if (type.compare("multipart/form-data") == 0)
-		parsePostMultipartRequest(clientReq);
+		parsePostMultipartRequest();
+	setPostResponse(type);
 }
 
 void Client::handleDeleteRequest(const string& filepath, const Request& clientReq) {
@@ -215,3 +207,10 @@ void Client::handleDeleteRequest(const string& filepath, const Request& clientRe
 //	_strRequest.clear();
 //}
 //
+//void	Client::handleCGIResponse(string filePath, string contentType) {
+//	off_t _len = fileSize(filePath.c_str());
+//	Response	clientResponse(filePath, "200 OK", contentType, _sockFD, _len); // different lenght constructor for cgi
+//	if (!clientResponse.sendResponse())
+//		setCloseConnection(true);
+//	_strRequest.clear();
+//}

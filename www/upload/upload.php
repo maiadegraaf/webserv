@@ -19,10 +19,10 @@
 <div class="center-text-box">
   <div class="box background">
     <h3>Upload a File</h3>
-    <form action="upload_script.php" method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
       Select file to upload:
-      <input type="file" />
-      <input type="submit" />
+      <p><input type="file" name="file1">
+      <p><button type="submit" value="Send Request">Submit</button>
     </form>
   </div>
   <br>
