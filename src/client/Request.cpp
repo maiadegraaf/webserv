@@ -78,7 +78,7 @@ void	Request::parseBuffer() {
 	string			tmp;
 
 	while (getline(*_ss, tmp)) {
-		cerr << "\033[1;33m tmp-> " << tmp << "\033[0m" << endl;
+//		cerr << "\033[1;33m tmp-> " << tmp << "\033[0m" << endl;
 		if (tmp.empty())
 			continue ;
 		if (tmp.compare("\r") == 0) {
@@ -86,11 +86,9 @@ void	Request::parseBuffer() {
 			if (checkIfHeader() == true) {
 				break;
 			}
-			else if (checkIfBody() == true) {
+			if (checkIfBody() == true) {
 				this->parseBufferBody();
 			}
-			else
-				return;
 		}
 		_input.push_back(tmp);
 	}
@@ -99,14 +97,14 @@ void	Request::parseBuffer() {
 void	Request::setupHeader() {
 //	stringstream ss(_body);
 	string 	tmp;
-	size_t 	contentLength;
+//	size_t 	contentLength;
 	this->setAttributes();
 	this->setHeaderContent();
-	this->setRequestHeader(false);
-	if (!getMethod().compare("POST")) {
-		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
-		setRequestBody(true);
-	}
+//	this->setRequestHeader(false);
+//	if (!getMethod().compare("POST")) {
+//		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
+//		setRequestBody(true);
+//	}
 //	if (!getMethod().compare("POST")){
 //		this->setRequestBody(true);
 //		contentLength = (size_t)atol(this->getHeaderValue("Content-Length").c_str());
@@ -186,10 +184,10 @@ void	Request::setHeaderContent() {
 
 // Output
 void Request::output() {
-    //cout << "_method : " << _method << std::endl;
-    //cout << "_dir : " << _dir << std::endl;
-    //cout << "_protocol : " << _protocol << std::endl;
-	//cout << "_requestHeader : " << _requestHeader << endl;
-	//cout << "_requestBody : " << _requestBody << endl;
-	//cout << "_body : " << _body << endl;
+    cout << "_method : " << _method << std::endl;
+    cout << "_dir : " << _dir << std::endl;
+    cout << "_protocol : " << _protocol << std::endl;
+	cout << "_requestHeader : " << _requestHeader << endl;
+	cout << "_requestBody : " << _requestBody << endl;
+	cout << "_body : " << _body << endl;
 }

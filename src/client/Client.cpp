@@ -5,7 +5,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), _requestBuffer(""), \
-	_maxSize(newMaxSize), _requestMode(true) {
+	_maxSize(newMaxSize), _requestMode(true), _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -34,7 +34,7 @@ bool	Client::requestReceived() {
 		_request.setSS(&ss);
 		_request.parseBuffer();
 		this->handleRequest();
-		this->resetRequest();
+		_requestBuffer.clear();
 		return true;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
@@ -58,7 +58,8 @@ void	Client::fillRequestBuffer() {
 			break ;
 		tmp.assign(buffer, rc);
 		_requestBuffer.append(tmp);
-		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
+//		cerr << "\033[1;36m" <<" ------------------- "<< "\033[0m" << endl;
+//		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
 	}
 }
 
@@ -110,6 +111,7 @@ void	Client::handleRequest() {
 //		handleCGIResponse(filePath, _contentType["html"]);
 //		return ;
 //	}
+	setEndOfRequest(true);
 	this->resetRequest();
 }
 

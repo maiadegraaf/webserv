@@ -13,7 +13,6 @@ void Client::parsePostPlainRequest()
 		_postContent.push_back(vector<string>());
 		_postContent[i].push_back(req.substr(0, req.find("=")));
 		_postContent[i].push_back(req.substr(req.find("=") + 1, req.length()));
-//		cerr << "postContent:: " << _postContent[i][1] << endl;
 		i++;
 	}
 	while (i-- > 0)
@@ -117,10 +116,11 @@ void Client::parsePostMultipartRequest()
 		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
 			break;
-//		ofstream outfile(_headerMultipart[content_nb]["name"]);
+		string uploadPath = getLocation(_request.getDir()).getUpload();
+		uploadPath.append(_headerMultipart[content_nb]["filename"]);
+		ofstream outfile(uploadPath);
 		while (getline(ss, contentFile, '\n'))
 		{
-//			cerr << "2: " << contentFile << endl;
 			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "\r") == 0) {
 				break;
 			}
@@ -129,14 +129,11 @@ void Client::parsePostMultipartRequest()
 				endOfReq = true;
 				break;
 			}
-//			outfile << contentFile;
-//			outfile << endl;
+			outfile << contentFile;
+			outfile << endl;
 		}
-//		outfile.close();
-		cout << content_nb << endl;
-		cout << endOfReq << endl;
+		outfile.close();
 		content_nb++;
-		sleep(1);
 	}
 }
 

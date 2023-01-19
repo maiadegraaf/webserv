@@ -40,7 +40,9 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		bool 								_requestMode; // weg
+		bool 								_requestMode,
+											_endOfRequest,
+											_isParsing; // weg
 
 	/* *********
  	* Getters *
@@ -52,6 +54,8 @@ class Client {
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
 		bool 				getRequestMode()													{ return this->_requestMode; }
+		bool 				endOfRequest()														{ return this->_endOfRequest; }
+		bool 				isParsing()															{ return this->_isParsing; }
 		vector< vector<string> >	getPostContent()											{ return _postContent; }
 	/* *********
  	* Setters *
@@ -59,6 +63,8 @@ class Client {
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
 		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
+		void 		setEndOfRequest(bool nBool)													{ this->_endOfRequest = nBool; }
+		void 		setIsParsing(bool nBool)													{ this->_isParsing = nBool; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
 	/* **************
