@@ -63,12 +63,12 @@ void Location::output()
             "PUT",
             "PATCH"
     };
-    cout << "index : " << _index << endl;
-    if (_autoIndex)
-        cout << "autoIndex : on" << endl;
-    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
-        cout << methods[i->first] << " : " << i->second << endl;
-    cout << "upload : " << _upload << endl;
+    //cout << "index : " << _index << endl;
+//    if (_autoIndex)
+        //cout << "autoIndex : on" << endl;
+//    for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
+        //cout << methods[i->first] << " : " << i->second << endl;
+    //cout << "upload : " << _upload << endl;
 }
 
 void Location::setIndex(const ConfigParser &confP, int line)
@@ -109,7 +109,7 @@ void Location::setMethod(const ConfigParser &confP, int line)
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {
-            cerr << s;
+            //cerr << s;
             failure(" is not an accepted method");
         }
         _method[determineMethod(s)] = true;
@@ -123,6 +123,7 @@ void Location::setUpload(const ConfigParser &confP, int line)
     string type = "upload";
     size_t indLoc = confP.at(line).find(type);
     _upload = findNextWord(confP.at(line), indLoc + type.length());
+//	cerr << "upload : " << _upload << endl;
 }
 
 void Location::determineCase(const string& word, const ConfigParser &confP, int line)

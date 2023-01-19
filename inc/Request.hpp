@@ -1,11 +1,12 @@
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef REQUEST_HPP
+#define REQUEST_HPP
 
 #include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 #include <sstream>
+#include <cstdlib>
 #include "WSException.hpp"
 
 using namespace std;
@@ -27,6 +28,7 @@ class Request
 	 * ************/
 	private:
 		string				_buffer;
+		stringstream 		*_ss;
 		string				_method;
 		string				_dir;
 		string				_protocol;
@@ -46,8 +48,9 @@ class Request
 		string			getHeaderValue(string key)			{ return this->_header[key]; }
 		vector<string>	getInput()							{ return this->_input; }
 		string 			getBody()							{ return this->_body; }
-		bool 			getRequestHeader()					{ return this->_requestHeader; }
+		void 			organizeParsingRequest();
 		bool 			getRequestBody()					{ return this->_requestBody; }
+		stringstream*	getSS()								{ return this->_ss; }
 
 	/* *********
 	 * Setters *
@@ -59,13 +62,17 @@ class Request
 		void	setHeaderValue(string key, string value)	{ this->_header[key] = value; }
 		void 	setRequestHeader(bool nBool)				{ this->_requestHeader = nBool; }
 		void 	setRequestBody(bool nBool)					{ this->_requestBody = nBool; }
-//		void	setInput(string input);
+		void	setSS(stringstream *ss)						{ this->_ss = ss; }
+
+	//		void	setInput(string input);
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
 		void	setHeaderContent();
 		void 	parseBufferBody();
-		void 	parseBufferHeader();
+		void 	parseBuffer();
 		void 	setupHeader();
+		bool	checkIfBody();
+		bool	checkIfHeader();
 
 	/* ********
 	 * Output *

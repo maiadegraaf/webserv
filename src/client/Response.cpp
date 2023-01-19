@@ -17,6 +17,16 @@ Response::Response(const string& filePath, const string& message, const string& 
 	appendToHead("\r\n");
 }
 
+Response::Response(string message, string contentType, int newSockFD, off_t fileSize)
+		: _sockFD(newSockFD), _head("HTTP/1.1 "), _fileSize(fileSize), _hasBody(false), _sendHeader(false) {
+	appendToHeadNL(message);
+	(void)contentType;
+	appendObjectToHead("Content-Length: ", "29");
+	appendToHead("\r\n");
+	appendObjectToHead("content uploaded successfully", "\r\n");
+	appendToHead("\r\n");
+}
+
 Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
 	this->_fileSize = rhs._fileSize;

@@ -43,7 +43,9 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		bool 								_requestMode; // weg
+		bool 								_requestMode,
+											_endOfRequest,
+											_isParsing; // weg
 
 	/* *********
  	* Getters *
@@ -55,6 +57,8 @@ class Client {
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
 		bool 				getRequestMode()													{ return this->_requestMode; }
+		bool 				endOfRequest()														{ return this->_endOfRequest; }
+		bool 				isParsing()															{ return this->_isParsing; }
 		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
 		string				getRoot() const														{ return this->_root; }
 		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
@@ -65,6 +69,8 @@ class Client {
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
 		void 		setRequestModeFalse()														{ this->_requestMode = false; }
 		void 		setRequestModeTrue()														{ this->_requestMode = true; }
+		void 		setEndOfRequest(bool nBool)													{ this->_endOfRequest = nBool; }
+		void 		setIsParsing(bool nBool)													{ this->_isParsing = nBool; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
 
@@ -84,17 +90,18 @@ class Client {
 		void 		clientRequest();
 		string		receiveStrRequest();
 		void		handleGetRequest(string filepath);
-		void		handlePostRequest(const string& filepath, Request clientReq);
+		void		handlePostRequest(const string filepath);
 		void		handleDeleteRequest(const string& filepath, const Request& clientReq);
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(const string& filePath, const string& contentType);
-		void		parsePostPlainRequest(Request clientReq);
-		void 		parsePostWwwRequest(Request clientReq);
-		void 		parsePostMultipartRequest(Request clientReq);
-		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq);
+		void		parsePostPlainRequest();
+		void 		parsePostWwwRequest();
+		void 		parsePostMultipartRequest();
+		void		parseHeaderMultipart(string *req, stringstream *ss, int content_nb, bool *endOfReq);
 		void 		makeMapOfMultipartHeader(string tmp, int content_nb);
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
+		void		setPostResponse(string contentType);
 
 };
 

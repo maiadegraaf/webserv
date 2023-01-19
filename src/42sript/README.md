@@ -105,9 +105,9 @@ void Brain::setRemainingBrainCells(int newRemainingBrainCells) { _remainingBrain
 // Output
 void Brain::output()
 {
-  std::cout << "owner : " << _owner << std::endl; 
-  std::cout << "numTimesHitInTheHead : " << _numTimesHitInTheHead << std::endl; 
-  std::cout << "remainingBrainCells : " << _remainingBrainCells << std::endl; 
+  //cout << "owner : " << _owner << std::endl; 
+  //cout << "numTimesHitInTheHead : " << _numTimesHitInTheHead << std::endl; 
+  //cout << "remainingBrainCells : " << _remainingBrainCells << std::endl; 
 }
 ```
 

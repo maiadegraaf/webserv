@@ -2,13 +2,14 @@
 #include <iostream>
 #include <fstream>
 
-void Client::parsePostPlainRequest(Request clientReq)
+void Client::parsePostPlainRequest()
 {
 	string	req;
 	int i = 0;
-	stringstream ss(clientReq.getBody());
+	stringstream ss(_request.getBody());
 
 	while (getline(ss, req, '\n')) {
+		req.erase(remove( req.begin(), req.end(), '\r' ),req.end());
 		_postContent.push_back(vector<string>());
 		_postContent[i].push_back(req.substr(0, req.find("=")));
 		_postContent[i].push_back(req.substr(req.find("=") + 1, req.length()));
@@ -36,11 +37,11 @@ void Client::decryptWwwForm(string &data)
 	}
 }
 
-void Client::parsePostWwwRequest(Request clientReq)
+void Client::parsePostWwwRequest()
 {
 	string	req;
 	int i = 0;
-	string data = clientReq.getBody();
+	string data = _request.getBody();
 	decryptWwwForm(data);
 	stringstream ss(data);
 
@@ -73,15 +74,16 @@ void Client::makeMapOfMultipartHeader(string tmp, int content_nb)
 	}
 }
 
-void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb, Request clientReq, bool *endOfReq)
+void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb, bool *endOfReq)
 {
 	string	tmp;
 	size_t pos = 0;
-	(void)clientReq;
+	(void)_request;
 
 	while (getline(*ss, *req, '\n'))
 	{
-		if (req->compare("--" + clientReq.getHeaderValue("boundary") + "--\r") == 0)
+//		cerr << "1:" << *req << endl;
+		if (req->compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
 			break;
@@ -100,26 +102,31 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 }
 
 
-void Client::parsePostMultipartRequest(Request clientReq)
+void Client::parsePostMultipartRequest()
 {
 	bool endOfReq = false;
-	string data = clientReq.getBody();
+	string data = _request.getBody();
 	stringstream ss(data);
 	int	content_nb = 0;
 	string	req;
 	string	contentFile;
 
+//	cerr << data << endl;
 	while (1) {
-		parseHeaderMultipart(&req, &ss, content_nb, clientReq, &endOfReq);
+		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
 			break;
-		ofstream outfile(_headerMultipart[content_nb]["name"]);
+		string uploadPath = getRoot() + _request.getDir();
+		uploadPath.append(getLocation(_request.getDir()).getUpload());
+		uploadPath.append("/" + _headerMultipart[content_nb]["filename"]);
+		cerr << "UPLOADDD: -----> " << uploadPath << endl;
+		ofstream outfile(uploadPath);
 		while (getline(ss, contentFile, '\n'))
 		{
-			if (contentFile.compare("--" + clientReq.getHeaderValue("boundary") + "\r") == 0) {
+			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "\r") == 0) {
 				break;
 			}
-			if (contentFile.compare("--" + clientReq.getHeaderValue("boundary") + "--\r") == 0)
+			if (contentFile.compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 			{
 				endOfReq = true;
 				break;
@@ -134,8 +141,10 @@ void Client::parsePostMultipartRequest(Request clientReq)
 
 void Client::createFileStorePost(int i)
 {
-	ofstream outfile (_postContent[i][0]);
+	string uploadPath = getLocation(_request.getDir()).getUpload();
+	uploadPath.append(_postContent[i][0]);
 
+	ofstream outfile (uploadPath);
 	outfile << _postContent[i][1];
 	outfile.close();
 }
