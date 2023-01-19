@@ -30,7 +30,8 @@ class Response
 		Response&	operator=( const Response &rhs);
 
 		// Error & Regular construction
-        Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
+		Response(string message, string contentType, int newSockFD, off_t fileSize);
+		Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
 		Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize);
 //		Response(const Request &request, int newSockFD); // new
 
@@ -71,7 +72,6 @@ class Response
 		void 	appendToHeadNL(string newHead)					{ this->appendToHead(newHead); this->_head.append("\r\n"); }
 		void 	appendObjectToHead(string type, string name)	{ this->appendToHead(type); appendToHeadNL(name); }
 		void	appendToFilePath(string newPath)				{ this->_filePath.append(newPath); }
-
 		void 	setHasBody(bool nBool)							{ this->_hasBody = nBool; }
 		void 	setSendHeader(bool nBool)						{ this->_sendHeader = nBool; }
 

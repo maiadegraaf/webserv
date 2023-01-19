@@ -157,21 +157,21 @@ void Config::setErrorPage(const ConfigParser &confP, int line)
 // Output
 void Config::output()
 {
-	cout << "\n------------------------------------------------------\n" << endl;
-	cout << "address : " << _address << endl;
-	cout << "\nserver name(s) : " << endl;
+	//cout << "\n------------------------------------------------------\n" << endl;
+	//cout << "address : " << _address << endl;
+	//cout << "\nserver name(s) : " << endl;
 	for_each(_serverName.begin(), _serverName.end(), printStr);
-	cout << "\nroot : " << _root << endl;
-	cout << "\nmax_size : " << _maxSize << endl;
+	//cout << "\nroot : " << _root << endl;
+	//cout << "\nmax_size : " << _maxSize << endl;
     for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
     {
-        cout << "\nLocation : " << i->first << endl;
-        i->second.output();
+        //cout << "\nLocation : " << i->first << endl;
+//        i->second.output();
     }
-	cout << "\ncgi : " << _cgi << endl;
-	cout << "\nError Page : "  << endl;
-	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
-		cout << i->first << " : " << i->second << endl;
+	//cout << "\ncgi : " << _cgi << endl;
+	//cout << "\nError Page : "  << endl;
+//	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
+//		cout << i->first << " : " << i->second << endl;
 }
 
 void Config::determineCase(const string& word, const ConfigParser &confP, int line)
