@@ -44,30 +44,20 @@
                 ?>
             </td>
             <td>
-                <form method="DELETE" action="<?php
-                                                  $ch = curl_init();
-
-                                                  // Set the cURL options
-                                                  curl_setopt($ch, CURLOPT_URL, '$url');
-                                                  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-                                                  curl_setopt($ch, CURLOPT_POSTFIELDS, '');
-                                                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-                                                  // Set the headers
-                                                  curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                                                      'DELETE upload/uploads/$entry HTTP/1.1',
-                                                      'Content-Type: application/json',
-                                                      'Content-Length: '
-                                                  ));
-
-                                                  // Execute the cURL request
-                                                  $response = curl_exec($ch);
-
-                                                  // Close the cURL session
-                                                  curl_close($ch);
-                                             ?>">
-                    <input type="hidden" id="file" value=<?php echo "$entry" ?>>
-                    <input type="submit" value="delete">
+                <form method="DELETE" action=<?php
+                                                 $url = "upload/uploads/$entry";
+                                                 $ch = curl_init();
+                                                 curl_setopt($ch, CURLOPT_URL, $url);
+                                                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                                                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                                 $headers = [];
+                                                 $headers[] = 'Content-Type:application/json';
+                                                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                                                 curl_exec($ch);
+                                                 curl_close($ch);
+                                             ?>>
+                    <input type="hidden" id="file" value=<?php echo "\"$entry\"" ?>>
+                    <button type="submit" value="Send Request">Delete</button>
                 </form>
             </td>
         </tr>
@@ -76,7 +66,7 @@
           }
         closedir($handle);
         }
-      ?>
+        ?>
     </table>
   </div>
 </div>

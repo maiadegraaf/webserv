@@ -85,7 +85,7 @@ class Client {
 		string		receiveStrRequest();
 		void		handleGetRequest(string filepath);
 		void		handlePostRequest(const string& filepath, Request clientReq);
-		void		handleDeleteRequest(const string& filepath, const Request& clientReq);
+		void		handleDeleteRequest(string filepath, Request clientReq);
 		void		handleResponse(string filePath, string contentType);
 		void		handleCGIResponse(const string& filePath, const string& contentType);
 		void		parsePostPlainRequest(Request clientReq);
