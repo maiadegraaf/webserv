@@ -34,9 +34,9 @@
 
 
 .idea
-cmake-build-debug/*
-cmake-build-debug
-CMakeLists.txt
+#cmake-build-debug/*
+#cmake-build-debug
+#CMakeLists.txt
 createClass.sh
 .dSYM
 /webserv
