@@ -71,11 +71,11 @@ string findFirstWord(int i, vector<string> v)
     return(v[i].substr(start, end - start));
 }
 
-string sFindNextWord(size_t *i, string s)
+string sFindNextWord(size_t *i, string s, string del)
 {
-	size_t start = s.find_first_not_of(' ', *i);
-	size_t end = s.find_first_of(' ', start);
-	if (end == string::npos)
+	size_t start = s.find_first_not_of(del, *i);
+	size_t end = s.find_first_of(del, start);
+	if (end == string::npos || s[end] == s.back())
 		end = s.length();
 	if (start == string::npos || end == string::npos)
 		return "";
@@ -92,26 +92,29 @@ string extension(string filename)
 	return(filename.substr(start, filename.size() - start));
 }
 
-char** splitStr(const string& s)
+char **vectorToArr(vector<string> v)
+{
+    size_t size = v.size();
+    char **ret = new char*[size + 1];
+    for (size_t i = 0; i < size; i++)
+    {
+        ret[i] = new char[v[i].length() + 1];
+        ret[i] = strcpy(ret[i], (char *)v[i].c_str());
+    }
+    ret[size] = NULL;
+    return ret;
+}
+
+vector<string> splitStr(const string& s, string del)
 {
 	vector<string> v;
 
 	for (size_t i = 0; i < s.length(); ){
-		string tmp = sFindNextWord(&i, s);
+		string tmp = sFindNextWord(&i, s, del);
+        cerr << tmp << endl;
 		v.push_back(tmp);
 	}
-
-	size_t size = v.size();
-	cerr << size << endl;
-	char **ret = new char*[size + 1];
-	for (size_t i = 0; i < size; i++)
-	{
-		ret[i] = new char[v[i].length() + 1];
-		ret[i] = strcpy(ret[i], (char *)v[i].c_str());
-	}
-	cerr << ret[size - 1] << endl;
-	ret[size] = NULL;
-	return (ret);
+    return v;
 }
 
 void	setDeleteHTMLResponse(const string& filePath)
@@ -127,4 +130,31 @@ void	setDeleteHTMLResponse(const string& filePath)
 		file << "</html>" << endl;
 		file.close();
 	}
+}
+
+string find_path(char** envp)
+{
+    int		i;
+
+    i = 0;
+    while (envp[i])
+    {
+        string s(envp[i]);
+        if (s.substr(0, 5) == "PATH=")
+            return (s.substr(5));
+        i++;
+    }
+    return ("");
+}
+
+vector<string> parse_envp(char** envp)
+{
+    string path_from_envp = find_path(envp);
+    vector<string> paths = splitStr(path_from_envp, ":");
+    for (size_t i = 0; i < paths.size(); i++)
+    {
+        if (paths[i].back() != '/')
+            paths[i].append("/");
+    }
+    return paths;
 }

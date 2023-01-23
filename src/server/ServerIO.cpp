@@ -10,8 +10,8 @@ ServerIO&	ServerIO::operator=( const ServerIO& rhs ) {
 	return *this;
 }
 
-ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType)
-	:_config(newConfig), _contentType(newContentType) {
+ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType, char** envp)
+	:_config(newConfig), _contentType(newContentType), _envp(envp) {
 	size_t	size = _config.size();
 
 	for (size_t i = 0; i < size; i++) {
@@ -114,7 +114,7 @@ void	ServerIO::incomingRequest(void *udata) {
 
 	if (client) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
-		if (client->requestReceived() == true)
+		if (client->requestReceived(_envp) == true)
 			this->setupClientWrite(client);
 		else if (client->getRequestMode() == false)
 			this->setupClientEOF(client);

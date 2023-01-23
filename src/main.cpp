@@ -21,10 +21,10 @@ vector<Config> extractServer(const string& filename)
     return (conf);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
 	if (argc != 2)
 		failure("Incorrect INPUT");
 	vector<Config> conf = extractServer(argv[1]);
-	ServerIO	webby(conf, returnContentType());
+	ServerIO	webby(conf, returnContentType(), envp);
 }

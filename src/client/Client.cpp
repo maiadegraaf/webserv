@@ -25,13 +25,13 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-bool	Client::requestReceived() {
+bool	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
-		this->handleRequest();
+		this->handleRequest(envp);
 //		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
 		_requestBuffer.clear();
 		return true;
@@ -78,7 +78,7 @@ void	Client::fillRequestBuffer() {
 //	return false ;
 //}
 
-void	Client::handleRequest() {
+void	Client::handleRequest(char** envp) {
 	Location	location;
 	string		filePath(getRoot().append("/"));
 	string 		path;
@@ -101,7 +101,7 @@ void	Client::handleRequest() {
 	if (_request.getMethod() == "GET")
 	{
 		if ( filePath.find("php") != string::npos ) {
-			handleCGIResponse(filePath, "php");
+			handleCGIResponse(filePath, "php", envp);
 			this->resetRequest();
 			return ;
 		}
@@ -111,14 +111,14 @@ void	Client::handleRequest() {
 		handlePostRequest(filePath);
 	}
 	else if (_request.getMethod() == "DELETE") {
-		handleDeleteRequest(filePath, _request);
+		handleDeleteRequest(filePath, _request, envp);
 	}
 	this->resetRequest();
 }
 
-void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
-	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse());
+void	Client::handleCGIResponse(string filePath, const string& contentType, char** envp) {
+	Response	clientResponse(filePath.insert(0, "php "), "200 OK", contentType, getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse(envp));
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader("200 OK", contentType);
 	_response = clientResponse;
@@ -192,12 +192,12 @@ void Client::handlePostRequest(string filepath)
 	setPostResponse(type);
 }
 
-void Client::handleDeleteRequest(string filePath, Request clientReq) {
+void Client::handleDeleteRequest(string filePath, Request clientReq, char** envp) {
 	string type = clientReq.getHeaderValue("Content-Type");
 	if (!fileAccess(filePath))
 		throw WSException::BadRequest();
-	Response	clientResponse(filePath.insert(0, "/bin/rm -f "), "200 OK", type, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse());
+	Response	clientResponse(filePath.insert(0, "rm -f "), "200 OK", type, getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse(envp));
 	setDeleteHTMLResponse(clientResponse.getFilePath());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader(" 200 OK", type);

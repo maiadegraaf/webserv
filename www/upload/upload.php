@@ -1,5 +1,3 @@
-#!/usr/bin/php
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,20 +42,9 @@
                 ?>
             </td>
             <td>
-                <form method="DELETE" action=<?php
-                                                 $url = "upload/uploads/$entry";
-                                                 $ch = curl_init();
-                                                 curl_setopt($ch, CURLOPT_URL, $url);
-                                                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                                                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                                                 $headers = [];
-                                                 $headers[] = 'Content-Type:application/json';
-                                                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                                                 curl_exec($ch);
-                                                 curl_close($ch);
-                                             ?>>
-                    <input type="hidden" id="file" value=<?php echo "\"$entry\"" ?>>
-                    <button type="submit" value="Send Request">Delete</button>
+                <form method="DELETE" action="/upload/delete.php">
+                   <input type="hidden" name="file" value="<?php echo $entry ?>">
+                   <input type="submit" value="delete">
                 </form>
             </td>
         </tr>
