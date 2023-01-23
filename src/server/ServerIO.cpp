@@ -53,7 +53,9 @@ void	ServerIO::loopEvent( ) {
 	for (int i = 0; i < _nrEvents; i++) {
 		event = _events[i];
 		_eventFd = event.ident;
-		if (event.flags & EV_EOF)
+		if (event.flags & EV_ERROR)
+			errx(EXIT_FAILURE,	"Event error: %s", strerror(event.data));
+		else if (event.flags & EV_EOF)
 			this->disconnectClient(event.udata);
 		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
@@ -111,26 +113,28 @@ void	ServerIO::setupClientEOF(Client *client) {
 
 void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
-	if (client) {
+	if (!client) {
+		perror("unknown request");
+		return;
+	}
+	if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
-			this->setupClientWrite(client);
-		else if (client->getRequestMode() == false)
-			this->setupClientEOF(client);
+			client->setClientMode(response);
 		cerr <<  endl;
 	}
-	else
-		perror("unknown request");
 }
 
 void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
-	if (client) {
-		if (client->responseSend() == false) // nog maken
-			this->setupClientRead(client);
+	if (!client) {
+		perror("unknown response");
+		return;
 	}
-	else
-		perror("unkown response");
+	if (client->getClientMode() == response) {
+		if (client->responseSend() == false) // nog maken
+			client->setClientMode(request);
+	}
 }
 
 // Output

@@ -19,6 +19,7 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/event.h>
+#include <err.h>
 #include "webserv.h"
 #include "Config.hpp"
 //#include "Response.hpp"
@@ -29,8 +30,7 @@
 
 class Config;
 
-class Server
-{
+class Server {
 	/* *******************
 	 * (Con/De)structors *
  	* *******************/

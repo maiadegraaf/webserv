@@ -9,7 +9,12 @@
 #include "Location.hpp"
 #include "CGIResponse.hpp"
 
-//class Response;
+// class Response;
+
+typedef enum e_clientMode {
+	request,
+	response
+}	clientMode;
 
 // Class definition
 class Client {
@@ -26,7 +31,6 @@ class Client {
 		Client(int newSockFd, map<string, Location> newLocation, \
 			map<string, string> newContentType, size_t newMaxSize);
 
-
 	/* ************
 	 * Attributes *
 	 * ************/
@@ -41,7 +45,7 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		bool 								_requestMode; // weg
+		clientMode							_clientMode;
 
 	/* *********
  	* Getters *
@@ -52,16 +56,18 @@ class Client {
 		Location			&getLocation(string key)											{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
-		bool 				getRequestMode()													{ return this->_requestMode; }
-		vector< vector<string> >	getPostContent()											{ return _postContent; }
+		bool 				getClientMode()														{ return this->_clientMode; }
+		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
+
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-		void 		setRequestMode(bool nBool)													{ this->_requestMode = nBool; }
+		void 		setClientMode(clientMode mode)												{ this->_clientMode = mode; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
+
 	/* **************
  	* Functionality *
  	* ***************/

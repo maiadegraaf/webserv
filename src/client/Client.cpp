@@ -3,7 +3,8 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), _requestBuffer(""), \
-	_maxSize(newMaxSize), _requestMode(true) {
+	_maxSize(newMaxSize), _clientMode(request) {
+
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -15,7 +16,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_requestMode = rhs._requestMode;
+	this->_clientMode = rhs._clientMode;
 	return *this;
 }
 

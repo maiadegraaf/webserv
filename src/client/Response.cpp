@@ -33,8 +33,7 @@ Response&	Response::operator=( const Response& rhs ) {
 	return *this;
 }
 
-void Response::setNewHeader(const string& message, const string& contentType)
-{
+void Response::setNewHeader(const string& message, const string& contentType) {
 	setHead("HTTP/1.1");
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
