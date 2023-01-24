@@ -86,7 +86,7 @@ void	Client::handleRequest(char** envp) {
 //	string		extension;
 //	string		contentType;
 
-//	_request.output();
+	_request.output();
 
 //	cerr << "clientReq " << _request.getDir() << endl;
 	location = getLocation(_request.getDir());
@@ -194,6 +194,7 @@ void Client::handlePostRequest(string filepath)
 
 void Client::handleDeleteRequest(string filePath, Request clientReq, char** envp) {
 	string type = clientReq.getHeaderValue("Content-Type");
+	cerr << filePath << endl;
 	if (!fileAccess(filePath))
 		throw WSException::BadRequest();
 	Response	clientResponse(filePath.insert(0, "rm -f "), "200 OK", type, getSockFd(), 0);

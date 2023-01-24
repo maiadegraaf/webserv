@@ -87,7 +87,6 @@ void	Response::sendBody() {
 
 bool Response::exec(char **envp)
 {
-    cerr << "HELLO" << endl;
 	char **split = vectorToArr(splitStr(getFilePath(), " ?"));
     if (!access(split[0], F_OK))
         execve(split[0], split, envp);
@@ -95,7 +94,6 @@ bool Response::exec(char **envp)
     for (size_t i = 0; i < paths.size(); i++)
     {
         string cmd = paths[i] + split[0];
-//        cerr << cmd << endl;
         if (!access(cmd.c_str(), F_OK))
             execve(cmd.c_str(), split, envp);
     }
@@ -105,15 +103,15 @@ bool Response::exec(char **envp)
 
 string Response::CGIResponse(char **envp)
 {
-	string tmp;
+	string	tmp;
+	int		front;
 	if (_contentType == "php")
-	{
-		string subFilePath = getFilePath().substr(4, getFilePath().length());
-        subFilePath = subFilePath.substr(0, subFilePath.find_last_of('.'));
-		tmp =  subFilePath + "tmpFile" + ".html";
-	}
+		front = 4;
 	else
-		tmp = "deleted_file.html";
+		front = 5;
+	string subFilePath = getFilePath().substr(front, getFilePath().length());
+	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
+	tmp =  subFilePath + "/tmpFile" + ".html";
 	char *filename = const_cast<char *>(tmp.c_str());
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
@@ -121,7 +119,7 @@ string Response::CGIResponse(char **envp)
 	int pid = fork();
 	if (pid == 0)
 	{
-		if (dup2(fd, STDOUT_FILENO) < 0)
+		if (_contentType == "php" && dup2(fd, STDOUT_FILENO) < 0)
 			failure("");
 		close(fd);
 		exec(envp);

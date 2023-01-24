@@ -1,3 +1,11 @@
+<script>
+    function deleteSomething(id) {
+      fetch('upload/uploads/' + id,  {
+        method: 'DELETE'
+      })
+    }
+</script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,10 +50,12 @@
                 ?>
             </td>
             <td>
-                <form method="DELETE" action="/upload/delete.php">
-                   <input type="hidden" name="file" value="<?php echo $entry ?>">
-                   <input type="submit" value="delete">
-                </form>
+                <button
+                  onclick='deleteSomething("<?php echo $entry?>")'
+                >
+                  delete
+                </button>
+
             </td>
         </tr>
         <?php

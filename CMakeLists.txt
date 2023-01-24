@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 98)
 
 set (CMAKE_CXX_FLAGS "-Werror -Wextra -Wall")
 
-add_definitions(-DDIRECTORY="/Users/maiadegraaf/webserve/")
+add_definitions(-DDIRECTORY="/Users/mgraaf/Documents/webserv")
 
 include_directories(inc)
 include_directories(SYSTEM ./lib)
