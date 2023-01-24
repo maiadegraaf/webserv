@@ -164,7 +164,8 @@ void Client::handleGetRequest(string file, string filePath)
 	if (!contentType.empty())
 		setResponse(filePath, contentType);
 	else
-		throw WSException::PageNotFound(); }
+		throw WSException::PageNotFound();
+}
 //
 //void Client::setPostContent(string input, int i) {
 //	_postContent.push_back(vector<string>());
