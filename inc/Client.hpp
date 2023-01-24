@@ -79,7 +79,7 @@ class Client {
  	* ***************/
 	public:
 		void		output();
-		bool		requestReceived(char** envp);
+		void		requestReceived(char** envp);
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest(char** envp);
