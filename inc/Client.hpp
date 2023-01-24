@@ -9,6 +9,10 @@
 #include "Location.hpp"
 
 //class Response;
+typedef enum clientMode {
+	request,
+	response
+}	clientMode;
 
 // Class definition
 class Client {
@@ -42,7 +46,7 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		bool 								_requestMode; // weg
+		clientMode							_clientMode; // weg
 
 	/* *********
  	* Getters *
@@ -53,32 +57,35 @@ class Client {
 		Location			&getLocation(const string &key)										{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
-		bool 				getRequestMode()													{ return this->_requestMode; }
+//		bool 				getClientMode()														{ return this->_clientMode; }
 		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
 		string				getRoot() const														{ return this->_root; }
 		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
+		clientMode			&getClientMode()														{ return this->_clientMode; }
+
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-		void 		setRequestModeFalse()														{ this->_requestMode = false; }
-		void 		setRequestModeTrue()														{ this->_requestMode = true; }
+//		void 		setRequestModeFalse()														{ this->_requestMode = false; }
+//		void 		setRequestModeTrue()														{ this->_requestMode = true; }
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
+		void 		setClientMode(clientMode mode)												{ this->_clientMode = mode; }
 
 	/* **************
  	* Functionality *
  	* ***************/
 	public:
 		void		output();
-		bool		requestReceived();
+		void		requestReceived();
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
 		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
-		bool 		responseSend();
+		void 		responseSend();
 		void 		resetRequest();
 		void 		clientRequest();
 		string		receiveStrRequest();

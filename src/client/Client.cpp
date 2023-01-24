@@ -5,7 +5,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -17,7 +17,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_requestMode = rhs._requestMode;
+	this->_clientMode = rhs._clientMode;
 	return *this;
 }
 
@@ -27,7 +27,7 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-bool	Client::requestReceived() {
+void 	Client::requestReceived() {
 	try {
 		this->fillRequestBuffer();
 //		if (this->getRequestMode() == false) // check hier
@@ -36,9 +36,10 @@ bool	Client::requestReceived() {
 			cerr << "please arive here\n";
 			this->handleRequest();
 			this->resetRequest();
-			return true;
+			this->setClientMode(response);
+//			return true;
 		}
-		return false;
+//		return false;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath("default/");
@@ -47,7 +48,8 @@ bool	Client::requestReceived() {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
-		return true;
+		this->setClientMode(response);
+//		return true;
 	}
 }
 
@@ -144,17 +146,20 @@ void	Client::setResponse(string filePath, string contentType) {
 	_response = clientResponse;
 }
 
-bool	Client::responseSend() {
+void	Client::responseSend() {
 	if (_response.getHasBody() == true) {
 		if (_response.getSendHeader() == false) {
 			_response.sendHeader();
-			return true;
+			this->setClientMode(request);
+			return ;
+//			return true;
 		}
 		_response.sendBody();
-		return false;
+		return ;
 	}
 	_response.sendHeader();
-	return false;
+//	this->setClientMode(request);
+	return ;
 }
 
 void	Client::resetRequest() {
