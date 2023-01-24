@@ -87,7 +87,7 @@ void	Client::handleRequest(char** envp) {
 		handlePostRequest(filePath);
 	}
 	else if (_request.getMethod() == "DELETE") {
-		handleDeleteRequest(filePath, _request, envp);
+		handleDeleteRequest(filePath, envp);
 	}
 	this->resetRequest();
 }
@@ -114,7 +114,7 @@ void	Client::setPostResponse(string contentType) {
 }
 
 bool	Client::responseSend() {
-	cerr << "HasBody" << _response.getHasBody() << endl;
+	cerr << "HasBody: " << _response.getHasBody() << endl;
 	if (_response.getHasBody() == true) {
 		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (_response.getSendHeader() == false) {
@@ -123,7 +123,13 @@ bool	Client::responseSend() {
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
-            remove(_response.getFilePath().c_str());
+		{
+			cerr << "remove " << _response.getFilePath();
+            if (remove(_response.getFilePath().c_str()) < 0)
+			{
+				cerr << ": FAILED" << endl;
+			}
+		}
 		return false;
 	}
 	_response.sendHeader();
@@ -170,15 +176,16 @@ void Client::handlePostRequest(string filepath)
 	setPostResponse(type);
 }
 
-void Client::handleDeleteRequest(string filePath, Request clientReq, char** envp) {
-	string type = clientReq.getHeaderValue("Content-Type");
-	cerr << filePath << endl;
+void Client::handleDeleteRequest(string filePath, char** envp) {
 	if (!fileAccess(filePath))
+	{
 		throw WSException::BadRequest();
-	Response	clientResponse(filePath.insert(0, "rm -f "), "200 OK", type, getSockFd(), 0);
+	}
+	Response	clientResponse(filePath.insert(0, "rm -f "), "200 OK", "php", getSockFd(), 0);
 	clientResponse.setFilePath(clientResponse.CGIResponse(envp));
 	setDeleteHTMLResponse(clientResponse.getFilePath());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
-	clientResponse.setNewHeader(" 200 OK", type);
+	clientResponse.setNewHeader(" 200 OK", "php");
+	clientResponse.output();
 	_response = clientResponse;
 }

@@ -64,9 +64,9 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-//	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
-//	cerr << getFilePath() << endl;
-//    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
+	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
+	cerr << getFilePath() << endl;
+    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
     FILE *fp = fopen(getFilePath().c_str(), "r");
 	int buffer = 1024; //chunk size of 1kb
 	char filebyte[buffer];
@@ -75,10 +75,11 @@ void	Response::sendBody() {
 	if (_fileSize > 0)
 	{
 		while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
-			cerr << readBytes << endl;
+//			cerr << readBytes << endl;
 			send(getSockFD(), filebyte, readBytes, 0);
 		}
 	}
+	cerr << "DONE SENDING." << endl;
 //		while (_fileSize > 0)
 //		{
 //			_fileSize -= offset;
@@ -108,19 +109,25 @@ bool Response::exec(char **envp)
 
 string Response::CGIResponse(char **envp)
 {
-	string	tmp;
-	int		front;
-	if (_contentType == "php")
-		front = 4;
-	else
-		front = 5;
-	string subFilePath = getFilePath().substr(front, getFilePath().length());
-	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
-	tmp =  subFilePath + "/tmpFile" + ".html";
+//	string	tmp;
+//	int		front;
+//	if (_contentType == "php")
+//		front = 4;
+//	else
+//		front = 5;
+//	string subFilePath = getFilePath().substr(front, getFilePath().length());
+//	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
+//	tmp =  subFilePath + "/tmpFile" + ".html";
+	string tmp = "obj/.tmpfile.html";
 	char *filename = const_cast<char *>(tmp.c_str());
+	cout << getFilePath() << endl;
+	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
-		failure("");
+	{
+		perror("CGI: ");
+		return("");
+	}
 	int pid = fork();
 	if (pid == 0)
 	{

@@ -111,7 +111,6 @@ vector<string> splitStr(const string& s, string del)
 
 	for (size_t i = 0; i < s.length(); ){
 		string tmp = sFindNextWord(&i, s, del);
-        cerr << tmp << endl;
 		v.push_back(tmp);
 	}
     return v;
