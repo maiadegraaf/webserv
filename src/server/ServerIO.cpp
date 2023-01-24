@@ -1,4 +1,6 @@
 #include "ServerIO.hpp"
+#include <sys/select.h>
+
 // Constructor initializes attributes to 0 by default 
 
 ServerIO::ServerIO( const ServerIO& rhs) {
@@ -84,15 +86,21 @@ void	ServerIO::connectNewClient() {
 
 void	ServerIO::setupClientWrite(Client *client) {
 	struct kevent	newEvents[2];
+//	struct timespec ts;
+//
+//	ts.tv_sec = 10;
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, client);
+	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE , 0, 0, client);
 	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
 		perror("kevent client write");
 }
 
 void	ServerIO::setupClientRead(Client *client) {
 	struct kevent	newEvents[2];
+//	struct timespec ts;
+//
+//	ts.tv_sec = 10;
 
 	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
 	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
@@ -114,10 +122,8 @@ void	ServerIO::incomingRequest(void *udata) {
 
 	if (client) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
-		if (client->requestReceived() == true)
-			this->setupClientWrite(client);
-		else if (client->getRequestMode() == false)
-			this->setupClientEOF(client);
+		client->requestReceived();
+		this->setupClientWrite(client);
 		cerr <<  endl;
 	}
 	else
@@ -127,7 +133,7 @@ void	ServerIO::incomingRequest(void *udata) {
 void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (client) {
-		if (client->responseSend() == false) // nog maken
+		if (client->responseSend() == false )// nog maken
 			this->setupClientRead(client);
 	}
 	else
