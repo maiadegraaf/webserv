@@ -13,6 +13,7 @@ Response::Response(const string& filePath, const string& message, const string& 
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
+	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
@@ -55,17 +56,6 @@ void Response::output() {
 	cout << "filePath : " << _filePath << std::endl;
 }
 
-//bool Response::sendResponse() {
-//	int read = open(getFilePath().c_str(), O_RDONLY);
-//	send(getSockFD(), _head.c_str(), _head.size(), 0);
-//	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-//		cerr << "send() failed " << errno << endl;
-//		return close(read), false;
-//	}
-//	close(read);
-//	return true;
-//}
-
 void	Response::sendHeader() {
 	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0)
 		perror("send header failed");
@@ -74,15 +64,30 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
-	cerr << getFilePath() << endl;
-    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
-    int read = open(getFilePath().c_str(), O_RDONLY);
-	cerr << read << endl;
-	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-		perror("sendfile body failed");
+//	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
+//	cerr << getFilePath() << endl;
+//    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
+    FILE *fp = fopen(getFilePath().c_str(), "r");
+	int buffer = 1024; //chunk size of 1kb
+	char filebyte[buffer];
+	int32_t readBytes;
+
+	if (_fileSize > 0)
+	{
+		while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
+			cerr << readBytes << endl;
+			send(getSockFD(), filebyte, readBytes, 0);
+		}
 	}
-	close(read);
+//		while (_fileSize > 0)
+//		{
+//			_fileSize -= offset;
+//			if (sendfile(read, getSockFD(), offset, &_fileSize, NULL, 0) < 0)
+//				perror("sendfile body failed");
+//			offset += 200000;
+//		}
+
+	fclose(fp);
 }
 
 extern char **environ;
