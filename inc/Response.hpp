@@ -30,9 +30,9 @@ class Response
 		Response&	operator=( const Response &rhs);
 
 		// Error & Regular construction
-        Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
-        Response(string filePath, string message, string contentType, \
-		int newSockFD, off_t fileSize);
+		Response(string message, string contentType, int newSockFD, off_t fileSize);
+		Response(string errorMessage, string errorFilePath, int newSockFD, string contentType);
+		Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize);
 //		Response(const Request &request, int newSockFD); // new
 
 	/* ************
@@ -43,6 +43,7 @@ class Response
 		string		_head;
 		string		_filePath;
 		off_t 		_fileSize;
+		string 		_contentType;
 		bool 		_hasBody, // new
 					_sendHeader; // new
 
@@ -50,12 +51,13 @@ class Response
 	 * Getters *
 	 * *********/
 	public:
-		int		getSockFD()								{ return _sockFD; }
-		string	getHead()								{ return _head; }
-		string	getFilePath()							{ return _filePath; }
-		off_t 	getFileSize()							{ return _fileSize; }
-		bool 	getHasBody()							{ return _hasBody; }
-		bool 	getSendHeader()							{ return _sendHeader; }
+		int				getSockFD()								{ return _sockFD; }
+		string			getHead()								{ return _head; }
+		string			getFilePath()							{ return _filePath; }
+		off_t 			getFileSize()							{ return _fileSize; }
+		bool 			getHasBody()							{ return _hasBody; }
+		bool 			getSendHeader()							{ return _sendHeader; }
+		const string	&getContentType() const 				{ return _contentType; }
 
 
 	/* *********
@@ -70,9 +72,15 @@ class Response
 		void 	appendToHeadNL(string newHead)					{ this->appendToHead(newHead); this->_head.append("\r\n"); }
 		void 	appendObjectToHead(string type, string name)	{ this->appendToHead(type); appendToHeadNL(name); }
 		void	appendToFilePath(string newPath)				{ this->_filePath.append(newPath); }
-
 		void 	setHasBody(bool nBool)							{ this->_hasBody = nBool; }
 		void 	setSendHeader(bool nBool)						{ this->_sendHeader = nBool; }
+
+	/* ****
+	* CGI *
+	* *****/
+
+	bool exec();
+	string CGIResponse();
 
 	/* ********
 	 * Output *
@@ -83,6 +91,8 @@ class Response
 		void 	sendBody();
 //		bool	sendResponse();
 //		bool 	sendCGI();
+
+	void setNewHeader(const string& message, const string& contentType);
 };
  
 #endif

@@ -75,14 +75,14 @@ void Location::setIndex(const ConfigParser &confP, int line)
 {
     string type = "index";
     size_t indLoc = confP.at(line).find(type);
-    _index = findNextWord(confP.at(line), indLoc + type.length());
+    _index = findNextWord(confP.at(line), indLoc + type.length(), true);
 }
 
 void Location::setAutoIndex(const ConfigParser &confP, int line)
 {
     string type = "autoindex";
     size_t indLoc = confP.at(line).find(type);
-    string tmp = findNextWord(confP.at(line), indLoc + type.length());
+    string tmp = findNextWord(confP.at(line), indLoc + type.length(), true);
     if (tmp.compare("ON") == 0)
         _autoIndex = true;
     else if (tmp.compare("OFF") != 0)
@@ -105,7 +105,7 @@ void Location::setMethod(const ConfigParser &confP, int line)
     size_t	end = confP.at(line).find(type) + type.length();
     for(size_t i = 0; i < confP.at(line).length(); i++)
     {
-        string s = findNextWord(confP.at(line), end);
+        string s = findNextWord(confP.at(line), end, true);
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {
@@ -122,7 +122,7 @@ void Location::setUpload(const ConfigParser &confP, int line)
 {
     string type = "upload";
     size_t indLoc = confP.at(line).find(type);
-    _upload = findNextWord(confP.at(line), indLoc + type.length());
+    _upload = findNextWord(confP.at(line), indLoc + type.length(), true);
 }
 
 void Location::determineCase(const string& word, const ConfigParser &confP, int line)
@@ -151,8 +151,8 @@ void Location::determineCase(const string& word, const ConfigParser &confP, int 
 }
 
 void Location::checkIfComplete(void) {
-    if (_autoIndex && _index.empty())
+    if (_autoIndex && _index.empty())	{
         setIndex("index.html");
-
+	}
 }
 

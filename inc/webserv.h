@@ -13,22 +13,27 @@
 #include <vector>
 #include <map>
 #include <dirent.h>
+#include <stdlib.h>
+
 using namespace std;
 
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 #include "Utils.h"
 
-#define DIRECTORY "/Users/sde-quai/Desktop/projects/WEBSERV/webserve/"
+//#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
 
 //utils
 void	failure(const char *message);
 int 	check_file_type(const string& filename);
 void	printStr(const string& str);
-string	findNextWord(const string &line, size_t pos);
+string	findNextWord(const string &line, size_t pos, bool conf);
 string  findFirstWord(int i, vector<string> v);
 bool	fileAccess(string filename);
 bool	directoryAccess(const string& directory);
+string	extension(string filename);
+char**	splitStr(const string& s);
+void	setDeleteHTMLResponse(const string& filePath);
 
 //utils/error map
 map<int, string> setupErrorPages();

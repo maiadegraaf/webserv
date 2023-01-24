@@ -53,14 +53,16 @@ void	ServerIO::loopEvent( ) {
 	for (int i = 0; i < _nrEvents; i++) {
 		event = _events[i];
 		_eventFd = event.ident;
-		if (event.flags & EV_EOF || event.flags == 1)
-			this->disconnectClient(event.udata);
-		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
+		if (event.flags & EV_ERROR)
+			cerr << "client got deleted" << endl;
+		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
+		if (event.flags & EV_EOF) //|| event.flags == 1)
+			this->disconnectClient(event.udata);
 		else if (event.filter == EVFILT_READ)
-			this->incomingRequest(event.udata);
+			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
-			this->outgoingResponse(event.udata);
+			this->outgoingResponse(event);
 	}
 }
 
@@ -82,34 +84,32 @@ void	ServerIO::connectNewClient() {
 	cerr << "ServerIO::connectNewClient() : Client connected with server " << endl;
 }
 
-void	ServerIO::setupClientWrite(Client *client) {
-//	return ;
-	struct kevent	newEvents[2];
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client write");
-}
-
-void	ServerIO::setupClientRead(Client *client) {
-//	return;
-	struct kevent	newEvents[2];
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client read");
-}
-
-void	ServerIO::setupClientEOF(Client *client) {
-	struct kevent	newEvents[2];
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_EOF, 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client EOF");
-}
+//void	ServerIO::setupClientWrite(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client write");
+//}
+//
+//void	ServerIO::setupClientRead(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client read");
+//}
+//
+//void	ServerIO::setupClientEOF(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_EOF, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client EOF");
+//}
 
 void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
@@ -121,6 +121,7 @@ void	ServerIO::incomingRequest(void *udata) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		if (client->requestReceived() == true)
 			client->setClientMode(response);
+
 		cerr <<  endl;
 	}
 }

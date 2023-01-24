@@ -13,7 +13,7 @@ Config::Config(const ConfigParser &confP)
 		string word = confP.findFirstWord(i);
 		determineCase(word, confP, i);
 	}
-//    output();
+    output();
 	checkIfComplete();
 }
 
@@ -68,7 +68,7 @@ void Config::setAddress(const ConfigParser &confP, int line)
 {
 	string	type = "listen";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string	s = findNextWord(confP.at(line), end);
+	string	s = findNextWord(confP.at(line), end, true);
 	int tmp = stoi(s);
 	if (tmp < 0)
 		failure("Listen must be a positive integer.");
@@ -83,7 +83,7 @@ void Config::setServer_name(const ConfigParser &confP, int line)
 	size_t	end = confP.at(line).find(type) + type.length();
 	for(size_t i = 0; i < confP.at(line).length(); i++)
 	{
-		string s = findNextWord(confP.at(line), end);
+		string s = findNextWord(confP.at(line), end, true);
 		_serverName.push_back(s);
 		end = confP.at(line).find(s) + s.length();
 		i += end;
@@ -94,14 +94,14 @@ void Config::setRoot(const ConfigParser &confP, int line)
 {
 	string	type = "root";
 	size_t	end = confP.at(line).find(type) + type.length();
-	_root = findNextWord(confP.at(line), end);
+	_root = findNextWord(confP.at(line), end, true);
 }
 
 void Config::setMaxSize(const ConfigParser &confP, int line)
 {
 	string	type = "client_max_body_size";
 	size_t	end = confP.at(line).find(type) + type.length();
-	_maxSize = stoull(findNextWord(confP.at(line), end));
+	_maxSize = stoull(findNextWord(confP.at(line), end, true));
 	string	myLine = confP.at(line);
 	for (size_t i = confP.at(line).find(type) + type.length(); i < myLine.size(); i++) {
 		if (isalpha(myLine[i])) {
@@ -122,7 +122,7 @@ void Config::setLocation(const ConfigParser &confP, int line)
 {
     string	type = "location";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string	loc = findNextWord(confP.at(line), end);
+	string	loc = findNextWord(confP.at(line), end, true);
     size_t brackLoc = confP.at(line).find('{');
     int start = line;
     if (brackLoc == confP.at(line).length() - 1 || brackLoc == string::npos)
@@ -142,36 +142,36 @@ void Config::setCgi(const ConfigParser &confP, int line)
 {
 	string	type = "cgi";
 	size_t end = confP.at(line).find(type) + type.length();
-	_cgi = findNextWord(confP.at(line), end);
+	_cgi = findNextWord(confP.at(line), end, true);
 }
 
 void Config::setErrorPage(const ConfigParser &confP, int line)
 {
 	string	type = "error_page";
 	size_t	end = confP.at(line).find(type) + type.length();
-	string tmp = findNextWord(confP.at(line), end);
-	string page = findNextWord(confP.at(line), confP.at(line).find(tmp) + tmp.length());
+	string tmp = findNextWord(confP.at(line), end, true);
+	string page = findNextWord(confP.at(line), confP.at(line).find(tmp) + tmp.length(), true);
 	_errorPage[stoi(tmp)] = page;
 }
 
 // Output
 void Config::output()
 {
-	cout << "\n------------------------------------------------------\n" << endl;
-	cout << "address : " << _address << endl;
-	cout << "\nserver name(s) : " << endl;
+	//cout << "\n------------------------------------------------------\n" << endl;
+	//cout << "address : " << _address << endl;
+	//cout << "\nserver name(s) : " << endl;
 	for_each(_serverName.begin(), _serverName.end(), printStr);
-	cout << "\nroot : " << _root << endl;
-	cout << "\nmax_size : " << _maxSize << endl;
+	//cout << "\nroot : " << _root << endl;
+	//cout << "\nmax_size : " << _maxSize << endl;
     for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
     {
-        cout << "\nLocation : " << i->first << endl;
-        i->second.output();
+        //cout << "\nLocation : " << i->first << endl;
+//        i->second.output();
     }
-	cout << "\ncgi : " << _cgi << endl;
-	cout << "\nError Page : "  << endl;
-	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
-		cout << i->first << " : " << i->second << endl;
+	//cout << "\ncgi : " << _cgi << endl;
+	//cout << "\nError Page : "  << endl;
+//	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
+//		cout << i->first << " : " << i->second << endl;
 }
 
 void Config::determineCase(const string& word, const ConfigParser &confP, int line)
@@ -203,6 +203,7 @@ void Config::determineCase(const string& word, const ConfigParser &confP, int li
 			break;
 		}
 	}
+//	failure(("Can't recognize word: " + word).c_str() );
 }
 
 vector<string>		Config::listDirectory(const string& dirRoot) const
@@ -254,7 +255,7 @@ void Config::createIndexFile(vector<string> dirLs, string dirRoot)
 	file << "\t<hr />" << endl;
 	for(size_t i = 1; i < dirLs.size() && file.is_open(); i++)
 	{
-		file << "\t\t" << "<a href=\"" << dirLs[i] << "\">" << dirLs[i] << "</a>" << endl;
+		file << "\t\t" << "<a href=\"" << title << "/"<< dirLs[i] << "\">" << dirLs[i] << "</a>" << endl;
 		file << "\t\t<br>" << endl;
 	}
 	file << "\t<hr />" << endl;
@@ -267,6 +268,8 @@ void	Config::checkIfComplete()
 {
 	if (_root.empty())
 		failure("Root is a required field.");
+	if (!directoryAccess(_root))
+		failure(_root.c_str());
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
     for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
@@ -287,8 +290,13 @@ void	Config::checkIfComplete()
 			vector<string> dirLs = listDirectory(dirRoot);
 			if (!indexChecker(dirLs))
 				createIndexFile(dirLs, dirRoot);
+			if (i->second.getIndex().empty())
+				i->second.setIndex(i->first + "/index.html");
 		}
-		if (i->second.getIndex().empty())
-			i->second.setIndex(i->first + "/index.html");
+		if (!fileAccess(getRoot() + i->first + '/' + i->second.getIndex()))
+			failure((getRoot() + i->first + '/' + i->second.getIndex()).c_str());
+		if (i->second.getMethod()[POST] && (i->second.getUpload().empty() || !directoryAccess(dirRoot + i->second.getUpload()))){
+			failure("Post request indicated and upload directory is not specified or does not exist");
+		}
 	}
 }
