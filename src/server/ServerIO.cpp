@@ -114,42 +114,27 @@ void	ServerIO::setupClientEOF(Client *client) {
 void	ServerIO::incomingRequest(void *udata) {
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (!client) {
-		perror("unkown request: ");
-		return ;
+		perror("unknown request");
+		return;
 	}
 	if (client->getClientMode() == request) {
-		client->requestReceived();
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
+		if (client->requestReceived() == true)
+			client->setClientMode(response);
+		cerr <<  endl;
 	}
-//	{
-
-		// if (client->requestMode == true)
-//			this->requestRecieved();
-//		if (client->requestReceived() == true)
-//			this->setupClientWrite(client);
-//		else if (client->getRequestMode() == false)
-//			this->setupClientEOF(client);
-//		cerr <<  endl;
-//	}
-//	else
-//		perror("unknown request");
 }
 
 void	ServerIO::outgoingResponse(void *udata) {
 	Client	*client = reinterpret_cast<Client *>(udata);
 	if (!client) {
-		perror("unkown response");
-		return ;
+		perror("unknown response");
+		return;
 	}
 	if (client->getClientMode() == response) {
-		// if (client->requestMode == false) incorperate this tommorow
-			// this->responseSend();cle
-		client->responseSend();
-//		if (client->responseSend() == false) // nog maken
-//			this->setupClientRead(client);
+		if (client->responseSend() == false) // nog maken
+			client->setClientMode(request);
 	}
-	else
-		perror("unkown response");
 }
 
 // Output

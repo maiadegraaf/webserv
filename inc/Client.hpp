@@ -79,13 +79,13 @@ class Client {
  	* ***************/
 	public:
 		void		output();
-		void		requestReceived();
+		bool		requestReceived();
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
 		void 		handleRequest();
 		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
-		void 		responseSend();
+		bool 		responseSend();
 		void 		resetRequest();
 		void 		clientRequest();
 		string		receiveStrRequest();

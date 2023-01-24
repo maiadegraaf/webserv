@@ -27,7 +27,7 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-void 	Client::requestReceived() {
+bool 	Client::requestReceived() {
 	try {
 		this->fillRequestBuffer();
 //		if (this->getRequestMode() == false) // check hier
@@ -37,9 +37,9 @@ void 	Client::requestReceived() {
 			this->handleRequest();
 			this->resetRequest();
 			this->setClientMode(response);
-//			return true;
+			return true;
 		}
-//		return false;
+		return false;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath("default/");
@@ -49,7 +49,7 @@ void 	Client::requestReceived() {
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
 		this->setClientMode(response);
-//		return true;
+		return true;
 	}
 }
 
@@ -146,20 +146,19 @@ void	Client::setResponse(string filePath, string contentType) {
 	_response = clientResponse;
 }
 
-void	Client::responseSend() {
+bool	Client::responseSend() {
 	if (_response.getHasBody() == true) {
 		if (_response.getSendHeader() == false) {
 			_response.sendHeader();
-			this->setClientMode(request);
-			return ;
-//			return true;
+			return true;
 		}
 		_response.sendBody();
-		return ;
+//		if (_response.getContentType() == "php")
+//			remove(_response.getFilePath().c_str());
+		return false;
 	}
 	_response.sendHeader();
-//	this->setClientMode(request);
-	return ;
+	return false;
 }
 
 void	Client::resetRequest() {
