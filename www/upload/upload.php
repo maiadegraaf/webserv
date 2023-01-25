@@ -2,7 +2,10 @@
     function deleteSomething(id) {
       fetch('upload/uploads/' + id,  {
         method: 'DELETE'
-      })
+      }).then(() => {
+        window.alert(id + " succesfully deleted");})
+        .then(() => {
+        window.location.reload();})
     }
 </script>
 

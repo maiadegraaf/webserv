@@ -103,6 +103,7 @@ class Client {
 		void 		decryptWwwForm(string &data);
 		void		setPostResponse(string contentType);
 
+    Location handleMethod();
 };
 
 #endif

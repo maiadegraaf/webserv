@@ -25,12 +25,13 @@ private:
 	bool _autoIndex;
 	map<e_method, bool> _method;
 	string _upload;
+    bool _empty;
 
 public:
 // Constructor
 	Location();
 	Location( const Location &rhs);
-	Location(const string &newIndex, bool newAutoIndex, const string &newUpload);
+	Location(const string &newIndex, bool newAutoIndex, const string &newUpload, bool empty);
 	Location(const ConfigParser &confP);
 	~Location();
 	Location& operator=( const Location &rhs);
@@ -39,11 +40,17 @@ public:
 	bool getAutoIndex() const { return _autoIndex; }
 	map<e_method, bool> getMethod() { return _method; }
 	string getUpload() { return _upload; }
-// Setters
+    bool    getGet() { return _method[GET]; }
+    bool    getPost() { return _method[POST]; }
+    bool    getDelete() { return _method[DELETE]; }
+    bool isEmpty() const { return _empty; }
+
+    // Setters
 	void setIndex(const string &newIndex) { _index = newIndex; }
 	void setAutoIndex(bool newAutoIndex) { _autoIndex = newAutoIndex; }
 	void setMethod(const map<e_method, bool> &newMethod) { _method = newMethod; }
-	void setUpload(const string &newUpload) { _upload = newUpload; };
+	void setUpload(const string &newUpload) { _upload = newUpload; }
+    void setEmpty(bool newEmpty) { _empty = newEmpty; }
 
     void setIndex(const ConfigParser &confP, int line);
 	void setAutoIndex(const ConfigParser &confP, int line);

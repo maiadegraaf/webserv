@@ -61,13 +61,40 @@ void	Client::fillRequestBuffer() {
 	}
 }
 
+map<e_method, bool> setDefaultMethods()
+{
+    map<e_method, bool> method;
+    method[GET] = false;
+    method[POST] = false;
+    method[DELETE] = false;
+    return method;
+}
+
+Location Client::handleMethod()
+{
+    static map<e_method, bool> method = setDefaultMethods();
+
+    Location location = getLocation(_request.getDir());
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    cerr << "HANDLE METHOD BEFORE:" << endl;
+    location.output();
+    if (!location.isEmpty())
+        method = location.getMethod();
+    else
+        location.setMethod(method);
+    cerr << "HANDLE METHOD AFTER:" << endl;
+    location.output();
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    return location;
+}
+
 void	Client::handleRequest(char** envp) {
 	Location	location;
 	string		filePath(getRoot());
 	string 		path;
 
 	_request.output();
-	location = getLocation(_request.getDir());
+	location = handleMethod();
 	path = location.getIndex();
 	if (!path.empty())
 		filePath.append(_request.getDir() + '/' + path); // page not foudn exception
@@ -76,7 +103,7 @@ void	Client::handleRequest(char** envp) {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-	if (_request.getMethod() == "GET")
+    if (_request.getMethod() == "GET" && location.getGet())
 	{
 		if ( filePath.find("php") != string::npos ) {
 			handleCGIResponse(filePath, "php", envp);
@@ -85,10 +112,10 @@ void	Client::handleRequest(char** envp) {
 		}
 		handleGetRequest(filePath);
 	}
-	else if (_request.getMethod() == "POST") {
+	else if (_request.getMethod() == "POST" && location.getPost()) {
 		handlePostRequest(filePath);
 	}
-	else if (_request.getMethod() == "DELETE") {
+	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
 		handleDeleteRequest(filePath, envp);
 	}
 	this->resetRequest();

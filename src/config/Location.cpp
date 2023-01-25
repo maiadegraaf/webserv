@@ -1,7 +1,7 @@
 #include "Location.hpp"
 // Constructor initializes attributes to 0 by default
 Location::Location()
-	: _autoIndex(false)
+	: _autoIndex(false), _empty(true)
 {
 	setDefaultMethod();
 }
@@ -11,14 +11,14 @@ Location::Location( const Location& rhs)
 	*this = rhs;
 }
 
-Location::Location(const string &newIndex, bool newAutoIndex, const string &newUpload)
-	: _index(newIndex), _autoIndex(newAutoIndex), _upload(newUpload)
+Location::Location(const string &newIndex, bool newAutoIndex, const string &newUpload, bool empty)
+	: _index(newIndex), _autoIndex(newAutoIndex), _upload(newUpload), _empty(empty)
 {
 	setDefaultMethod();
 }
 
 Location::Location(const ConfigParser &confP)
-		: _autoIndex(false)
+		: _autoIndex(false), _empty(false)
 {
 	setDefaultMethod();
 	for(size_t i = 0; i < confP.getServerContent().size(); i++)
@@ -40,6 +40,7 @@ Location&	Location::operator=( const Location& rhs )
 	setAutoIndex(rhs._autoIndex);
 	setMethod(rhs._method);
 	setUpload(rhs._upload);
+    setEmpty(rhs._empty);
 	return *this;
 }
 
@@ -69,6 +70,11 @@ void Location::output()
     for (map<e_method, bool>::iterator i = _method.begin(); i != _method.end(); i++)
         cout << methods[i->first] << " : " << i->second << endl;
     cout << "upload : " << _upload << endl;
+    if (_empty)
+        cout << "empty: FALSE -> initialized by config" << endl;
+    else
+        cout << "empty: TRUE -> initialized by default" << endl;
+
 }
 
 void Location::setIndex(const ConfigParser &confP, int line)
@@ -106,6 +112,8 @@ void Location::setMethod(const ConfigParser &confP, int line)
     for(size_t i = 0; i < confP.at(line).length(); i++)
     {
         string s = findNextWord(confP.at(line), end, true);
+        cout << "FOUND STRINGS IN METHOD: " << endl;
+        cout << s << " : " << confP.at(line) << endl;
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {
@@ -114,7 +122,7 @@ void Location::setMethod(const ConfigParser &confP, int line)
         }
         _method[determineMethod(s)] = true;
         end = confP.at(line).find(s) + s.length();
-        i += end;
+        i = end;
     }
 }
 
@@ -155,4 +163,3 @@ void Location::checkIfComplete(void) {
         setIndex("index.html");
 	}
 }
-
