@@ -41,3 +41,4 @@ createClass.sh
 .dSYM
 /webserv
 .DS_store
+/cmake-build-debug/
