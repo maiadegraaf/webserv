@@ -35,8 +35,7 @@ CGIResponse::~CGIResponse()
 
 }
 
-CGIResponse&	CGIResponse::operator=( const CGIResponse& rhs )
-{
+CGIResponse&	CGIResponse::operator=( const CGIResponse& rhs ) {
 	_type = rhs._type;
 	return *this;
 }
@@ -64,7 +63,7 @@ bool CGIResponse::exec()
 	strcpy(split[0], filePath.c_str());
 	split[1] = NULL;
 	execve(split[0], split, environ);
-	perror("");
+	perror("cgi error: ");
 	return (EXIT_FAILURE);
 }
 
@@ -85,7 +84,7 @@ bool CGIResponse::sendResponse() {
 	if (pid == 0)
 	{
 		if (dup2(getSockFD(), STDOUT_FILENO) < 0)
-			failure("");
+			failure("send response fail: ");
 		close(getSockFD());
 		exec();
 	}

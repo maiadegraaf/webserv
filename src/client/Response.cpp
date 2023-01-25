@@ -91,7 +91,7 @@ bool Response::exec()
 {
 	char **split = splitStr(getFilePath());
 	execve(split[0], split, environ);
-	perror("");
+	perror("exec fail");
 	return (EXIT_FAILURE);
 }
 
@@ -109,7 +109,7 @@ string Response::CGIResponse()
 	char *filename = const_cast<char *>(tmp.c_str());
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
-		failure("");
+		failure("open error on cgi");
 	int pid = fork();
 	if (pid == 0)
 	{

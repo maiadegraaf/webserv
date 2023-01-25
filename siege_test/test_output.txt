@@ -1,3 +1,3 @@
-   4) HTTP/1.1 200   0.02 secs:    5019 bytes ==> GET  http://localhost:8080/photo/picture.png
-   1) HTTP/1.1 200   0.02 secs:       0 bytes ==> GET  http://localhost:8080/www/about.html
-   3) HTTP/1.1 200   0.04 secs:       0 bytes ==> GET  http://localhost:8080/photo/favicon.ico
+   3) HTTP/1.1 200   0.01 secs:     508 bytes ==> GET  http://localhost:8080/photo/favicon.ico
+   4) HTTP/1.1 200   0.01 secs:    5019 bytes ==> GET  http://localhost:8080/photo/picture.png
+   1) HTTP/1.1 200   0.01 secs:       0 bytes ==> GET  http://localhost:8080/www/about.html
