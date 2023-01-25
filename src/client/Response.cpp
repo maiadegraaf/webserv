@@ -68,12 +68,11 @@ void	Response::sendBody() {
 //	cerr << getFilePath() << endl;
 //    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
     FILE *fp = fopen(getFilePath().c_str(), "r");
-	int buffer = 1024; //chunk size of 1kb
+	int buffer = 1024*8; //chunk size of 8kb
 	char filebyte[buffer];
 	int32_t readBytes;
 
 	while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
-//			cerr << readBytes << endl;
 		send(getSockFD(), filebyte, readBytes, 0);
 		usleep(200);
 	}
