@@ -72,13 +72,13 @@ void	Response::sendBody() {
 	char filebyte[buffer];
 	int32_t readBytes;
 
-	if (_fileSize > 0)
-	{
+//	if (_fileSize > 0)
+//	{
 		while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
 //			cerr << readBytes << endl;
 			send(getSockFD(), filebyte, readBytes, 0);
 		}
-	}
+//	}
 	cerr << "DONE SENDING." << endl;
 //		while (_fileSize > 0)
 //		{

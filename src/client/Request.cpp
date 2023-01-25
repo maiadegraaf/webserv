@@ -29,7 +29,7 @@ bool Request::checkIfBody() {
 	int		line = _ss->tellg();
 
 	getline(*_ss, tmp);
-	if (tmp.find("GET") == string::npos && !tmp.empty()) {
+	if ((tmp.find("GET") == string::npos || tmp.find("POST") == string::npos || tmp.find("DELETE") == string::npos) && !tmp.empty()) {
 
 		cout << "body fcnt" << tmp << endl;
 		_ss->seekg(line , ios_base::beg);
@@ -44,7 +44,7 @@ bool Request::checkIfHeader() {
 	int		line = _ss->tellg();
 
 	getline(*_ss, tmp);
-	if (tmp.find("GET") != string::npos)
+	if (tmp.find("GET") != string::npos || tmp.find("POST") != string::npos ||tmp.find("DELETE") != string::npos)
 	{
 		cout << "Header fcnt" << tmp << endl;
 		_ss->seekg(line , ios_base::beg);

@@ -1,8 +1,6 @@
 #include "ServerIO.hpp"
 #include <sys/select.h>
 
-// Constructor initializes attributes to 0 by default
-
 ServerIO::ServerIO( const ServerIO& rhs) {
 	*this = rhs;
 }
