@@ -51,8 +51,8 @@ class ServerIO
 		void	loopEvent();
 		void	disconnectClient(void *udata);
 		void 	connectNewClient();
-		void 	incomingRequest(void *udata);
-		void 	outgoingResponse(void *udata);
+		void 	incomingRequest(struct kevent event);
+		void 	outgoingResponse(struct kevent event);
 
 		void	setupClientRead(Client *client);
 		void	setupClientWrite(Client *client);
