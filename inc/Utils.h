@@ -11,5 +11,6 @@ using namespace std;
 map<string, string> returnContentType( void );
 
 ifstream::pos_type fileSize(const char* filename);
+//uintmax_t fileSize( const std::filesystem::path& p );
 
 #endif

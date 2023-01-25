@@ -25,16 +25,14 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-bool	Client::requestReceived(char** envp) {
+void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
 		this->handleRequest(envp);
-//		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
 		_requestBuffer.clear();
-		return true;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath("default/");
@@ -43,7 +41,8 @@ bool	Client::requestReceived(char** envp) {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
-		return true;
+		this->resetRequest();
+		_requestBuffer.clear();
 	}
 }
 
@@ -59,36 +58,14 @@ void	Client::fillRequestBuffer() {
 			break ;
 		tmp.assign(buffer, rc);
 		_requestBuffer.append(tmp);
-//		cerr << "\033[1;36m" <<" ------------------- "<< "\033[0m" << endl;
-//		cerr << "\033[1;32m" << _requestBuffer << "\033[0m" << endl;
 	}
 }
 
-//bool	Client::recvError(int rc) {
-//	if (rc < 0) {
-//		cerr << "recv() stopped reading " << endl;
-//		perror("recv error");
-//		return true ;
-//	}
-//	if (rc == 0) {
-//		cerr << "everything read in the client" << endl;
-////		this->setRequestMode(false); // check hier
-//		return true ;
-//	}
-//	return false ;
-//}
-
 void	Client::handleRequest(char** envp) {
 	Location	location;
-	string		filePath(getRoot().append("/"));
+	string		filePath(getRoot());
 	string 		path;
-//	string		file;
-//	string		extension;
-//	string		contentType;
 
-//	_request.output();
-
-//	cerr << "clientReq " << _request.getDir() << endl;
 	location = getLocation(_request.getDir());
 	path = location.getIndex();
 	if (!path.empty())
@@ -126,9 +103,12 @@ void	Client::handleCGIResponse(string filePath, const string& contentType, char*
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
-	clientResponse.output();
-	_response = clientResponse;
+	if (len > 0)
+	{
+		Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
+		clientResponse.output();
+		_response = clientResponse;
+	}
 }
 
 void	Client::setPostResponse(string contentType) {
@@ -138,7 +118,9 @@ void	Client::setPostResponse(string contentType) {
 }
 
 bool	Client::responseSend() {
+	cerr << "HasBody" << _response.getHasBody() << endl;
 	if (_response.getHasBody() == true) {
+		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (_response.getSendHeader() == false) {
 			_response.sendHeader();
 			return true;
@@ -148,7 +130,9 @@ bool	Client::responseSend() {
             remove(_response.getFilePath().c_str());
 		return false;
 	}
-	_response.sendHeader();
+	if (_response.getHasBody() == false) {
+		_response.sendHeader();
+	}
 	return false;
 }
 

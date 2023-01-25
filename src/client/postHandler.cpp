@@ -82,7 +82,6 @@ void Client::parseHeaderMultipart(string *req, stringstream *ss, int content_nb,
 
 	while (getline(*ss, *req, '\n'))
 	{
-//		cerr << "1:" << *req << endl;
 		if (req->compare("--" + _request.getHeaderValue("boundary") + "--\r") == 0)
 		{
 			*endOfReq = true;
@@ -111,7 +110,6 @@ void Client::parsePostMultipartRequest()
 	string	req;
 	string	contentFile;
 
-//	cerr << data << endl;
 	while (1) {
 		parseHeaderMultipart(&req, &ss, content_nb, &endOfReq);
 		if (endOfReq == true)
@@ -119,7 +117,7 @@ void Client::parsePostMultipartRequest()
 		string uploadPath = getRoot() + _request.getDir();
 		uploadPath.append(getLocation(_request.getDir()).getUpload());
 		uploadPath.append("/" + _headerMultipart[content_nb]["filename"]);
-		cerr << "UPLOADDD: -----> " << uploadPath << endl;
+		replace( uploadPath.begin(), uploadPath.end(), ' ', '_');
 		ofstream outfile(uploadPath);
 		while (getline(ss, contentFile, '\n'))
 		{
@@ -141,8 +139,10 @@ void Client::parsePostMultipartRequest()
 
 void Client::createFileStorePost(int i)
 {
-	string uploadPath = getLocation(_request.getDir()).getUpload();
+	string uploadPath = getRoot() + _request.getDir();
+	uploadPath.append(getLocation(_request.getDir()).getUpload());
 	uploadPath.append(_postContent[i][0]);
+	replace( uploadPath.begin(), uploadPath.end(), ' ', '_');
 
 	ofstream outfile (uploadPath);
 	outfile << _postContent[i][1];
