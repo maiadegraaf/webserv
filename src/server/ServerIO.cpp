@@ -114,9 +114,11 @@ void	ServerIO::connectNewClient() {
 void	ServerIO::incomingRequest(struct kevent event) {
 	void *udata = event.udata;
 	Client *client = reinterpret_cast<Client *>(udata);
-	if (!client)
+	if (!client) {
 		perror("unknown request");
-	else if (event.flags & EV_EOF || client->getClientMode() == response)
+		return ;
+	}
+	if (event.flags & EV_EOF || client->getClientMode() == response)
 		disconnectClient(udata);
 	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
@@ -130,9 +132,11 @@ void	ServerIO::incomingRequest(struct kevent event) {
 void	ServerIO::outgoingResponse(struct kevent event) {
 	void *udata = event.udata;
 	Client	*client = reinterpret_cast<Client *>(udata);
-	if (!client)
+	if (!client) {
 		perror("unknown response");
-	else if (event.flags & EV_EOF || client->getClientMode() == request)
+		return ;
+	}
+	if (event.flags & EV_EOF || client->getClientMode() == request)
 		disconnectClient(udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
