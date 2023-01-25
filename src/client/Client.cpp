@@ -41,6 +41,8 @@ void	Client::requestReceived() {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
+		this->resetRequest();
+		_requestBuffer.clear();
 	}
 }
 
@@ -101,9 +103,12 @@ void	Client::handleCGIResponse(const string& filePath, const string& contentType
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
-	clientResponse.output();
-	_response = clientResponse;
+	if (len > 0)
+	{
+		Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
+		clientResponse.output();
+		_response = clientResponse;
+	}
 }
 
 void	Client::setPostResponse(string contentType) {
@@ -125,7 +130,9 @@ bool	Client::responseSend() {
             remove(_response.getFilePath().c_str());
 		return false;
 	}
-	_response.sendHeader();
+	if (_response.getHasBody() == false) {
+		_response.sendHeader();
+	}
 	return false;
 }
 
