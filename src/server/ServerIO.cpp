@@ -24,7 +24,7 @@ ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType)
 
 void	ServerIO::runServerIO() {
 	initKq();
-	while(1) {
+	while (true) {
 		newEvent();
 		loopEvent();
 	}
@@ -59,7 +59,7 @@ void	ServerIO::loopEvent( ) {
 			this->connectNewClient();
 //		if (event.flags & EV_EOF) //|| event.flags == 1)
 //			this->disconnectClient(event.udata);
-		else if (event.filter == EVFILT_READ)
+		if (event.filter == EVFILT_READ)
 			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
 			this->outgoingResponse(event);
@@ -67,10 +67,11 @@ void	ServerIO::loopEvent( ) {
 }
 
 void	ServerIO::disconnectClient(void *udata) {
-	printf("Client has disconnected\n");
-	close(_eventFd);
+//	cerr << _eventFd << " eventFd" << endl;
 	Client *client = static_cast<Client *>(udata);
+	close(_eventFd);
 	delete client;
+	printf("Client has disconnected\n");
 }
 
 void	ServerIO::connectNewClient() {
@@ -80,7 +81,7 @@ void	ServerIO::connectNewClient() {
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
-	idx = _sockFdIdxMap[_eventFd];
+//	idx = _sockFdIdxMap[_eventFd];
 	cerr << "ServerIO::connectNewClient() : Client connected with server " << endl;
 }
 
@@ -118,7 +119,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 		perror("unknown request");
 		return ;
 	}
-	if (event.flags & EV_EOF || client->getClientMode() == response)
+	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
 		disconnectClient(udata);
 	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
@@ -136,7 +137,7 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 		perror("unknown response");
 		return ;
 	}
-	if (event.flags & EV_EOF || client->getClientMode() == request)
+	if (event.flags & EV_EOF)// || client->getClientMode() == request)
 		disconnectClient(udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken

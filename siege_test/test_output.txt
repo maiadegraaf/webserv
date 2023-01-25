@@ -1,3 +1,14 @@
-   3) HTTP/1.1 200   0.01 secs:     508 bytes ==> GET  http://localhost:8080/photo/favicon.ico
-   4) HTTP/1.1 200   0.01 secs:    5019 bytes ==> GET  http://localhost:8080/photo/picture.png
-   1) HTTP/1.1 200   0.01 secs:       0 bytes ==> GET  http://localhost:8080/www/about.html
+   1) HTTP/1.1 200   0.01 secs:    5271 bytes ==> GET  http://localhost:8080/css/css.css
+   3) HTTP/1.1 200   0.09 secs: 1022135 bytes ==> GET  http://localhost:8080/photo/giphy.gif
+   0) HTTP/1.1 200   0.10 secs:    9061 bytes ==> GET  http://localhost:8080/
+   4) HTTP/1.1 404   0.10 secs:     131 bytes ==> GET  http://localhost:8080/photo/pointer.cur
+   2) HTTP/1.1 200   0.10 secs:     508 bytes ==> GET  http://localhost:8080/photo/favicon.ico
+   1) HTTP/1.1 200   0.10 secs:       0 bytes ==> GET  http://localhost:8080/facts.html
+   3) HTTP/1.1 200   0.02 secs:    5019 bytes ==> GET  http://localhost:8080/photo/picture.png
+   0) HTTP/1.1 200   0.02 secs:    5271 bytes ==> GET  http://localhost:8080/css/css.css
+   4) HTTP/1.1 200   0.03 secs:   50686 bytes ==> GET  http://localhost:8080/photo/pointer.png
+   1) HTTP/1.1 200   0.02 secs:     508 bytes ==> GET  http://localhost:8080/photo/favicon.ico
+   2) HTTP/1.1 200   0.03 secs:  871980 bytes ==> GET  http://localhost:8080/photo/giphy.gif
+   3) HTTP/1.1 404   0.02 secs:     131 bytes ==> GET  http://localhost:8080/photo/pointer.cur
+   0) HTTP/1.1 404   0.01 secs:     131 bytes ==> GET  http://localhost:8080/test/
+   4) HTTP/1.1 200   0.39 secs:       0 bytes ==> GET  http://localhost:8080/photo/sunrise.png

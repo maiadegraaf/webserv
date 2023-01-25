@@ -2,17 +2,17 @@ URL=http://localhost:8080
 
 # locations
 $(URL)/
-$(URL)/about/
+#$(URL)/about/
 $(URL)/test/
 
 
 # root files
-$(URL)/www/about.html
-$(URL)/www/index.html
+#$(URL)/www/about.html
+#$(URL)/www/index.html
 
 # about
-$(URL)/www/about/about.php
-$(URL)/www/about/index.php
+#$(URL)/www/about/about.php
+#$(URL)/www/about/index.php
 
 # css
 $(URL)/css/css.css
