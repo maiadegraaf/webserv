@@ -84,10 +84,10 @@ class Client {
  	* ***************/
 	public:
 		void		output();
-		bool		requestReceived();
+		void		requestReceived(char** envp);
 		void 		fillRequestBuffer();
 		bool 		recvError(int rc); // even herzien.
-		void 		handleRequest();
+		void 		handleRequest(char** envp);
 		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
 		bool 		responseSend();
@@ -96,9 +96,9 @@ class Client {
 		string		receiveStrRequest();
 		void		handleGetRequest(string filepath);
 		void		handlePostRequest(const string filepath);
-		void		handleDeleteRequest(string filepath, Request clientReq);
+		void		handleDeleteRequest(string filepath, char** envp);
 		void		handleResponse(string filePath, string contentType);
-		void		handleCGIResponse(const string& filePath, const string& contentType);
+		void		handleCGIResponse(string filePath, const string& contentType, char** envp);
 		void		parsePostPlainRequest();
 		void 		parsePostWwwRequest();
 		void 		parsePostMultipartRequest();
@@ -108,6 +108,7 @@ class Client {
 		void 		decryptWwwForm(string &data);
 		void		setPostResponse(string contentType);
 
+    Location handleMethod();
 };
 
 #endif

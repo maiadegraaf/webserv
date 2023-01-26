@@ -10,7 +10,7 @@
 
 html {
     background-color: var(--light-periwinkle-2);
-    /*background-image:url(../photo/sunrise.gif);*/
+    background-image:url(../photo/sunrise.gif);
     height: 100%;
     background-position: center;
     background-size: cover;
@@ -236,6 +236,10 @@ table.filesList {
 
 table.filesList td, table.filesList th {
     padding: 4px 50px;
+}
+
+table.filesList th {
+    text-align: left;
 }
 
 ul {

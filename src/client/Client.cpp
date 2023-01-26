@@ -25,17 +25,19 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
+<<<<<<< HEAD
 bool 	Client::requestReceived() {
+=======
+void	Client::requestReceived(char** envp) {
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	try {
 		this->fillRequestBuffer();
 
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
-		this->handleRequest();
-//		cerr << "\033[1;31m" << _requestBuffer << "\033[0m" << endl;
+		this->handleRequest(envp);
 		_requestBuffer.clear();
-		return true;
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath("default/");
@@ -44,8 +46,13 @@ bool 	Client::requestReceived() {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
+<<<<<<< HEAD
 		this->setClientMode(response);
 		return true;
+=======
+		this->resetRequest();
+		_requestBuffer.clear();
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	}
 }
 
@@ -61,23 +68,47 @@ void	Client::fillRequestBuffer() {
 			break ;
 		tmp.assign(buffer, rc);
 		_requestBuffer.append(tmp);
-//		cerr << "\033[1;36m" <<" ------------------- "<< "\033[0m" << endl;
-//		cerr << "\033[1;32m" << _requestBuffer << "\033[0m" << endl;
 	}
 }
 
+<<<<<<< HEAD
 void	Client::handleRequest() {
+=======
+map<e_method, bool> setDefaultMethods()
+{
+    map<e_method, bool> method;
+    method[GET] = false;
+    method[POST] = false;
+    method[DELETE] = false;
+    return method;
+}
+
+Location Client::handleMethod()
+{
+    static map<e_method, bool> method = setDefaultMethods();
+
+    Location location = getLocation(_request.getDir());
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    cerr << "HANDLE METHOD BEFORE:" << endl;
+    location.output();
+    if (!location.isEmpty())
+        method = location.getMethod();
+    else
+        location.setMethod(method);
+    cerr << "HANDLE METHOD AFTER:" << endl;
+    location.output();
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    return location;
+}
+
+void	Client::handleRequest(char** envp) {
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	Location	location;
-	string		filePath(getRoot().append("/"));
+	string		filePath(getRoot());
 	string 		path;
-//	string		file;
-//	string		extension;
-//	string		contentType;
 
 //	_request.output();
-
-//	cerr << "clientReq " << _request.getDir() << endl;
-	location = getLocation(_request.getDir());
+	location = handleMethod();
 	path = location.getIndex();
 	if (!path.empty())
 		filePath.append(_request.getDir() + '/' + path); // page not foudn exception
@@ -86,27 +117,33 @@ void	Client::handleRequest() {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-	if (_request.getMethod() == "GET")
+    if (_request.getMethod() == "GET" && location.getGet())
 	{
 		if ( filePath.find("php") != string::npos ) {
-			handleCGIResponse(filePath, "php");
+			handleCGIResponse(filePath, "php", envp);
 			this->resetRequest();
 			return ;
 		}
 		handleGetRequest(filePath);
 	}
-	else if (_request.getMethod() == "POST") {
+	else if (_request.getMethod() == "POST" && location.getPost()) {
 		handlePostRequest(filePath);
 	}
-	else if (_request.getMethod() == "DELETE") {
-		handleDeleteRequest(filePath, _request);
+	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
+		handleDeleteRequest(filePath, envp);
 	}
+    else
+    {
+        cerr << _request.getMethod();
+        perror(": Request has not been enabled for this location.");
+        return ;
+    }
 	this->resetRequest();
 }
 
-void	Client::handleCGIResponse(const string& filePath, const string& contentType) {
-	Response	clientResponse(filePath, "200 OK", contentType, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse());
+void	Client::handleCGIResponse(string filePath, const string& contentType, char** envp) {
+	Response	clientResponse(filePath.insert(0, "php "), "200 OK", contentType, getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse(envp));
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader("200 OK", contentType);
 	_response = clientResponse;
@@ -114,9 +151,12 @@ void	Client::handleCGIResponse(const string& filePath, const string& contentType
 
 void	Client::setResponse(string filePath, string contentType) {
 	off_t		len = fileSize(filePath.c_str());
-	Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
-	clientResponse.output();
-	_response = clientResponse;
+	if (len > 0)
+	{
+		Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
+		clientResponse.output();
+		_response = clientResponse;
+	}
 }
 
 void	Client::setPostResponse(string contentType) {
@@ -126,17 +166,24 @@ void	Client::setPostResponse(string contentType) {
 }
 
 bool	Client::responseSend() {
-	if (_response.getHasBody() == true) {
-		if (_response.getSendHeader() == false) {
+	cerr << "HasBody: " << _response.getHasBody() << endl;
+	if (_response.getHasBody()) {
+		cerr << "SendHeader: " << _response.getSendHeader() << endl;
+		if (!_response.getSendHeader()) {
 			_response.sendHeader();
 			return true;
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
-            remove(_response.getFilePath().c_str());
+		{
+            if (remove(_response.getFilePath().c_str()) < 0)
+                perror(_response.getFilePath().c_str());
+		}
 		return false;
 	}
-	_response.sendHeader();
+	if (!_response.getHasBody()) {
+		_response.sendHeader();
+	}
 	return false;
 }
 
@@ -181,14 +228,16 @@ void Client::handlePostRequest(string filepath)
 	setPostResponse(type);
 }
 
-void Client::handleDeleteRequest(string filePath, Request clientReq) {
-	string type = clientReq.getHeaderValue("Content-Type");
+void Client::handleDeleteRequest(string filePath, char** envp) {
 	if (!fileAccess(filePath))
+	{
 		throw WSException::BadRequest();
-	Response	clientResponse(filePath.insert(0, "/bin/rm -f "), "200 OK", type, getSockFd(), 0);
-	clientResponse.setFilePath(clientResponse.CGIResponse());
+	}
+	Response	clientResponse(filePath.insert(0, "rm -f "), "200 OK", "php", getSockFd(), 0);
+	clientResponse.setFilePath(clientResponse.CGIResponse(envp));
 	setDeleteHTMLResponse(clientResponse.getFilePath());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
-	clientResponse.setNewHeader(" 200 OK", type);
+	clientResponse.setNewHeader(" 200 OK", "php");
+	clientResponse.output();
 	_response = clientResponse;
 }

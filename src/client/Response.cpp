@@ -13,6 +13,7 @@ Response::Response(const string& filePath, const string& message, const string& 
 	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
+	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
@@ -55,17 +56,6 @@ void Response::output() {
 	cout << "filePath : " << _filePath << std::endl;
 }
 
-//bool Response::sendResponse() {
-//	int read = open(getFilePath().c_str(), O_RDONLY);
-//	send(getSockFD(), _head.c_str(), _head.size(), 0);
-//	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-//		cerr << "send() failed " << errno << endl;
-//		return close(read), false;
-//	}
-//	close(read);
-//	return true;
-//}
-
 void	Response::sendHeader() {
 	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0)
 		perror("send header failed");
@@ -77,46 +67,80 @@ void	Response::sendBody() {
 	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
 	cerr << getFilePath() << endl;
     cerr << "+++++++++++++++++++++++++++++++++++" << endl;
-    int read = open(getFilePath().c_str(), O_RDONLY);
-	cerr << read << endl;
-	if (sendfile(read, getSockFD(), 0, &_fileSize, NULL, 0) < 0) {
-		perror("sendfile body failed");
+    FILE *fp = fopen(getFilePath().c_str(), "r");
+	int buffer = 1024*8; //chunk size of 8kb
+	char filebyte[buffer];
+	int32_t readBytes;
+
+	while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
+		send(getSockFD(), filebyte, readBytes, 0);
+		usleep(200);
 	}
-	close(read);
+//		while (_fileSize > 0)
+//		{
+//			_fileSize -= offset;
+//			if (sendfile(read, getSockFD(), offset, &_fileSize, NULL, 0) < 0)
+//				perror("sendfile body failed");
+//			offset += 200000;
+//		}
+
+	fclose(fp);
 }
 
-extern char **environ;
-
-bool Response::exec()
+bool Response::exec(char **envp)
 {
+<<<<<<< HEAD
 	char **split = splitStr(getFilePath());
 	execve(split[0], split, environ);
 	perror("exec fail");
+=======
+	char **split = vectorToArr(splitStr(getFilePath(), " ?"));
+    if (!access(split[0], F_OK))
+        execve(split[0], split, envp);
+    vector<string> paths = parse_envp(envp);
+    for (size_t i = 0; i < paths.size(); i++)
+    {
+        string cmd = paths[i] + split[0];
+        if (!access(cmd.c_str(), F_OK))
+            execve(cmd.c_str(), split, envp);
+    }
+	perror("");
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	return (EXIT_FAILURE);
 }
 
-string Response::CGIResponse()
+string Response::CGIResponse(char **envp)
 {
-	string tmp;
-	if (_contentType == "php")
-	{
-		string subFilePath = getFilePath().substr(0, getFilePath().find_last_of('.') - 1);
-		tmp =  subFilePath + "tmpFile" + ".html";
-	}
-	else
-		tmp = "deleted_file.html";
-	cerr << tmp << endl;
+//	string	tmp;
+//	int		front;
+//	if (_contentType == "php")
+//		front = 4;
+//	else
+//		front = 5;
+//	string subFilePath = getFilePath().substr(front, getFilePath().length());
+//	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
+//	tmp =  subFilePath + "/tmpFile" + ".html";
+	string tmp = "obj/.tmpfile.html";
 	char *filename = const_cast<char *>(tmp.c_str());
+	cout << getFilePath() << endl;
+	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
+<<<<<<< HEAD
 		failure("open error on cgi");
+=======
+	{
+		perror("CGI: ");
+		return("");
+	}
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	int pid = fork();
 	if (pid == 0)
 	{
-		if (dup2(fd, STDOUT_FILENO) < 0)
+		if (_contentType == "php" && dup2(fd, STDOUT_FILENO) < 0)
 			failure("");
 		close(fd);
-		exec();
+		exec(envp);
 	}
 	close(fd);
 	while(waitpid(pid, NULL, WUNTRACED) != -1);
