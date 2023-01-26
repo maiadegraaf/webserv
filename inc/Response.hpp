@@ -79,8 +79,8 @@ class Response
 	* CGI *
 	* *****/
 
-	bool exec();
-	string CGIResponse();
+	bool exec(char** envp);
+	string CGIResponse(char** envp);
 
 	/* ********
 	 * Output *

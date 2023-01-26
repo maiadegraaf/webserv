@@ -64,9 +64,9 @@ void	Response::sendHeader() {
 }
 
 void	Response::sendBody() {
-//	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
-//	cerr << getFilePath() << endl;
-//    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
+	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
+	cerr << getFilePath() << endl;
+    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
     FILE *fp = fopen(getFilePath().c_str(), "r");
 	int buffer = 1024*8; //chunk size of 8kb
 	char filebyte[buffer];
@@ -87,38 +87,50 @@ void	Response::sendBody() {
 	fclose(fp);
 }
 
-extern char **environ;
-
-bool Response::exec()
+bool Response::exec(char **envp)
 {
-	char **split = splitStr(getFilePath());
-	execve(split[0], split, environ);
+	char **split = vectorToArr(splitStr(getFilePath(), " ?"));
+    if (!access(split[0], F_OK))
+        execve(split[0], split, envp);
+    vector<string> paths = parse_envp(envp);
+    for (size_t i = 0; i < paths.size(); i++)
+    {
+        string cmd = paths[i] + split[0];
+        if (!access(cmd.c_str(), F_OK))
+            execve(cmd.c_str(), split, envp);
+    }
 	perror("");
 	return (EXIT_FAILURE);
 }
 
-string Response::CGIResponse()
+string Response::CGIResponse(char **envp)
 {
-	string tmp;
-	if (_contentType == "php")
-	{
-		string subFilePath = getFilePath().substr(0, getFilePath().find_last_of('.') - 1);
-		tmp =  subFilePath + "tmpFile" + ".html";
-	}
-	else
-		tmp = "deleted_file.html";
-	cerr << tmp << endl;
+//	string	tmp;
+//	int		front;
+//	if (_contentType == "php")
+//		front = 4;
+//	else
+//		front = 5;
+//	string subFilePath = getFilePath().substr(front, getFilePath().length());
+//	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
+//	tmp =  subFilePath + "/tmpFile" + ".html";
+	string tmp = "obj/.tmpfile.html";
 	char *filename = const_cast<char *>(tmp.c_str());
+	cout << getFilePath() << endl;
+	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
-		failure("");
+	{
+		perror("CGI: ");
+		return("");
+	}
 	int pid = fork();
 	if (pid == 0)
 	{
-		if (dup2(fd, STDOUT_FILENO) < 0)
+		if (_contentType == "php" && dup2(fd, STDOUT_FILENO) < 0)
 			failure("");
 		close(fd);
-		exec();
+		exec(envp);
 	}
 	close(fd);
 	while(waitpid(pid, NULL, WUNTRACED) != -1);

@@ -16,7 +16,7 @@ class ServerIO
 	public:
 		ServerIO()																	{}
 		~ServerIO()																	{}
-		ServerIO(vector<Config> newConfig, map<string, string> newContentType);
+		ServerIO(vector<Config> newConfig, map<string, string> newContentType, char** envp);
 		ServerIO( const ServerIO &rhs);
 		ServerIO& operator=( const ServerIO &rhs);
 
@@ -33,6 +33,7 @@ class ServerIO
 									_eventFd;
 		map<int, size_t>			_sockFdIdxMap;
 		struct kevent				_events[2];
+        char**                      _envp;
 
 	/* *********
  	* Getters *

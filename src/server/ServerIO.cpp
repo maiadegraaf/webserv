@@ -1,8 +1,6 @@
 #include "ServerIO.hpp"
 #include <sys/select.h>
 
-// Constructor initializes attributes to 0 by default 
-
 ServerIO::ServerIO( const ServerIO& rhs) {
 	*this = rhs;
 }
@@ -12,8 +10,8 @@ ServerIO&	ServerIO::operator=( const ServerIO& rhs ) {
 	return *this;
 }
 
-ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType)
-	:_config(newConfig), _contentType(newContentType) {
+ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType, char** envp)
+	:_config(newConfig), _contentType(newContentType), _envp(envp) {
 	size_t	size = _config.size();
 
 	for (size_t i = 0; i < size; i++) {
@@ -122,7 +120,7 @@ void	ServerIO::incomingRequest(void *udata) {
 
 	if (client) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
-		client->requestReceived();
+		client->requestReceived(_envp);
 		this->setupClientWrite(client);
 		cerr <<  endl;
 	}

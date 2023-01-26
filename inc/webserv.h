@@ -21,20 +21,24 @@ using namespace std;
 #include "ConfigParser.hpp"
 #include "Config.hpp"
 #include "Utils.h"
+#include "Location.hpp"
 
 //#define DIRECTORY "/Users/mgraaf/Documents/webserv/"
 
 //utils
-void	failure(const char *message);
-int 	check_file_type(const string& filename);
-void	printStr(const string& str);
-string	findNextWord(const string &line, size_t pos, bool conf);
-string  findFirstWord(int i, vector<string> v);
-bool	fileAccess(string filename);
-bool	directoryAccess(const string& directory);
-string	extension(string filename);
-char**	splitStr(const string& s);
-void	setDeleteHTMLResponse(const string& filePath);
+void	            failure(const char *message);
+int 	            check_file_type(const string& filename);
+void	            printStr(const string& str);
+string  	        findNextWord(const string &line, size_t pos, bool conf);
+string              findFirstWord(int i, vector<string> v);
+bool	            fileAccess(string filename);
+bool	            directoryAccess(const string& directory);
+string	            extension(string filename);
+char                **vectorToArr(vector<string> v);
+vector<string>      splitStr(const string& s, string del);
+void	            setDeleteHTMLResponse(const string& filePath);
+vector<string>      parse_envp(char** envp);
+
 
 //utils/error map
 map<int, string> setupErrorPages();
