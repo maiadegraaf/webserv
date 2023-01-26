@@ -207,7 +207,6 @@ void Client::handleGetRequest(string filePath)
 		throw WSException::PageNotFound(); // not a supported extension
 	return ;
 }
-
 //
 //void Client::setPostContent(string input, int i) {
 //	_postContent.push_back(vector<string>());
