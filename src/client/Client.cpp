@@ -66,20 +66,6 @@ void	Client::fillRequestBuffer() {
 	}
 }
 
-//bool	Client::recvError(int rc) {
-//	if (rc < 0) {
-//		cerr << "recv() stopped reading " << endl;
-//		perror("recv error");
-//		return true ;
-//	}
-//	if (rc == 0) {
-//		cerr << "everything read in the client" << endl;
-////		this->setRequestMode(false); // check hier
-//		return true ;
-//	}
-//	return false ;
-//}
-
 void	Client::handleRequest() {
 	Location	location;
 	string		filePath(getRoot().append("/"));
