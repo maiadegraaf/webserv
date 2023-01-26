@@ -24,7 +24,7 @@ ServerIO::ServerIO(vector<Config> newConfig, map<string, string> newContentType,
 
 void	ServerIO::runServerIO() {
 	initKq();
-	while(1) {
+	while (true) {
 		newEvent();
 		loopEvent();
 	}
@@ -53,22 +53,25 @@ void	ServerIO::loopEvent( ) {
 	for (int i = 0; i < _nrEvents; i++) {
 		event = _events[i];
 		_eventFd = event.ident;
-		if (event.flags & EV_EOF || event.flags == 1)
-			this->disconnectClient(event.udata);
-		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
+		if (event.flags & EV_ERROR)
+			cerr << "client got deleted" << endl;
+		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-		else if (event.filter == EVFILT_READ)
-			this->incomingRequest(event.udata);
+//		if (event.flags & EV_EOF) //|| event.flags == 1)
+//			this->disconnectClient(event.udata);
+		if (event.filter == EVFILT_READ)
+			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
-			this->outgoingResponse(event.udata);
+			this->outgoingResponse(event);
 	}
 }
 
 void	ServerIO::disconnectClient(void *udata) {
-	printf("Client has disconnected\n");
-	close(_eventFd);
+//	cerr << _eventFd << " eventFd" << endl;
 	Client *client = static_cast<Client *>(udata);
+	close(_eventFd);
 	delete client;
+	printf("Client has disconnected\n");
 }
 
 void	ServerIO::connectNewClient() {
@@ -78,10 +81,41 @@ void	ServerIO::connectNewClient() {
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
-	idx = _sockFdIdxMap[_eventFd];
+//	idx = _sockFdIdxMap[_eventFd];
 	cerr << "ServerIO::connectNewClient() : Client connected with server " << endl;
 }
 
+<<<<<<< HEAD
+//void	ServerIO::setupClientWrite(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client write");
+//}
+//
+//void	ServerIO::setupClientRead(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client read");
+//}
+//
+//void	ServerIO::setupClientEOF(Client *client) {
+//	struct kevent	newEvents[2];
+//
+//	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
+//	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_EOF, 0, 0, client);
+//	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
+//		perror("kevent client EOF");
+//}
+
+void	ServerIO::incomingRequest(struct kevent event) {
+	void *udata = event.udata;
+=======
 void	ServerIO::setupClientWrite(Client *client) {
 	struct kevent	newEvents[2];
 //	struct timespec ts;
@@ -116,26 +150,47 @@ void	ServerIO::setupClientEOF(Client *client) {
 }
 
 void	ServerIO::incomingRequest(void *udata) {
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	Client *client = reinterpret_cast<Client *>(udata);
-
-	if (client) {
+	if (!client) {
+		perror("unknown request");
+		return ;
+	}
+	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
+		disconnectClient(udata);
+	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
+<<<<<<< HEAD
+		if (client->requestReceived() == true)
+			client->setClientMode(response);
+
+=======
 		client->requestReceived(_envp);
 		this->setupClientWrite(client);
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 		cerr <<  endl;
 	}
-	else
-		perror("unknown request");
 }
 
-void	ServerIO::outgoingResponse(void *udata) {
+void	ServerIO::outgoingResponse(struct kevent event) {
+	void *udata = event.udata;
 	Client	*client = reinterpret_cast<Client *>(udata);
+<<<<<<< HEAD
+	if (!client) {
+		perror("unknown response");
+		return ;
+	}
+	if (event.flags & EV_EOF)// || client->getClientMode() == request)
+		disconnectClient(udata);
+	else if (client->getClientMode() == response) {
+		if (client->responseSend() == false) // nog maken
+			client->setClientMode(request);
+=======
 	if (client) {
 		if (client->responseSend() == false )// nog maken
 			this->setupClientRead(client);
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	}
-	else
-		perror("unkown response");
 }
 
 // Output

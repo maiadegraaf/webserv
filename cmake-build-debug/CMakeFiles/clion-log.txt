@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/maiadegraaf/webserve -B /Users/maiadegraaf/webserve/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/sde-quai/Desktop/projects/WEBSERV/webserve -B /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/maiadegraaf/webserve/cmake-build-debug
+-- Build files have been written to: /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug

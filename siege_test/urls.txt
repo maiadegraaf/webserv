@@ -2,34 +2,41 @@ URL=http://localhost:8080
 
 # locations
 $(URL)/
-$(URL)/about/
+#$(URL)/about/
 $(URL)/test/
 
 
 # root files
-$(URL)/www/about.html
-$(URL)/www/index.html
+#$(URL)/www/about.html
+#$(URL)/www/index.html
 
 # about
-$(URL)/www/about/about.php
-$(URL)/www/about/index.php
+#$(URL)/www/about/about.php
+#$(URL)/www/about/index.php
 
 # css
 $(URL)/css/css.css
 
+# facts
+$(URL)/facts.html
+
 # errors
-$(URL)/error/400.html
-$(URL)/error/403.html
-$(URL)/error/404.html
-$(URL)/error/413.html
-$(URL)/error/500.html
-$(URL)/error/505.html
-$(URL)/error/501.html
+#$(URL)/error/400.html
+#$(URL)/error/403.html
+#$(URL)/error/404.html
+#$(URL)/error/413.html
+#$(URL)/error/500.html
+#$(URL)/error/505.html
+#$(URL)/error/501.html
 
 # photo
 $(URL)/photo/favicon.ico
 $(URL)/photo/giphy.gif
+$(URL)/photo/giphy.gif
 $(URL)/photo/picture.png
+$(URL)/photo/pointer.cur
+$(URL)/photo/pointer.png
+$(URL)/photo/sunrise.png
 
 # test
 $(URL)/test/index.html
