@@ -72,6 +72,23 @@ void	Client::fillRequestBuffer() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+//bool	Client::recvError(int rc) {
+//	if (rc < 0) {
+//		cerr << "recv() stopped reading " << endl;
+//		perror("recv error");
+//		return true ;
+//	}
+//	if (rc == 0) {
+//		cerr << "everything read in the client" << endl;
+////		this->setRequestMode(false); // check hier
+//		return true ;
+//	}
+//	return false ;
+//}
+
+>>>>>>> parent of 273fdd5... changed some stuff
 void	Client::handleRequest() {
 =======
 map<e_method, bool> setDefaultMethods()
