@@ -75,16 +75,10 @@ Location Client::handleMethod()
     static map<e_method, bool> method = setDefaultMethods();
 
     Location location = getLocation(_request.getDir());
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
-    cerr << "HANDLE METHOD BEFORE:" << endl;
-    location.output();
     if (!location.isEmpty())
         method = location.getMethod();
     else
         location.setMethod(method);
-    cerr << "HANDLE METHOD AFTER:" << endl;
-    location.output();
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
     return location;
 }
 
@@ -118,11 +112,8 @@ void	Client::handleRequest(char** envp) {
 	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
 		handleDeleteRequest(filePath, envp);
 	}
-    else
-    {
-        cerr << _request.getMethod();
-        perror(": Request has not been enabled for this location.");
-        return ;
+    else {
+        throw WSException::MethodNotAllowed();
     }
 	this->resetRequest();
 }
@@ -153,6 +144,7 @@ void	Client::setPostResponse(string contentType) {
 
 bool	Client::responseSend() {
 	cerr << "HasBody: " << _response.getHasBody() << endl;
+    _response.output();
 	if (_response.getHasBody()) {
 		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
