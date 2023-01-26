@@ -18,7 +18,7 @@ $(URL)/test/
 $(URL)/css/css.css
 
 # facts
-$(URL)/facts.html
+#(URL)/facts/facts.html
 
 # errors
 #$(URL)/error/400.html
@@ -31,7 +31,6 @@ $(URL)/facts.html
 
 # photo
 $(URL)/photo/favicon.ico
-$(URL)/photo/giphy.gif
 $(URL)/photo/giphy.gif
 $(URL)/photo/picture.png
 $(URL)/photo/pointer.cur
