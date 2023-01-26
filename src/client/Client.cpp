@@ -93,7 +93,7 @@ void	Client::handleRequest(char** envp) {
 	string		filePath(getRoot());
 	string 		path;
 
-	_request.output();
+//	_request.output();
 	location = handleMethod();
 	path = location.getIndex();
 	if (!path.empty())
@@ -118,6 +118,12 @@ void	Client::handleRequest(char** envp) {
 	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
 		handleDeleteRequest(filePath, envp);
 	}
+    else
+    {
+        cerr << _request.getMethod();
+        perror(": Request has not been enabled for this location.");
+        return ;
+    }
 	this->resetRequest();
 }
 
@@ -147,24 +153,21 @@ void	Client::setPostResponse(string contentType) {
 
 bool	Client::responseSend() {
 	cerr << "HasBody: " << _response.getHasBody() << endl;
-	if (_response.getHasBody() == true) {
+	if (_response.getHasBody()) {
 		cerr << "SendHeader: " << _response.getSendHeader() << endl;
-		if (_response.getSendHeader() == false) {
+		if (!_response.getSendHeader()) {
 			_response.sendHeader();
 			return true;
 		}
 		_response.sendBody();
 		if (_response.getContentType() == "php")
 		{
-			cerr << "remove " << _response.getFilePath();
             if (remove(_response.getFilePath().c_str()) < 0)
-			{
-				cerr << ": FAILED" << endl;
-			}
+                perror(_response.getFilePath().c_str());
 		}
 		return false;
 	}
-	if (_response.getHasBody() == false) {
+	if (!_response.getHasBody()) {
 		_response.sendHeader();
 	}
 	return false;

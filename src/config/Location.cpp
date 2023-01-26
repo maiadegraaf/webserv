@@ -71,9 +71,9 @@ void Location::output()
         cout << methods[i->first] << " : " << i->second << endl;
     cout << "upload : " << _upload << endl;
     if (_empty)
-        cout << "empty: FALSE -> initialized by config" << endl;
+        cout << "~~~initialized by DEFAULT~~~" << endl;
     else
-        cout << "empty: TRUE -> initialized by default" << endl;
+        cout << "~~~initialized by CONFIG~~~" << endl;
 
 }
 
@@ -112,8 +112,6 @@ void Location::setMethod(const ConfigParser &confP, int line)
     for(size_t i = 0; i < confP.at(line).length(); i++)
     {
         string s = findNextWord(confP.at(line), end, true);
-        cout << "FOUND STRINGS IN METHOD: " << endl;
-        cout << s << " : " << confP.at(line) << endl;
         e_method methodType = determineMethod(s);
         if (methodType == ERROR)
         {

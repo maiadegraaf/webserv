@@ -202,9 +202,23 @@
   <div class="box background">
     <h3>Upload a File</h3>
     <form method="post" enctype="multipart/form-data">
-      Select file to upload:
-      <p><input type="file" name="file1">
-      <p><button type="submit" value="Send Request">Submit</button>
+      <table class="filesList">
+        <tr>
+          <th>
+            Select file to upload:
+          </th>
+        </tr>
+        <tr>
+          <td>
+            <input type="file" name="file1">
+          </td>
+        </tr>
+        <tr>
+          <td>
+              <button type="submit" value="Send Request">Submit</button>
+          </td>
+        </tr>
+      </table>
     </form>
   </div>
   <br>

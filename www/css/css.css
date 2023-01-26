@@ -238,6 +238,10 @@ table.filesList td, table.filesList th {
     padding: 4px 50px;
 }
 
+table.filesList th {
+    text-align: left;
+}
+
 ul {
     list-style-type: "∿ ";
     padding-left: 20px;
