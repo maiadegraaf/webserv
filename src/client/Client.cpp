@@ -3,7 +3,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) , _endOfRequest(false), _isParsing(false) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request) , _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -15,7 +15,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_requestMode = rhs._requestMode;
+	this->_clientMode = rhs._clientMode;
 	return *this;
 }
 
@@ -80,10 +80,16 @@ Location Client::handleMethod()
     static map<e_method, bool> method = setDefaultMethods();
 
     Location location = getLocation(_request.getDir());
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    cerr << "HANDLE METHOD BEFORE:" << endl;
+    location.output();
     if (!location.isEmpty())
         method = location.getMethod();
     else
         location.setMethod(method);
+    cerr << "HANDLE METHOD AFTER:" << endl;
+    location.output();
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
     return location;
 }
 

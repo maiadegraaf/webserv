@@ -54,8 +54,6 @@ void	ServerIO::loopEvent( ) {
 		event = _events[i];
 		_eventFd = event.ident;
 		if (event.flags & EV_ERROR)
-			errx(EXIT_FAILURE,	"Event error: %s", strerror(event.data));
-		else if (event.flags & EV_ERROR)
 			cerr << "client got deleted" << endl;
 		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
@@ -108,11 +106,11 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 		return ;
 	}
 	if (event.flags & EV_EOF)// || client->getClientMode() == request)
-		disconnectClient(udata);
+		disconnectClient(event.udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
 			client->setClientMode(request);
-
+	}
 }
 
 // Output
