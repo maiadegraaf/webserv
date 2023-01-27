@@ -30,7 +30,6 @@ class Client {
 		Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages, \
 		map<string, string> newContentType, size_t newMaxSize);
 
-
 	/* ************
 	 * Attributes *
 	 * ************/
@@ -67,6 +66,7 @@ class Client {
 		string				getRoot() const														{ return this->_root; }
 		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
 		clientMode			&getClientMode()														{ return this->_clientMode; }
+		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
 
 	/* *********
  	* Setters *
@@ -78,7 +78,6 @@ class Client {
 		void 		setPostContent(string input, int i);
 		void		setHeaderMultipartValue(string key, string value, int i)					{ this->_headerMultipart[i][key] = value; }
 		void 		setClientMode(clientMode mode)												{ this->_clientMode = mode; }
-
 	/* **************
  	* Functionality *
  	* ***************/

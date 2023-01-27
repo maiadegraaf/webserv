@@ -54,6 +54,8 @@ void	ServerIO::loopEvent( ) {
 		event = _events[i];
 		_eventFd = event.ident;
 		if (event.flags & EV_ERROR)
+			errx(EXIT_FAILURE,	"Event error: %s", strerror(event.data));
+		else if (event.flags & EV_ERROR)
 			cerr << "client got deleted" << endl;
 		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();

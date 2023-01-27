@@ -25,9 +25,7 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-//<<<<<<< HEAD
-//bool 	Client::requestReceived() {
-//=======
+
 void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
@@ -52,7 +50,6 @@ void	Client::requestReceived(char** envp) {
 		_requestBuffer.clear();
 	}
 }
-
 
 void	Client::fillRequestBuffer() {
 	int rc;
