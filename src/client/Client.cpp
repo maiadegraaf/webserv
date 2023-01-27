@@ -25,122 +25,47 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-<<<<<<< HEAD
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//bool 	Client::requestReceived() {
-//=======
-//=======
-bool 	Client::requestReceived() {
-//=======
-//>>>>>>> parent of 59e5e04... resolved conflicts
 void	Client::requestReceived(char** envp) {
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	try {
 		this->fillRequestBuffer();
-//<<<<<<< HEAD
 		if (this->getClientMode() == request)
 			return ;
 		cerr << "test_this: " <<endl;
-//=======
-void	Client::requestReceived(char** envp) {
-	try {
-		this->fillRequestBuffer();
-//>>>>>>> 00aa9a1c8f87f22366b3b794de5b5bee85cc9667
-//=======
-
-//>>>>>>> parent of 59e5e04... resolved conflicts
-=======
-<<<<<<< HEAD
-bool 	Client::requestReceived() {
-=======
-void	Client::requestReceived(char** envp) {
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-	try {
-		this->fillRequestBuffer();
-
->>>>>>> parent of 59e5e04... resolved conflicts
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
 		this->handleRequest(envp);
 		_requestBuffer.clear();
+		this->resetRequest();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		string		filePath("default/");
+		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
-<<<<<<< HEAD
-//<<<<<<< HEAD
-		this->setClientMode(response);
-		return true;
-//=======
 		this->resetRequest();
 		_requestBuffer.clear();
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-=======
-<<<<<<< HEAD
-		this->setClientMode(response);
-		return true;
-=======
-		this->resetRequest();
-		_requestBuffer.clear();
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
->>>>>>> parent of 59e5e04... resolved conflicts
 	}
 }
 
 void	Client::fillRequestBuffer() {
-	int     rc;
-	char    buffer[200];
-	string	tmp;
+	int rc;
+	char buffer[200];
+	string tmp;
 
-	while (1)
-	{
-		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-		if (rc <= 0)
-			break ;
-		tmp.assign(buffer, rc);
-		_requestBuffer.append(tmp);
+	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
+	cerr << "this is last" << rc << endl;
+	if (rc < 0)
+		throw WSException::InternalServerError();
+	tmp.assign(buffer, rc);
+	_requestBuffer.append(tmp);
+	if (rc == 0 || rc < 200) {
+		this->setClientMode(response);
 	}
 }
 
-<<<<<<< HEAD
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//=======
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 59e5e04... resolved conflicts
-//bool	Client::recvError(int rc) {
-//	if (rc < 0) {
-//		cerr << "recv() stopped reading " << endl;
-//		perror("recv error");
-//		return true ;
-//	}
-//	if (rc == 0) {
-//		cerr << "everything read in the client" << endl;
-////		this->setRequestMode(false); // check hier
-//		return true ;
-//	}
-//	return false ;
-//}
-
-<<<<<<< HEAD
-//>>>>>>> parent of 273fdd5... changed some stuff
-void	Client::handleRequest() {
-//=======
-=======
->>>>>>> parent of 273fdd5... changed some stuff
-void	Client::handleRequest() {
-=======
->>>>>>> parent of 59e5e04... resolved conflicts
 map<e_method, bool> setDefaultMethods()
 {
     map<e_method, bool> method;
@@ -169,18 +94,6 @@ Location Client::handleMethod()
 }
 
 void	Client::handleRequest(char** envp) {
-<<<<<<< HEAD
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-//=======
-//>>>>>>> 00aa9a1c8f87f22366b3b794de5b5bee85cc9667
-//=======
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-//>>>>>>> parent of 59e5e04... resolved conflicts
-=======
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
->>>>>>> parent of 59e5e04... resolved conflicts
 	Location	location;
 	string		filePath(getRoot());
 	string 		path;
@@ -195,7 +108,9 @@ void	Client::handleRequest(char** envp) {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-    if (_request.getMethod() == "GET" && location.getGet())
+	cerr << _request.getDir() << endl;
+	location.output();
+    if (_request.getMethod() == "GET" && ((!location.isEmpty() && location.getGet()) || location.isEmpty()))
 	{
 		if ( filePath.find("php") != string::npos ) {
 			handleCGIResponse(filePath, "php", envp);
@@ -210,11 +125,8 @@ void	Client::handleRequest(char** envp) {
 	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
 		handleDeleteRequest(filePath, envp);
 	}
-    else
-    {
-        cerr << _request.getMethod();
-        perror(": Request has not been enabled for this location.");
-        return ;
+    else {
+        throw WSException::MethodNotAllowed();
     }
 	this->resetRequest();
 }

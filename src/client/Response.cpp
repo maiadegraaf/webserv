@@ -39,8 +39,7 @@ Response&	Response::operator=( const Response& rhs ) {
 	return *this;
 }
 
-void Response::setNewHeader(const string& message, const string& contentType)
-{
+void Response::setNewHeader(const string& message, const string& contentType) {
 	setHead("HTTP/1.1");
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
@@ -89,20 +88,6 @@ void	Response::sendBody() {
 
 bool Response::exec(char **envp)
 {
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//=======
-//<<<<<<< HEAD
-//=======
-//>>>>>>> parent of 59e5e04... resolved conflicts
-	char **split = splitStr(getFilePath());
-	execve(split[0], split, environ);
-	perror("exec fail");
-//=======
-//<<<<<<< HEAD
-//>>>>>>> parent of 59e5e04... resolved conflicts
-//=======
-//>>>>>>> parent of 59e5e04... resolved conflicts
 	char **split = vectorToArr(splitStr(getFilePath(), " ?"));
     if (!access(split[0], F_OK))
         execve(split[0], split, envp);
@@ -114,7 +99,6 @@ bool Response::exec(char **envp)
             execve(cmd.c_str(), split, envp);
     }
 	perror("");
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	return (EXIT_FAILURE);
 }
 
@@ -135,21 +119,10 @@ string Response::CGIResponse(char **envp)
 	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
-//<<<<<<< HEAD
-		failure("open error on cgi");
-//=======
 	{
 		perror("CGI: ");
 		return("");
 	}
-//<<<<<<< HEAD
-//<<<<<<< HEAD
-//=======
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-//>>>>>>> parent of 59e5e04... resolved conflicts
-//=======
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
-//>>>>>>> parent of 59e5e04... resolved conflicts
 	int pid = fork();
 	if (pid == 0)
 	{
