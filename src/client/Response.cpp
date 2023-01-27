@@ -88,11 +88,6 @@ void	Response::sendBody() {
 
 bool Response::exec(char **envp)
 {
-//<<<<<<< HEAD
-//	char **split = splitStr(getFilePath());
-//	execve(split[0], split, environ);
-//	perror("exec fail");
-//=======
 	char **split = vectorToArr(splitStr(getFilePath(), " ?"));
     if (!access(split[0], F_OK))
         execve(split[0], split, envp);
@@ -123,15 +118,11 @@ string Response::CGIResponse(char **envp)
 	cout << getFilePath() << endl;
 	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
-//<<<<<<< HEAD
-//		failure("open error on cgi");
-//=======
 	if (fd < 0)
 	{
 		perror("CGI: ");
 		return("");
 	}
-//>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	int pid = fork();
 	if (pid == 0)
 	{
