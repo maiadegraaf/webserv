@@ -3,7 +3,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request), _endOfRequest(false), _isParsing(false) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) , _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -15,7 +15,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_clientMode = rhs._clientMode;
+	this->_requestMode = rhs._requestMode;
 	return *this;
 }
 
@@ -25,14 +25,9 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
-<<<<<<< HEAD
-bool 	Client::requestReceived() {
-=======
 void	Client::requestReceived(char** envp) {
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	try {
 		this->fillRequestBuffer();
-
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
@@ -46,13 +41,8 @@ void	Client::requestReceived(char** envp) {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
-<<<<<<< HEAD
-		this->setClientMode(response);
-		return true;
-=======
 		this->resetRequest();
 		_requestBuffer.clear();
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	}
 }
 
@@ -71,26 +61,6 @@ void	Client::fillRequestBuffer() {
 	}
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-//bool	Client::recvError(int rc) {
-//	if (rc < 0) {
-//		cerr << "recv() stopped reading " << endl;
-//		perror("recv error");
-//		return true ;
-//	}
-//	if (rc == 0) {
-//		cerr << "everything read in the client" << endl;
-////		this->setRequestMode(false); // check hier
-//		return true ;
-//	}
-//	return false ;
-//}
-
->>>>>>> parent of 273fdd5... changed some stuff
-void	Client::handleRequest() {
-=======
 map<e_method, bool> setDefaultMethods()
 {
     map<e_method, bool> method;
@@ -119,7 +89,6 @@ Location Client::handleMethod()
 }
 
 void	Client::handleRequest(char** envp) {
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	Location	location;
 	string		filePath(getRoot());
 	string 		path;

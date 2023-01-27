@@ -36,7 +36,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug/
+cmake_ninja_workdir = /Users/maiadegraaf/webserve/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target webserv
 
@@ -46,123 +46,123 @@ cmake_ninja_workdir = /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-bu
 
 build cmake_object_order_depends_target_webserv: phony || CMakeFiles/webserv.dir
 
-build CMakeFiles/webserv.dir/src/client/CGIResponse.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/client/CGIResponse.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/client/CGIResponse.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/client/CGIResponse.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/client/CGIResponse.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/client
 
-build CMakeFiles/webserv.dir/src/client/Client.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/client/Client.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/client/Client.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/client/Client.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/client/Client.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/client
 
-build CMakeFiles/webserv.dir/src/client/postHandler.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/client/postHandler.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/client/postHandler.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/client/postHandler.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/client/postHandler.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/client
 
-build CMakeFiles/webserv.dir/src/client/Request.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/client/Request.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/client/Request.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/client/Request.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/client/Request.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/client
 
-build CMakeFiles/webserv.dir/src/client/Response.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/client/Response.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/client/Response.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/client/Response.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/client/Response.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/client
 
-build CMakeFiles/webserv.dir/src/config/Config.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/config/Config.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/config/Config.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/config/Config.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/config/Config.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/config
 
-build CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/config/ConfigParser.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/config/ConfigParser.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/config
 
-build CMakeFiles/webserv.dir/src/config/Location.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/config/Location.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/config/Location.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/config/Location.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/config/Location.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/config
 
-build CMakeFiles/webserv.dir/src/server/Server.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/server/Server.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/server/Server.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/server/Server.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/server/Server.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/server
 
-build CMakeFiles/webserv.dir/src/server/ServerIO.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/server/ServerIO.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/server/ServerIO.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/server/ServerIO.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/server/ServerIO.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/server
 
-build CMakeFiles/webserv.dir/src/server/ServerKq.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/server/ServerKq.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/server/ServerKq.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/server/ServerKq.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/server/ServerKq.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/server
 
-build CMakeFiles/webserv.dir/src/utils/errorMap.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/utils/errorMap.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/utils/errorMap.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/utils/errorMap.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/utils/errorMap.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/utils
 
-build CMakeFiles/webserv.dir/src/utils/Utils.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/utils/Utils.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/utils/Utils.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/utils/Utils.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/utils/Utils.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/utils
 
-build CMakeFiles/webserv.dir/src/utils/utils_Maia.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/utils/utils_Maia.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/utils/utils_Maia.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/utils/utils_Maia.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/utils/utils_Maia.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src/utils
 
-build CMakeFiles/webserv.dir/src/main.cpp.o: CXX_COMPILER__webserv_Debug /Users/sde-quai/Desktop/projects/WEBSERV/webserve/src/main.cpp || cmake_object_order_depends_target_webserv
+build CMakeFiles/webserv.dir/src/main.cpp.o: CXX_COMPILER__webserv_Debug /Users/maiadegraaf/webserve/src/main.cpp || cmake_object_order_depends_target_webserv
   DEFINES = -DDIRECTORY=\"/Users/maiadegraaf/Documents/webserv\"
   DEP_FILE = CMakeFiles/webserv.dir/src/main.cpp.o.d
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
-  INCLUDES = -I/Users/sde-quai/Desktop/projects/WEBSERV/webserve/inc -isystem /Users/sde-quai/Desktop/projects/WEBSERV/webserve/./lib
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
+  INCLUDES = -I/Users/maiadegraaf/webserve/inc -isystem /Users/maiadegraaf/webserve/./lib
   OBJECT_DIR = CMakeFiles/webserv.dir
   OBJECT_FILE_DIR = CMakeFiles/webserv.dir/src
 
@@ -175,7 +175,7 @@ build CMakeFiles/webserv.dir/src/main.cpp.o: CXX_COMPILER__webserv_Debug /Users/
 # Link the executable webserv
 
 build webserv: CXX_EXECUTABLE_LINKER__webserv_Debug CMakeFiles/webserv.dir/src/client/CGIResponse.cpp.o CMakeFiles/webserv.dir/src/client/Client.cpp.o CMakeFiles/webserv.dir/src/client/postHandler.cpp.o CMakeFiles/webserv.dir/src/client/Request.cpp.o CMakeFiles/webserv.dir/src/client/Response.cpp.o CMakeFiles/webserv.dir/src/config/Config.cpp.o CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o CMakeFiles/webserv.dir/src/config/Location.cpp.o CMakeFiles/webserv.dir/src/server/Server.cpp.o CMakeFiles/webserv.dir/src/server/ServerIO.cpp.o CMakeFiles/webserv.dir/src/server/ServerKq.cpp.o CMakeFiles/webserv.dir/src/utils/errorMap.cpp.o CMakeFiles/webserv.dir/src/utils/Utils.cpp.o CMakeFiles/webserv.dir/src/utils/utils_Maia.cpp.o CMakeFiles/webserv.dir/src/main.cpp.o
-  FLAGS = -Werror -Wextra -Wall -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.14
+  FLAGS = -Werror -Wextra -Wall -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.1.sdk -mmacosx-version-min=13.0
   OBJECT_DIR = CMakeFiles/webserv.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -187,7 +187,7 @@ build webserv: CXX_EXECUTABLE_LINKER__webserv_Debug CMakeFiles/webserv.dir/src/c
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/maiadegraaf/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -198,7 +198,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/sde-quai/Desktop/projects/WEBSERV/webserve -B/Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug
+  COMMAND = cd /Users/maiadegraaf/webserve/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/maiadegraaf/webserve -B/Users/maiadegraaf/webserve/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -214,7 +214,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/sde-quai/Desktop/projects/WEBSERV/webserve/cmake-build-debug
+# Folder: /Users/maiadegraaf/webserve/cmake-build-debug
 
 build all: phony webserv
 

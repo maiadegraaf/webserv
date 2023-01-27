@@ -10,10 +10,6 @@
 #include "CGIResponse.hpp"
 
 //class Response;
-typedef enum e_clientMode {
-	request,
-	response
-}	clientMode;
 
 // Class definition
 class Client {
@@ -47,9 +43,9 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		clientMode							_clientMode;
-		bool 								_endOfRequest,
-											_isParsing;
+		bool 								_requestMode,
+											_endOfRequest,
+											_isParsing; // weg
 
 	/* *********
  	* Getters *
@@ -60,24 +56,23 @@ class Client {
 		Location			&getLocation(const string &key)										{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
+		bool 				getRequestMode()													{ return this->_requestMode; }
 		bool 				endOfRequest()														{ return this->_endOfRequest; }
 		bool 				isParsing()															{ return this->_isParsing; }
-
 		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
 		string				getRoot() const														{ return this->_root; }
 		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
-		clientMode			&getClientMode()														{ return this->_clientMode; }
-
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
+		void 		setRequestModeFalse()														{ this->_requestMode = false; }
+		void 		setRequestModeTrue()														{ this->_requestMode = true; }
 		void 		setEndOfRequest(bool nBool)													{ this->_endOfRequest = nBool; }
 		void 		setIsParsing(bool nBool)													{ this->_isParsing = nBool; }
 		void 		setPostContent(string input, int i);
-		void		setHeaderMultipartValue(string key, string value, int i)					{ this->_headerMultipart[i][key] = value; }
-		void 		setClientMode(clientMode mode)												{ this->_clientMode = mode; }
+		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
 
 	/* **************
  	* Functionality *

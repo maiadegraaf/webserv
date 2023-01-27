@@ -1,18 +1,21 @@
 # ninja log v5
 761	1063	1674669164472390345	CMakeFiles/webserv.dir/src/utils/Utils.cpp.o	48b6b4079b076590
 411	826	1674669164234527464	CMakeFiles/webserv.dir/src/server/Server.cpp.o	e50241bd71fe6e3d
-357	707	1674669164115136133	CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o	e33f1e7b14047b6d
 827	1119	1674669164528299706	CMakeFiles/webserv.dir/src/utils/utils_Maia.cpp.o	68a19464edb8196d
-2	292	1674669438609567203	CMakeFiles/webserv.dir/src/config/Location.cpp.o	dc65e839de879e65
+357	707	1674669164115136133	CMakeFiles/webserv.dir/src/config/ConfigParser.cpp.o	e33f1e7b14047b6d
+383	761	1674669164168899021	CMakeFiles/webserv.dir/src/config/Location.cpp.o	dc65e839de879e65
 3	357	1674669163762975146	CMakeFiles/webserv.dir/src/client/CGIResponse.cpp.o	64a8867f684ab41
 3	382	1674669163788950810	CMakeFiles/webserv.dir/src/client/Response.cpp.o	d2d3603966e7a04c
 3	578	1674669163984336700	CMakeFiles/webserv.dir/src/client/Client.cpp.o	55d173c0e5697c7b
-0	42	1674738338000000000	build.ninja	b142ca1e2ab4a6de
+0	42	1674669212215819209	build.ninja	b142ca1e2ab4a6de
 3	521	1674669163927698307	CMakeFiles/webserv.dir/src/client/postHandler.cpp.o	ebcbd4c9ab2b4bac
 4	541	1674669163949366943	CMakeFiles/webserv.dir/src/config/Config.cpp.o	2d1e8d4af105a092
 3	411	1674669163820147573	CMakeFiles/webserv.dir/src/client/Request.cpp.o	e4f97a47083b219e
-292	332	1674669438651782655	webserv	e6b0279b4ba7d43f
+274	327	1674039904527250377	webserv	e82ce2fe5f3da1d0
 937	1242	1674669164651451446	CMakeFiles/webserv.dir/src/main.cpp.o	526f3811f36cecbb
 578	936	1674669164344501041	CMakeFiles/webserv.dir/src/utils/errorMap.cpp.o	e9b407759ca9e505
 541	979	1674669164387836522	CMakeFiles/webserv.dir/src/server/ServerKq.cpp.o	27595cc38fee0b00
 521	974	1674669164382238887	CMakeFiles/webserv.dir/src/server/ServerIO.cpp.o	8aa5f6557fd638a0
+3	51	1674669213397165703	webserv	e6b0279b4ba7d43f
+2	292	1674669438609567203	CMakeFiles/webserv.dir/src/config/Location.cpp.o	dc65e839de879e65
+292	332	1674669438651782655	webserv	e6b0279b4ba7d43f
