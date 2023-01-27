@@ -35,7 +35,7 @@ void	Client::requestReceived(char** envp) {
 		_requestBuffer.clear();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		string		filePath("default/");
+		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
 		cout << "this is Filepath :" << filePath << endl;
@@ -75,16 +75,10 @@ Location Client::handleMethod()
     static map<e_method, bool> method = setDefaultMethods();
 
     Location location = getLocation(_request.getDir());
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
-    cerr << "HANDLE METHOD BEFORE:" << endl;
-    location.output();
     if (!location.isEmpty())
         method = location.getMethod();
     else
         location.setMethod(method);
-    cerr << "HANDLE METHOD AFTER:" << endl;
-    location.output();
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
     return location;
 }
 
@@ -103,7 +97,9 @@ void	Client::handleRequest(char** envp) {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-    if (_request.getMethod() == "GET" && location.getGet())
+	cerr << _request.getDir() << endl;
+	location.output();
+    if (_request.getMethod() == "GET" && ((!location.isEmpty() && location.getGet()) || location.isEmpty()))
 	{
 		if ( filePath.find("php") != string::npos ) {
 			handleCGIResponse(filePath, "php", envp);
@@ -118,11 +114,8 @@ void	Client::handleRequest(char** envp) {
 	else if (_request.getMethod() == "DELETE" && location.getDelete()) {
 		handleDeleteRequest(filePath, envp);
 	}
-    else
-    {
-        cerr << _request.getMethod();
-        perror(": Request has not been enabled for this location.");
-        return ;
+    else {
+        throw WSException::MethodNotAllowed();
     }
 	this->resetRequest();
 }
