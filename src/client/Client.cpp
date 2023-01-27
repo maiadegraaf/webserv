@@ -28,11 +28,15 @@ void	Client::output() {
 void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
+		if (this->getClientMode() == request)
+			return ;
+		cerr << "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
 		this->handleRequest(envp);
 		_requestBuffer.clear();
+		this->resetRequest();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath(getRoot() + '/');
@@ -47,17 +51,18 @@ void	Client::requestReceived(char** envp) {
 }
 
 void	Client::fillRequestBuffer() {
-	int     rc;
-	char    buffer[200];
-	string	tmp;
+	int rc;
+	char buffer[200];
+	string tmp;
 
-	while (1)
-	{
-		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-		if (rc <= 0)
-			break ;
-		tmp.assign(buffer, rc);
-		_requestBuffer.append(tmp);
+	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
+	cerr << "this is last" << rc << endl;
+	if (rc < 0)
+		throw WSException::InternalServerError();
+	tmp.assign(buffer, rc);
+	_requestBuffer.append(tmp);
+	if (rc == 0 || rc < 200) {
+		this->setClientMode(response);
 	}
 }
 
