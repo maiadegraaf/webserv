@@ -35,7 +35,7 @@ void	Client::requestReceived(char** envp) {
 		_requestBuffer.clear();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		string		filePath("www/");
+		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
 		cout << "this is Filepath :" << filePath << endl;
@@ -97,7 +97,9 @@ void	Client::handleRequest(char** envp) {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-    if (_request.getMethod() == "GET" && location.getGet())
+	cerr << _request.getDir() << endl;
+	location.output();
+    if (_request.getMethod() == "GET" && ((!location.isEmpty() && location.getGet()) || location.isEmpty()))
 	{
 		if ( filePath.find("php") != string::npos ) {
 			handleCGIResponse(filePath, "php", envp);
