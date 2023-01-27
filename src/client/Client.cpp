@@ -35,7 +35,7 @@ void	Client::requestReceived(char** envp) {
 		_requestBuffer.clear();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		string		filePath("default/");
+		string		filePath("www/");
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
 		cout << "this is Filepath :" << filePath << endl;
@@ -120,10 +120,8 @@ void	Client::handleRequest(char** envp) {
 	}
     else
     {
-        cerr << _request.getMethod();
-        perror(": Request has not been enabled for this location.");
-        return ;
-    }
+		throw WSException::MethodNotAllowed();
+	}
 	this->resetRequest();
 }
 
