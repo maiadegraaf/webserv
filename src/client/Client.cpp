@@ -3,7 +3,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request), _endOfRequest(false), _isParsing(false) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) , _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -15,7 +15,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_clientMode = rhs._clientMode;
+	this->_requestMode = rhs._requestMode;
 	return *this;
 }
 
@@ -25,6 +25,7 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
+<<<<<<< HEAD
 //<<<<<<< HEAD
 //bool 	Client::requestReceived() {
 //=======
@@ -34,6 +35,11 @@ void	Client::requestReceived(char** envp) {
 		if (this->getClientMode() == request)
 			return ;
 		cerr << "test_this: " <<endl;
+=======
+void	Client::requestReceived(char** envp) {
+	try {
+		this->fillRequestBuffer();
+>>>>>>> 00aa9a1c8f87f22366b3b794de5b5bee85cc9667
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
@@ -98,7 +104,10 @@ Location Client::handleMethod()
 }
 
 void	Client::handleRequest(char** envp) {
+<<<<<<< HEAD
 //>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
+=======
+>>>>>>> 00aa9a1c8f87f22366b3b794de5b5bee85cc9667
 	Location	location;
 	string		filePath(getRoot());
 	string 		path;
