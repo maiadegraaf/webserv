@@ -57,8 +57,6 @@ void	ServerIO::loopEvent( ) {
 			cerr << "client got deleted" << endl;
 		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-//		if (event.flags & EV_EOF) //|| event.flags == 1)
-//			this->disconnectClient(event.udata);
 		if (event.filter == EVFILT_READ)
 			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
@@ -85,7 +83,6 @@ void	ServerIO::connectNewClient() {
 	cerr << "ServerIO::connectNewClient() : Client connected with server " << endl;
 }
 
-<<<<<<< HEAD
 //void	ServerIO::setupClientWrite(Client *client) {
 //	struct kevent	newEvents[2];
 //
@@ -113,44 +110,12 @@ void	ServerIO::connectNewClient() {
 //		perror("kevent client EOF");
 //}
 
+//	struct timespec ts;
+//
+//	ts.tv_sec = 10;
+
 void	ServerIO::incomingRequest(struct kevent event) {
 	void *udata = event.udata;
-=======
-void	ServerIO::setupClientWrite(Client *client) {
-	struct kevent	newEvents[2];
-//	struct timespec ts;
-//
-//	ts.tv_sec = 10;
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_DISABLE, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_ENABLE , 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client write");
-}
-
-void	ServerIO::setupClientRead(Client *client) {
-	struct kevent	newEvents[2];
-//	struct timespec ts;
-//
-//	ts.tv_sec = 10;
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_ENABLE, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_DISABLE, 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client read");
-}
-
-void	ServerIO::setupClientEOF(Client *client) {
-	struct kevent	newEvents[2];
-
-	EV_SET(&newEvents[0], client->getSockFd(), EVFILT_READ, EV_EOF, 0, 0, client);
-	EV_SET(&newEvents[1], client->getSockFd(), EVFILT_WRITE, EV_EOF, 0, 0, client);
-	if (kevent(getKq(), newEvents, 2, NULL, 0, NULL) < 0)
-		perror("kevent client EOF");
-}
-
-void	ServerIO::incomingRequest(void *udata) {
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (!client) {
 		perror("unknown request");
@@ -160,14 +125,7 @@ void	ServerIO::incomingRequest(void *udata) {
 		disconnectClient(udata);
 	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
-<<<<<<< HEAD
-		if (client->requestReceived() == true)
-			client->setClientMode(response);
-
-=======
 		client->requestReceived(_envp);
-		this->setupClientWrite(client);
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 		cerr <<  endl;
 	}
 }
@@ -175,7 +133,6 @@ void	ServerIO::incomingRequest(void *udata) {
 void	ServerIO::outgoingResponse(struct kevent event) {
 	void *udata = event.udata;
 	Client	*client = reinterpret_cast<Client *>(udata);
-<<<<<<< HEAD
 	if (!client) {
 		perror("unknown response");
 		return ;
@@ -185,11 +142,6 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
 			client->setClientMode(request);
-=======
-	if (client) {
-		if (client->responseSend() == false )// nog maken
-			this->setupClientRead(client);
->>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 	}
 }
 
