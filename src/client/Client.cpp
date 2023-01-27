@@ -25,6 +25,7 @@ void	Client::output() {
 	std::cout << "strRequest : " << _requestBuffer << std::endl;
 }
 
+<<<<<<< HEAD
 //<<<<<<< HEAD
 //<<<<<<< HEAD
 //<<<<<<< HEAD
@@ -50,6 +51,16 @@ void	Client::requestReceived(char** envp) {
 //=======
 
 //>>>>>>> parent of 59e5e04... resolved conflicts
+=======
+<<<<<<< HEAD
+bool 	Client::requestReceived() {
+=======
+void	Client::requestReceived(char** envp) {
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
+	try {
+		this->fillRequestBuffer();
+
+>>>>>>> parent of 59e5e04... resolved conflicts
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
@@ -63,6 +74,7 @@ void	Client::requestReceived(char** envp) {
 		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
+<<<<<<< HEAD
 //<<<<<<< HEAD
 		this->setClientMode(response);
 		return true;
@@ -70,6 +82,15 @@ void	Client::requestReceived(char** envp) {
 		this->resetRequest();
 		_requestBuffer.clear();
 //>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
+=======
+<<<<<<< HEAD
+		this->setClientMode(response);
+		return true;
+=======
+		this->resetRequest();
+		_requestBuffer.clear();
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
+>>>>>>> parent of 59e5e04... resolved conflicts
 	}
 }
 
@@ -88,9 +109,15 @@ void	Client::fillRequestBuffer() {
 	}
 }
 
+<<<<<<< HEAD
 //<<<<<<< HEAD
 //<<<<<<< HEAD
 //=======
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 59e5e04... resolved conflicts
 //bool	Client::recvError(int rc) {
 //	if (rc < 0) {
 //		cerr << "recv() stopped reading " << endl;
@@ -105,9 +132,15 @@ void	Client::fillRequestBuffer() {
 //	return false ;
 //}
 
+<<<<<<< HEAD
 //>>>>>>> parent of 273fdd5... changed some stuff
 void	Client::handleRequest() {
 //=======
+=======
+>>>>>>> parent of 273fdd5... changed some stuff
+void	Client::handleRequest() {
+=======
+>>>>>>> parent of 59e5e04... resolved conflicts
 map<e_method, bool> setDefaultMethods()
 {
     map<e_method, bool> method;
@@ -136,6 +169,7 @@ Location Client::handleMethod()
 }
 
 void	Client::handleRequest(char** envp) {
+<<<<<<< HEAD
 //<<<<<<< HEAD
 //<<<<<<< HEAD
 //>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
@@ -144,6 +178,9 @@ void	Client::handleRequest(char** envp) {
 //=======
 //>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
 //>>>>>>> parent of 59e5e04... resolved conflicts
+=======
+>>>>>>> 3b3f1fb05f68023847ca297afdbc82762300d4e5
+>>>>>>> parent of 59e5e04... resolved conflicts
 	Location	location;
 	string		filePath(getRoot());
 	string 		path;

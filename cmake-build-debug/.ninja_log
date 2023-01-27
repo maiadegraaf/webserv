@@ -9,10 +9,14 @@
 3	578	1674669163984336700	CMakeFiles/webserv.dir/src/client/Client.cpp.o	55d173c0e5697c7b
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 0	42	1674818143000000000	build.ninja	b142ca1e2ab4a6de
 =======
 0	42	1674669212215819209	build.ninja	b142ca1e2ab4a6de
 >>>>>>> 00aa9a1c8f87f22366b3b794de5b5bee85cc9667
+=======
+0	42	1674738338000000000	build.ninja	b142ca1e2ab4a6de
+>>>>>>> parent of 59e5e04... resolved conflicts
 =======
 0	42	1674738338000000000	build.ninja	b142ca1e2ab4a6de
 >>>>>>> parent of 59e5e04... resolved conflicts
