@@ -106,11 +106,11 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 		return ;
 	}
 	if (event.flags & EV_EOF)// || client->getClientMode() == request)
-		disconnectClient(udata);
+		disconnectClient(event.udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
 			client->setClientMode(request);
-
+	}
 }
 
 // Output
