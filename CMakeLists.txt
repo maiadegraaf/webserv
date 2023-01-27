@@ -1,22 +1,17 @@
 cmake_minimum_required(VERSION 3.23)
-project(webserv)
+project(webserver)
 
-set(CMAKE_CXX_STANDARD 98)
-
-set (CMAKE_CXX_FLAGS "-Werror -Wextra -Wall")
-
-add_definitions(-DDIRECTORY="/Users/maiadegraaf/Documents/webserv")
+set(CMAKE_CXX_STANDARD 14)
 
 include_directories(inc)
-include_directories(SYSTEM ./lib)
 
-add_executable(webserv
+add_executable(webserver
         inc/CGIResponse.hpp
         inc/Client.hpp
         inc/Config.hpp
         inc/ConfigParser.hpp
         inc/Location.hpp
-#        inc/ReadWrite.hpp
+        inc/ReadWrite.hpp
         inc/Request.hpp
         inc/Response.hpp
         inc/Server.hpp
@@ -36,7 +31,7 @@ add_executable(webserv
         src/server/ServerIO.cpp
         src/server/ServerKq.cpp
         src/utils/errorMap.cpp
-#        src/utils/ReadWrite.cpp
+        src/utils/ReadWrite.cpp
         src/utils/Utils.cpp
         src/utils/utils_Maia.cpp
         src/main.cpp)

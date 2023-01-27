@@ -13,7 +13,7 @@ Config::Config(const ConfigParser &confP)
 		string word = confP.findFirstWord(i);
 		determineCase(word, confP, i);
 	}
-//    output();
+    output();
 	checkIfComplete();
 }
 

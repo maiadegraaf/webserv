@@ -35,7 +35,7 @@ void	Client::requestReceived(char** envp) {
 		_requestBuffer.clear();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-		string		filePath("default/");
+		string		filePath("www/");
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
 		cout << "this is Filepath :" << filePath << endl;
@@ -144,7 +144,6 @@ void	Client::setPostResponse(string contentType) {
 
 bool	Client::responseSend() {
 	cerr << "HasBody: " << _response.getHasBody() << endl;
-    _response.output();
 	if (_response.getHasBody()) {
 		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
