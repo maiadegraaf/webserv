@@ -92,7 +92,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 //	void *udata = event.udata;
 	Client *client = static_cast<Client *>(event.udata);
 	if (!client) {
-		perror("unknown request");
+		perror("incoming unknown request");
 		return ;
 	}
 	else if (client->getClientMode() == request) {
@@ -107,7 +107,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 void	ServerIO::outgoingResponse(struct kevent event) {
 	Client	*client = static_cast<Client *>(event.udata);
 	if (!client) {
-		perror("unknown response");
+		perror("outgoing unknown response");
 		return ;
 	}
 	else if (client->getClientMode() == response) {
