@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.23)
 project(webserver)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 98)
+
+set (CMAKE_CXX_FLAGS "-Werror -Wextra -Wall")
+
+add_definitions(-DDIRECTORY="/Users/mgraaf/Documents/webserv")
 
 include_directories(inc)
 
