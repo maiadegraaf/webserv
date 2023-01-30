@@ -25,7 +25,7 @@ class Response
 		Response()
 			: _sockFD(0), _head(""), _filePath(""), _fileSize(0),
 			_hasBody(false), _sendHeader(false)											{ }
-		~Response()																		{ }
+		~Response()																		{ if (_fileFd != -1) close(_fileFd); }
 		Response(const Response &rhs) 													{ *this = rhs; }
 		Response&	operator=( const Response &rhs);
 
@@ -39,10 +39,12 @@ class Response
 	 * Attributes *
 	 * ************/
 	private:
-		int			_sockFD;
+		int			_sockFD,
+					_fileFd;
 		string		_head;
 		string		_filePath;
-		off_t 		_fileSize;
+		off_t 		_fileSize,
+					_offset;
 		string 		_contentType;
 		bool 		_hasBody, // new
 					_sendHeader; // new
@@ -58,6 +60,7 @@ class Response
 		bool 			getHasBody()							{ return _hasBody; }
 		bool 			getSendHeader()							{ return _sendHeader; }
 		const string	&getContentType() const 				{ return _contentType; }
+		const	int 	&getFileFd()							{ return _fileFd; }
 
 
 	/* *********
@@ -74,6 +77,7 @@ class Response
 		void	appendToFilePath(string newPath)				{ this->_filePath.append(newPath); }
 		void 	setHasBody(bool nBool)							{ this->_hasBody = nBool; }
 		void 	setSendHeader(bool nBool)						{ this->_sendHeader = nBool; }
+		void 	setFileFd(const int &fd)						{ this->_fileFd = fd; }
 
 	/* ****
 	* CGI *
@@ -88,7 +92,7 @@ class Response
 	public:
 		void	output();
 		void 	sendHeader();
-		void 	sendBody();
+		bool 	sendBody();
 //		bool	sendResponse();
 //		bool 	sendCGI();
 

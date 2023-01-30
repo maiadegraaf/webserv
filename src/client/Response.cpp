@@ -1,7 +1,7 @@
 #include "Response.hpp"
 
 Response::Response(string errorMessage,string errorFilePath, int newSockFD, string contentType)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(errorFilePath), _hasBody(true), _sendHeader(false) {
+	: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _filePath(errorFilePath), _offset(0), _hasBody(true), _sendHeader(false) {
 	setFileSize(fileSize(_filePath.c_str()));
 	appendToHeadNL(errorMessage);
 	appendObjectToHead("Content-Type: ", contentType);
@@ -10,7 +10,7 @@ Response::Response(string errorMessage,string errorFilePath, int newSockFD, stri
 }
 
 Response::Response(const string& filePath, const string& message, const string& contentType, int newSockFD, off_t fileSize)
-	: _sockFD(newSockFD), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _contentType(contentType), _hasBody(true), _sendHeader(false) {
+	: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _offset(0), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
 	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
@@ -19,9 +19,8 @@ Response::Response(const string& filePath, const string& message, const string& 
 }
 
 Response::Response(string message, string contentType, int newSockFD, off_t fileSize)
-		: _sockFD(newSockFD), _head("HTTP/1.1 "), _fileSize(fileSize), _hasBody(false), _sendHeader(false) {
+		: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _fileSize(fileSize), _offset(0), _contentType(contentType),_hasBody(false), _sendHeader(false) {
 	appendToHeadNL(message);
-	(void)contentType;
 	appendObjectToHead("Content-Length: ", "29");
 	appendToHead("\r\n");
 	appendObjectToHead("content uploaded successfully", "\r\n");
@@ -30,12 +29,14 @@ Response::Response(string message, string contentType, int newSockFD, off_t file
 
 Response&	Response::operator=( const Response& rhs ) {
 	this->_sockFD = rhs._sockFD;
-	this->_fileSize = rhs._fileSize;
+	this->_fileFd= rhs._fileFd;
 	this->_head = rhs._head;
+	this->_offset = rhs._offset;
+	this->_fileSize = rhs._fileSize;
 	this->_filePath = rhs._filePath;
+	this->_contentType = rhs._contentType;
 	this->_hasBody = rhs._hasBody;
 	this->_sendHeader = rhs._sendHeader;
-	this->_contentType = rhs._contentType;
 	return *this;
 }
 
@@ -62,28 +63,28 @@ void	Response::sendHeader() {
 		setSendHeader(true);
 }
 
-void	Response::sendBody() {
-	cerr << "++++++++++++ SEND BODY ++++++++++++" << endl;
-	cerr << getFilePath() << endl;
-    cerr << "+++++++++++++++++++++++++++++++++++" << endl;
-    FILE *fp = fopen(getFilePath().c_str(), "r");
-	int buffer = 1024*8; //chunk size of 8kb
-	char filebyte[buffer];
-	int32_t readBytes;
-
-	while((readBytes = fread(filebyte, 1, buffer, fp)) > 0) {
-		send(getSockFD(), filebyte, readBytes, 0);
-		usleep(200);
+bool	Response::sendBody() {
+	off_t	len;
+	if (getFileFd() < 0) {
+		int tmpFd = open(getFilePath().c_str(), O_RDONLY);
+		if (tmpFd < 0) {
+			perror("open file failed");
+			return false;
+		}
+		this->setFileFd(tmpFd);
 	}
-//		while (_fileSize > 0)
-//		{
-//			_fileSize -= offset;
-//			if (sendfile(read, getSockFD(), offset, &_fileSize, NULL, 0) < 0)
-//				perror("sendfile body failed");
-//			offset += 200000;
-//		}
-
-	fclose(fp);
+	if (sendfile(this->getFileFd(), this->getSockFD(), _offset, &len, NULL, 0) < 0) {
+		if (len + _offset < _fileSize) {
+			_offset += len;
+			return false;
+		}
+		else
+			perror("sendbody failed in sendfile");
+			// again something
+	}
+	close(this->getFileFd());
+	this->setFileFd(-1);
+	return true;
 }
 
 bool Response::exec(char **envp)
@@ -98,7 +99,7 @@ bool Response::exec(char **envp)
         if (!access(cmd.c_str(), F_OK))
             execve(cmd.c_str(), split, envp);
     }
-	perror("");
+	perror("exec fail");
 	return (EXIT_FAILURE);
 }
 

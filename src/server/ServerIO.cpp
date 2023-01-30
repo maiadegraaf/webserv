@@ -91,7 +91,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 		return ;
 	}
 	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
-		disconnectClient(udata);
+		this->disconnectClient(udata);
 	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		client->requestReceived(_envp);
@@ -106,7 +106,7 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 		return ;
 	}
 	if (event.flags & EV_EOF)// || client->getClientMode() == request)
-		disconnectClient(event.udata);
+		this->disconnectClient(event.udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
 			client->setClientMode(request);

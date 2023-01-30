@@ -163,9 +163,9 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
-		_response.sendBody();
-		if (_response.getContentType() == "php")
-		{
+		if (_response.sendBody() == false)
+			return true;
+		if (_response.getContentType() == "php") {
             if (remove(_response.getFilePath().c_str()) < 0)
                 perror(_response.getFilePath().c_str());
 		}
