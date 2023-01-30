@@ -1,0 +1,6 @@
+URL=http://localhost:8080
+
+# locations
+$(URL)/
+$(URL)/about/
+$(URL)/test/
