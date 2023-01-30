@@ -87,7 +87,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 	void *udata = event.udata;
 	Client *client = reinterpret_cast<Client *>(udata);
 	if (!client) {
-		perror("unknown request");
+		perror("incoming unknown request");
 		return ;
 	}
 	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
@@ -102,7 +102,7 @@ void	ServerIO::incomingRequest(struct kevent event) {
 void	ServerIO::outgoingResponse(struct kevent event) {
 	Client	*client = reinterpret_cast<Client *>(event.udata);
 	if (!client) {
-		perror("unknown response");
+		perror("outcoming unknown response");
 		return ;
 	}
 	if (event.flags & EV_EOF)// || client->getClientMode() == request)
