@@ -13,7 +13,7 @@ Response::Response(const string& filePath, const string& message, const string& 
 	: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _offset(0), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
-	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
+//	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
@@ -80,7 +80,6 @@ bool	Response::sendBody() {
 		}
 		else
 			perror("sendbody failed in sendfile");
-			// again something
 	}
 	close(this->getFileFd());
 	this->setFileFd(-1);
