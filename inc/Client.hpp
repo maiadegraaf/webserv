@@ -12,6 +12,12 @@
 //class Response;
 
 // Class definition
+typedef enum e_clientMode {
+	request,
+	response
+} clientMode;
+
+
 class Client {
 	/* *******************
 	 * (Con/De)structors *
@@ -25,7 +31,6 @@ class Client {
 			: _sockFd(-1), _requestBuffer(""), _maxSize(0) 										{}
 		Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages, \
 		map<string, string> newContentType, size_t newMaxSize);
-
 
 	/* ************
 	 * Attributes *
@@ -43,8 +48,8 @@ class Client {
 		size_t								_maxSize;
 		Request								_request;
 		Response							_response;
-		bool 								_requestMode,
-											_endOfRequest,
+		clientMode 							_clientMode;
+		bool								_endOfRequest,
 											_isParsing; // weg
 
 	/* *********
@@ -56,23 +61,23 @@ class Client {
 		Location			&getLocation(const string &key)										{ return this->_location[key]; }
 		string				getRequestBuffer() const											{ return this->_requestBuffer; }
 		size_t 				getMaxSize() const													{ return this->_maxSize; }
-		bool 				getRequestMode()													{ return this->_requestMode; }
 		bool 				endOfRequest()														{ return this->_endOfRequest; }
 		bool 				isParsing()															{ return this->_isParsing; }
 		vector< vector<string> >	getPostContent()											{ return this->_postContent; }
 		string				getRoot() const														{ return this->_root; }
 		string				getErrorPageValue(const int &key)									{ return this->_errorPages[key]; }
+		clientMode			&getClientMode()														{ return this->_clientMode; }
+
 	/* *********
  	* Setters *
  	* *********/
 	public:
 		void		setSockFD(int newSockFd)													{ this->_sockFd = newSockFd; }
-		void 		setRequestModeFalse()														{ this->_requestMode = false; }
-		void 		setRequestModeTrue()														{ this->_requestMode = true; }
 		void 		setEndOfRequest(bool nBool)													{ this->_endOfRequest = nBool; }
 		void 		setIsParsing(bool nBool)													{ this->_isParsing = nBool; }
 		void 		setPostContent(string input, int i);
-		void		setHeaderMultipartValue(string key, string value, int i)	{ _headerMultipart[i][key] = value; }
+		void		setHeaderMultipartValue(string key, string value, int i)					{ this->_headerMultipart[i][key] = value; }
+		void 		setClientMode(clientMode mode)												{ this->_clientMode = mode; }
 
 	/* **************
  	* Functionality *

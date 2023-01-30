@@ -3,7 +3,7 @@
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
 size_t newMaxSize)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _requestMode(true) , _endOfRequest(false), _isParsing(false) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request) , _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -15,7 +15,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_maxSize = rhs._maxSize;
 	this->_request = rhs._request;
 	this->_response = rhs._response;
-	this->_requestMode = rhs._requestMode;
+	this->_clientMode = rhs._clientMode;
 	return *this;
 }
 
@@ -28,11 +28,15 @@ void	Client::output() {
 void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
+		if (this->getClientMode() == request)
+			return ;
+		cerr << "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
 		this->handleRequest(envp);
 		_requestBuffer.clear();
+		this->resetRequest();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
 		string		filePath(getRoot() + '/');
@@ -47,17 +51,18 @@ void	Client::requestReceived(char** envp) {
 }
 
 void	Client::fillRequestBuffer() {
-	int     rc;
-	char    buffer[200];
-	string	tmp;
+	int rc;
+	char buffer[200];
+	string tmp;
 
-	while (1)
-	{
-		rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-		if (rc <= 0)
-			break ;
-		tmp.assign(buffer, rc);
-		_requestBuffer.append(tmp);
+	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
+	cerr << "this is last" << rc << endl;
+	if (rc < 0)
+		throw WSException::InternalServerError();
+	tmp.assign(buffer, rc);
+	_requestBuffer.append(tmp);
+	if (rc == 0 || rc < 200) {
+		this->setClientMode(response);
 	}
 }
 
@@ -75,10 +80,16 @@ Location Client::handleMethod()
     static map<e_method, bool> method = setDefaultMethods();
 
     Location location = getLocation(_request.getDir());
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+    cerr << "HANDLE METHOD BEFORE:" << endl;
+    location.output();
     if (!location.isEmpty())
         method = location.getMethod();
     else
         location.setMethod(method);
+    cerr << "HANDLE METHOD AFTER:" << endl;
+    location.output();
+    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
     return location;
 }
 
@@ -152,9 +163,9 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
-		_response.sendBody();
-		if (_response.getContentType() == "php")
-		{
+		if (_response.sendBody() == false)
+			return true;
+		if (_response.getContentType() == "php") {
             if (remove(_response.getFilePath().c_str()) < 0)
                 perror(_response.getFilePath().c_str());
 		}
