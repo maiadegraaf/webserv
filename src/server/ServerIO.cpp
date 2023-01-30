@@ -57,7 +57,11 @@ void	ServerIO::loopEvent( ) {
 			cerr << "client got deleted" << endl;
 		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-		if (event.filter == EVFILT_READ)
+		if (event.flags & EV_EOF) {
+			this->disconnectClient(event.udata);
+			event.udata = NULL;
+		}
+		else if (event.filter == EVFILT_READ)
 			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
 			this->outgoingResponse(event);
@@ -69,6 +73,7 @@ void	ServerIO::disconnectClient(void *udata) {
 	close(_eventFd);
 	Client *client = static_cast<Client *>(udata);
 	delete client;
+
 }
 
 void	ServerIO::connectNewClient() {
@@ -84,33 +89,33 @@ void	ServerIO::connectNewClient() {
 
 
 void	ServerIO::incomingRequest(struct kevent event) {
-	void *udata = event.udata;
-	Client *client = reinterpret_cast<Client *>(udata);
+//	void *udata = event.udata;
+	Client *client = static_cast<Client *>(event.udata);
 	if (!client) {
 		perror("unknown request");
 		return ;
 	}
-	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
-		this->disconnectClient(udata);
 	else if (client->getClientMode() == request) {
 		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		client->requestReceived(_envp);
 		cerr <<  endl;
 	}
+//	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
+//		this->disconnectClient(udata);
 }
 
 void	ServerIO::outgoingResponse(struct kevent event) {
-	Client	*client = reinterpret_cast<Client *>(event.udata);
+	Client	*client = static_cast<Client *>(event.udata);
 	if (!client) {
 		perror("unknown response");
 		return ;
 	}
-	if (event.flags & EV_EOF)// || client->getClientMode() == request)
-		this->disconnectClient(event.udata);
 	else if (client->getClientMode() == response) {
 		if (client->responseSend() == false) // nog maken
 			client->setClientMode(request);
 	}
+//	if (event.flags & EV_EOF)// || client->getClientMode() == request)
+//		this->disconnectClient(event.udata);
 }
 
 // Output
