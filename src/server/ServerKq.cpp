@@ -18,7 +18,7 @@ void	Server::clientNewAcceptFd(int eventFd) {
 	_acceptFd = accept(eventFd, (struct sockaddr *) &_client_addr, (socklen_t * ) & _len);
 	if (_acceptFd == -1)
 		perror("Accept socket error");
-//	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
+	setsockopt(eventFd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 }
 
 void	Server::bindServerAcceptFdWithClient() {

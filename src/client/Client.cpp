@@ -30,7 +30,7 @@ void	Client::requestReceived(char** envp) {
 		this->fillRequestBuffer();
 		if (this->getClientMode() == request)
 			return ;
-		cerr << "test_this: " <<endl;
+//		cerr << "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer();
@@ -42,7 +42,7 @@ void	Client::requestReceived(char** envp) {
 		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
-		cout << "this is Filepath :" << filePath << endl;
+//		cout << "this is Filepath :" << filePath << endl;
 		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
 		_response = error;
 		this->resetRequest();
@@ -56,12 +56,14 @@ void	Client::fillRequestBuffer() {
 	string tmp;
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	cerr << "this is last" << rc << endl;
+//	cerr << "this is last" << rc << endl;
 	if (rc < 0)
 		throw WSException::InternalServerError();
+	if (rc == 0)
+		return ;
 	tmp.assign(buffer, rc);
 	_requestBuffer.append(tmp);
-	if (rc == 0 || rc < 200) {
+	if (rc < 200) {
 		this->setClientMode(response);
 	}
 }
@@ -80,16 +82,16 @@ Location Client::handleMethod()
     static map<e_method, bool> method = setDefaultMethods();
 
     Location location = getLocation(_request.getDir());
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
-    cerr << "HANDLE METHOD BEFORE:" << endl;
-    location.output();
+//    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+//    cerr << "HANDLE METHOD BEFORE:" << endl;
+//    location.output();
     if (!location.isEmpty())
         method = location.getMethod();
     else
         location.setMethod(method);
-    cerr << "HANDLE METHOD AFTER:" << endl;
-    location.output();
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
+//    cerr << "HANDLE METHOD AFTER:" << endl;
+//    location.output();
+//    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`" << endl;
     return location;
 }
 
@@ -108,8 +110,8 @@ void	Client::handleRequest(char** envp) {
 			throw WSException::BadRequest();
 		filePath.append(_request.getDir()); // Response
 	}
-	cerr << _request.getDir() << endl;
-	location.output();
+//	cerr << _request.getDir() << endl;
+//	location.output();
     if (_request.getMethod() == "GET" && ((!location.isEmpty() && location.getGet()) || location.isEmpty()))
 	{
 		if ( filePath.find("php") != string::npos ) {
@@ -144,7 +146,7 @@ void	Client::setResponse(string filePath, string contentType) {
 	if (len > 0)
 	{
 		Response	clientResponse(filePath, " 200 OK", contentType, getSockFd(), len);
-		clientResponse.output();
+//		clientResponse.output();
 		_response = clientResponse;
 	}
 }
@@ -156,9 +158,9 @@ void	Client::setPostResponse(string contentType) {
 }
 
 bool	Client::responseSend() {
-	cerr << "HasBody: " << _response.getHasBody() << endl;
+//	cerr << "HasBody: " << _response.getHasBody() << endl;
 	if (_response.getHasBody()) {
-		cerr << "SendHeader: " << _response.getSendHeader() << endl;
+//		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
 			_response.sendHeader();
 			return true;
@@ -227,6 +229,6 @@ void Client::handleDeleteRequest(string filePath, char** envp) {
 	setDeleteHTMLResponse(clientResponse.getFilePath());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader(" 200 OK", "php");
-	clientResponse.output();
+//	clientResponse.output();
 	_response = clientResponse;
 }
