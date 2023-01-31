@@ -6,7 +6,11 @@ Config::Config(const Config& rhs)
 }
 
 Config::Config(const ConfigParser &confP)
+<<<<<<< Updated upstream
 	: _address("80"), _maxSize(1), _errorPage(setupErrorPages())
+=======
+		: _address("80"), _maxSize(1), _errorPage(setupErrorPages())
+>>>>>>> Stashed changes
 {
 	for(size_t i = 0; i < confP.getServerContent().size(); i++)
 	{
@@ -34,7 +38,11 @@ Config&	Config::operator=(const Config& rhs )
 	return *this;
 }
 
+<<<<<<< Updated upstream
 // Getters 
+=======
+// Getters
+>>>>>>> Stashed changes
 string Config::getAddress() const {
 	return _address;
 }
@@ -63,7 +71,7 @@ const map<int, string> &Config::getErrorPage() const {
 	return _errorPage;
 }
 
-// Setters 
+// Setters
 void Config::setAddress(const ConfigParser &confP, int line)
 {
 	string	type = "listen";
@@ -121,22 +129,22 @@ void Config::setMaxSize(const ConfigParser &confP, int line)
 
 void Config::setLocation(const ConfigParser &confP, int line)
 {
-    string	type = "location";
+	string	type = "location";
 	size_t	end = confP.at(line).find(type) + type.length();
 	string	loc = findNextWord(confP.at(line), end, true);
-    size_t brackLoc = confP.at(line).find('{');
-    int start = line;
-    if (brackLoc == confP.at(line).length() - 1 || brackLoc == string::npos)
-    {
-        start++;
-        end = confP.findClosingBracket(start, 0);
-    }
-    else
-        end = confP.findClosingBracket(start, brackLoc + 1);
-    ConfigParser tmp;
-    tmp.setServerContent(confP.subVector(start, end - 1));
-    Location    oneL(tmp);
-    _location[loc] = oneL;
+	size_t brackLoc = confP.at(line).find('{');
+	int start = line;
+	if (brackLoc == confP.at(line).length() - 1 || brackLoc == string::npos)
+	{
+		start++;
+		end = confP.findClosingBracket(start, 0);
+	}
+	else
+		end = confP.findClosingBracket(start, brackLoc + 1);
+	ConfigParser tmp;
+	tmp.setServerContent(confP.subVector(start, end - 1));
+	Location    oneL(tmp);
+	_location[loc] = oneL;
 }
 
 void Config::setCgi(const ConfigParser &confP, int line)
@@ -164,11 +172,11 @@ void Config::output()
 	for_each(_serverName.begin(), _serverName.end(), printStr);
 	cout << "\nroot : " << _root << endl;
 	cout << "\nmax_size : " << _maxSize << endl;
-    for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
-    {
-        cout << "\nLocation : " << i->first << endl;
-        i->second.output();
-    }
+	for (map<string, Location>::iterator i = _location.begin(); i != _location.end(); i++)
+	{
+		cout << "\nLocation : " << i->first << endl;
+		i->second.output();
+	}
 	cout << "\ncgi : " << _cgi << endl;
 	cout << "\nError Page : "  << endl;
 	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
@@ -273,7 +281,7 @@ void	Config::checkIfComplete()
 		failure(_root.c_str());
 	if (_serverName.empty())
 		_serverName.push_back("localhost");
-    for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
+	for (map<int, string>::iterator i = _errorPage.begin(); i != _errorPage.end(); i++)
 	{
 		if (!fileAccess(_root + '/' + i->second))
 		{

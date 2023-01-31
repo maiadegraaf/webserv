@@ -34,15 +34,16 @@ class Server {
 	/* *******************
 	 * (Con/De)structors *
  	* *******************/
-	public:
-		Server(Config *conf);
-		Server( const Server& rhs)											{ *this = rhs; }
-		~Server()															{ }
-		Server& operator=( const Server &rhs);
+public:
+	Server(Config *conf);
+	Server( const Server& rhs)											{ *this = rhs; }
+	~Server()															{ }
+	Server& operator=( const Server &rhs);
 
 	/* ************
 	 * Attributes *
 	 * ************/
+<<<<<<< Updated upstream
 	private:
 		int						_sockFd,
 								_kq,
@@ -57,44 +58,60 @@ class Server {
 		map<string, Location>	_location;
 		bool 					_closeConnection;
 		size_t 					_maxSize;
+=======
+private:
+	int						_sockFd,
+			_kq,
+			_len,
+			_acceptFd;
+	sockaddr_in				_servAddr,
+			_client_addr;
+	struct addrinfo			*_addrInfo;
+	Config					*_conf;
+	struct kevent			_changeEvent[2];
+	map<string, string> 	_contentType;
+	map<string, Location>	_location;
+	bool 					_closeConnection;
+	size_t 					_maxSize;
+>>>>>>> Stashed changes
 
 	/* *********
  	* Setters *
  	* *********/
-	public:
-		void		setCloseConnection(bool Bool)					{ this->_closeConnection = Bool; }
-		void 		setMaxSize( size_t newMaxSize )					{ this->_maxSize = newMaxSize; }
+public:
+	void		setCloseConnection(bool Bool)					{ this->_closeConnection = Bool; }
+	void 		setMaxSize( size_t newMaxSize )					{ this->_maxSize = newMaxSize; }
 
 	/* *********
  	* Getters *
  	* *********/
-	public:
-		bool 						getCloseConnection() const					{ return this->_closeConnection; }
-		size_t 						getMaxSize() const							{ return this->_maxSize; }
-		int							getSockFd()	const							{ return this->_sockFd; }
-		int							getAcceptFd() const							{ return this->_acceptFd; }
-		const map<string, Location> &getLocation() const						{ return this->_location; }
-		const map<string, string> 	&getContentType() const						{ return this->_contentType; }
-		int 						getKq() const								{ return this->_kq; }
+public:
+	bool 						getCloseConnection() const					{ return this->_closeConnection; }
+	size_t 						getMaxSize() const							{ return this->_maxSize; }
+	int							getSockFd()	const							{ return this->_sockFd; }
+	int							getAcceptFd() const							{ return this->_acceptFd; }
+	const map<string, Location> &getLocation() const						{ return this->_location; }
+	const map<string, string> 	&getContentType() const						{ return this->_contentType; }
+	int 						getKq() const								{ return this->_kq; }
 
 	/* **************
  	* Functionality *
  	* ***************/
-	public:
-		// Server.cpp
-		void		setup();
-		void 		setupSockFd();
-		void		setupSocketOpt();
-		void 		setupNonBlock();
-		void		setAddr();
-		void 		bindSocket();
-		void 		listenSocket();
-		void		output();
+public:
+	// Server.cpp
+	void		setup();
+	void 		setupSockFd();
+	void		setupSocketOpt();
+	void 		setupNonBlock();
+	void		setAddr();
+	void 		bindSocket();
+	void 		listenSocket();
+	void		output();
 
-		// ServerKq.cpp
-		void		setupKq(int kq);
-		void		clientNewAcceptFd(int eventFd);
-		void		bindServerAcceptFdWithClient();
+	// ServerKq.cpp
+	void		setupKq(int kq);
+	void		clientNewAcceptFd(int eventFd);
+	void		bindServerAcceptFdWithClient();
 
 };
 

@@ -21,8 +21,8 @@ private:
 public:
 // Constructor
 	Config(const Config &rhs );
-    Config(const ConfigParser &confP);
-    ~Config();
+	Config(const ConfigParser &confP);
+	~Config();
 	Config& operator=(const Config &rhs);
 // Getters
 	string getAddress() const;
