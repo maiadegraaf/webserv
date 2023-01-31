@@ -102,7 +102,6 @@ void Config::setMaxSize(const ConfigParser &confP, int line)
 	string	type = "client_max_body_size";
 	size_t	end = confP.at(line).find(type) + type.length();
 	_maxSize = stoull(findNextWord(confP.at(line), end, true));
-	cout << _maxSize << endl;
 	string	myLine = confP.at(line);
 	for (size_t i = confP.at(line).find(type) + type.length(); i < myLine.size(); i++) {
 		if (isalpha(myLine[i])) {
