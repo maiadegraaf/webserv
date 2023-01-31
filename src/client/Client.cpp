@@ -150,6 +150,22 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
+		if ((size_t)_response.getFileSize() > getMaxSize())
+		{
+			try {
+				throw WSException::PayloadTooLarge();
+			}
+			catch (exception &e) {
+				string		tmpMessage(e.what());
+				string		filePath(getRoot() + '/');
+				int 		errorNr = atoi(tmpMessage.c_str());
+				filePath.append(getErrorPageValue(errorNr));
+				Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
+				_response = error;
+				this->resetRequest();
+				_requestBuffer.clear();
+			}
+		}
 		if (_response.sendBody() == false)
 			return true;
 		if (_response.getContentType() == "php") {
