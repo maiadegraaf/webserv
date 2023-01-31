@@ -10,7 +10,7 @@ class ConfigParser;
 class Config
 {
 private:
-	unsigned _address;
+	string _address;
 	vector<string> _serverName;
 	string _root;
 	unsigned long long _maxSize;
@@ -25,7 +25,7 @@ public:
     ~Config();
 	Config& operator=(const Config &rhs);
 // Getters
-	unsigned int getAddress() const;
+	string getAddress() const;
 	const vector<string> &getServerName() const;
 	const string &getRoot() const;
 	unsigned long long int getMaxSize() const;

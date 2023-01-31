@@ -27,17 +27,17 @@ void Server::setup() {
 	setMaxSize(static_cast<size_t>(_conf->getMaxSize()));
 	_contentType = returnContentType();
 	_location = _conf->getLocation();
+	this->setAddr();
 	this->setupSockFd();
 	this->setupSocketOpt();
 	this->setupNonBlock();
-	this->setAddr();
 	this->bindSocket();
 	this->listenSocket();
 	_len = sizeof(_client_addr);
 }
 
 void	Server::setupSockFd() {
-	_sockFd = socket(AF_INET, SOCK_STREAM, 0);
+	_sockFd = socket(_addrInfo->ai_family, _addrInfo->ai_socktype, _addrInfo->ai_protocol);
 	if (_sockFd < 0) {
 		cerr << "could not create socket (server)" << endl;
 		exit(-1);
@@ -63,14 +63,24 @@ void	Server::setupNonBlock() {
 }
 
 void Server::setAddr() {
-	bzero((char*)&_servAddr, sizeof(_servAddr));
-	_servAddr.sin_family = AF_INET;
-	_servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	_servAddr.sin_port = htons(_conf->getAddress());
+	struct addrinfo hints;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
+	hints.ai_protocol = 0;          /* Any protocol */
+	hints.ai_canonname = NULL;
+	hints.ai_addr = NULL;
+	hints.ai_next = NULL;
+//	if (getaddrinfo(_conf->getServerName().begin()->c_str(), _conf->getAddress().c_str(), &hints, &_addrInfo) < 0) {
+	getaddrinfo("127.0.0.1", "8080", &hints, &_addrInfo);
+//		perror("getaddrinfo");
+//	}
 }
 
 void	Server::bindSocket() {
-	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, sizeof(_servAddr)) < 0) {
+	if (bind(getSockFd(), _addrInfo->ai_addr, _addrInfo->ai_addrlen) < 0) {
 		cerr << "Error binding socket to local address" << endl;
 		close(getSockFd());
 		exit(-1);
@@ -79,7 +89,7 @@ void	Server::bindSocket() {
 
 void	Server::listenSocket() {
 	if (listen(getSockFd(), 32) < 0) {
-		cerr << "Listen failed" << endl;
+		perror("listen");
 		close(getSockFd());
 		exit(-1);
 	}

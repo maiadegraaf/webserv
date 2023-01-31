@@ -50,6 +50,7 @@ class Server {
 								_acceptFd;
 		sockaddr_in				_servAddr,
 								_client_addr;
+		struct addrinfo			*_addrInfo;
 		Config					*_conf;
 		struct kevent			_changeEvent[2];
 		map<string, string> 	_contentType;

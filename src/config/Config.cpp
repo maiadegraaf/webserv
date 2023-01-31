@@ -6,7 +6,7 @@ Config::Config(const Config& rhs)
 }
 
 Config::Config(const ConfigParser &confP)
-	: _address(80), _maxSize(1), _errorPage(setupErrorPages())
+	: _address("80"), _maxSize(1), _errorPage(setupErrorPages())
 {
 	for(size_t i = 0; i < confP.getServerContent().size(); i++)
 	{
@@ -35,7 +35,7 @@ Config&	Config::operator=(const Config& rhs )
 }
 
 // Getters 
-unsigned Config::getAddress() const {
+string Config::getAddress() const {
 	return _address;
 }
 
@@ -72,9 +72,10 @@ void Config::setAddress(const ConfigParser &confP, int line)
 	int tmp = stoi(s);
 	if (tmp < 0)
 		failure("Listen must be a positive integer.");
-	_address = tmp;
-	if (!_address)
+	if (!tmp)
 		failure("Listen is not correctly formatted.");
+	_address = s;
+
 }
 
 void Config::setServer_name(const ConfigParser &confP, int line)
