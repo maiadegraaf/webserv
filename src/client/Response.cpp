@@ -13,7 +13,6 @@ Response::Response(const string& filePath, const string& message, const string& 
 	: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _offset(0), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
-//	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
@@ -56,34 +55,38 @@ void Response::output() {
 	cout << "filePath : " << _filePath << std::endl;
 }
 
-void	Response::sendHeader() {
-	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0)
+bool	Response::sendHeader() {
+	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0) {
 		perror("send header failed");
-	else
-		setSendHeader(true);
+		return false;
+	}
+	setSendHeader(true);
+	return true;
 }
 
-bool	Response::sendBody() {
+clientMode 	Response::sendBody() {
 	off_t	len;
-	if (getFileFd() < 0) {
-		int tmpFd = open(getFilePath().c_str(), O_RDONLY);
+	if (this->getFileFd() < 0) {
+		int tmpFd = open(this->getFilePath().c_str(), O_RDONLY);
 		if (tmpFd < 0) {
 			perror("open file failed");
-			return false;
+			return disconnect;
 		}
 		this->setFileFd(tmpFd);
 	}
 	if (sendfile(this->getFileFd(), this->getSockFD(), _offset, &len, NULL, 0) < 0) {
 		if (len + _offset < _fileSize) {
 			_offset += len;
-			return false;
+			return response;
 		}
-		else
+		else {
 			perror("sendbody failed in sendfile");
+			return disconnect;
+		}
 	}
 	close(this->getFileFd());
 	this->setFileFd(-1);
-	return true;
+	return request;
 }
 
 bool Response::exec(char **envp)

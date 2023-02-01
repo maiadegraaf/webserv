@@ -29,9 +29,8 @@ void	Client::output() {
 void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
-		if (this->getClientMode() == request)
+		if (this->getClientMode() != response)
 			return ;
-//		cerr <<test_this: " <<endl; "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
 		_request.parseBuffer(_hostNames);
@@ -40,10 +39,10 @@ void	Client::requestReceived(char** envp) {
 		this->resetRequest();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
-//		if (tmpMessage.compare("disconnect") == 0) {
-//			this->setClientMode(disconnect);
-//			return ;
-//		}
+		if (tmpMessage.compare("disconnect") == 0) {
+			this->setClientMode(disconnect);
+			return ;
+		}
 		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
@@ -60,13 +59,15 @@ void	Client::fillRequestBuffer() {
 	string tmp;
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
-	if (rc < 0)
-		throw WSException::InternalServerError();
+	if (rc == 0 || rc < 0) {
+		perror("client dicsconnected recv = 0");
+		this->setClientMode(disconnect);
+		return ;
+	}
 	tmp.assign(buffer, rc);
 	_requestBuffer.append(tmp);
-	if (rc == 0 || rc < 200) {
+	if (rc < 200)
 		this->setClientMode(response);
-	}
 }
 
 map<e_method, bool> setDefaultMethods()
@@ -87,7 +88,7 @@ Location Client::handleMethod()
         method = location.getMethod();
     else
         location.setMethod(method);
-    return location;
+	return location;
 }
 
 void	Client::handleRequest(char** envp) {
@@ -149,44 +150,48 @@ void	Client::setPostResponse(string contentType) {
 	_response = clientResponse;
 }
 
-bool	Client::responseSend() {
+void Client::responseSend() {
 	if (_response.getHasBody()) {
 		if (!_response.getSendHeader()) {
-			_response.sendHeader();
-			return true;
+			if (_response.sendHeader() == false)
+				return setClientMode(disconnect);
+			return this->setClientMode(response);
 		}
 		if ((size_t)_response.getFileSize() > getMaxSize())
-		{
-//			cerr << "TOO LARGE" << endl;
-//			try {
-//				throw WSException::PayloadTooLarge();
-//			}
-//			catch (exception &e) {
-//				string		tmpMessage(e.what());
-//                cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
-//				string		filePath(getRoot() + '/');
-//				int 		errorNr = atoi(tmpMessage.c_str());
-//				filePath.append(getErrorPageValue(errorNr));
-//				Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
-//				_response = error;
-//				this->resetRequest();
-//				_requestBuffer.clear();
-//				return false;
-//			}
-		}
-		if (_response.sendBody() == false)
-			return true;
+			return this->payloadTooLarge();
+		this->setClientMode(_response.sendBody());
+		if (this->getClientMode() != request)
+			return ;
 		if (_response.getFilePath() == "obj/.tmpfile.html") {
-            if (remove(_response.getFilePath().c_str()) < 0)
-                perror(_response.getFilePath().c_str());
+			if (remove(_response.getFilePath().c_str()) < 0)
+				perror(_response.getFilePath().c_str());
 		}
-		return false;
+		return this->setClientMode(request);
 	}
 	if (!_response.getHasBody()) {
 		_response.sendHeader();
 	}
-	return false;
+	return this->setClientMode(request);
 }
+
+void	Client::payloadTooLarge() {
+	try {
+		throw WSException::PayloadTooLarge();
+	}
+	catch (exception &e) {
+		string		tmpMessage(e.what());
+		cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
+		string		filePath(getRoot() + '/');
+		int 		errorNr = atoi(tmpMessage.c_str());
+		filePath.append(getErrorPageValue(errorNr));
+		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
+		_response = error;
+		this->resetRequest();
+		_requestBuffer.clear();
+		setClientMode(response);
+	}
+}
+
 
 void	Client::resetRequest() {
 	Request	newRequest;
@@ -199,7 +204,6 @@ void Client::handleGetRequest(string filePath)
 	string contentType;
 	string extension;
 
-//	filePath.append(file); // exception filePath;
 	extension = filePath.substr(filePath.find_last_of('.') + 1);
 	contentType = _contentType[extension];
 	if (!contentType.empty())
@@ -208,11 +212,6 @@ void Client::handleGetRequest(string filePath)
 		throw WSException::PageNotFound(); // not a supported extension
 	return ;
 }
-//
-//void Client::setPostContent(string input, int i) {
-//	_postContent.push_back(vector<string>());
-//
-//}
 
 void Client::handlePostRequest(string filepath)
 {
@@ -238,6 +237,5 @@ void Client::handleDeleteRequest(string filePath, char** envp) {
 	setDeleteHTMLResponse(clientResponse.getFilePath());
 	clientResponse.setFileSize(fileSize(clientResponse.getFilePath().c_str()));
 	clientResponse.setNewHeader(" 200 OK", "php");
-//	clientResponse.output();
 	_response = clientResponse;
 }

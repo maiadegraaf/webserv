@@ -90,9 +90,9 @@ class Response
 	 * Output *
 	 * ********/
 	public:
-		void	output();
-		void 	sendHeader();
-		bool 	sendBody();
+		void		output();
+		bool 		sendHeader();
+		clientMode 	sendBody();
 //		bool	sendResponse();
 //		bool 	sendCGI();
 

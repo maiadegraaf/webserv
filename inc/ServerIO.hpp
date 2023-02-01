@@ -50,10 +50,10 @@ class ServerIO
 		void	initKq();
 		void 	newEvent();
 		void	loopEvent();
-		void	disconnectClient(void *udata);
+		void	disconnectClient(const struct kevent &event);
 		void 	connectNewClient();
-		void 	incomingRequest(struct kevent event);
-		void 	outgoingResponse(struct kevent event);
+		void 	incomingRequest(const struct kevent &event);
+		void 	outgoingResponse(const struct kevent &event);
 
 
 		void	output();

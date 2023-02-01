@@ -31,7 +31,7 @@ bool Request::checkIfBody() {
 	getline(*_ss, tmp);
 	if ((tmp.find("GET") == string::npos || tmp.find("POST") == string::npos || tmp.find("DELETE") == string::npos) && !tmp.empty()) {
 
-		cout << "body fcnt" << tmp << endl;
+//		cout << "body fcnt" << tmp << endl;
 		_ss->seekg(line , ios_base::beg);
 		return true;
 	}
@@ -46,7 +46,7 @@ bool Request::checkIfHeader() {
 	getline(*_ss, tmp);
 	if (tmp.find("GET") != string::npos || tmp.find("POST") != string::npos ||tmp.find("DELETE") != string::npos)
 	{
-		cout << "Header fcnt" << tmp << endl;
+//		cout << "Header fcnt" << tmp << endl;
 		_ss->seekg(line , ios_base::beg);
 		return true;
 	}
@@ -109,7 +109,7 @@ void	Request::setAttributes() {
 	if (tmp.empty())
 		throw WSException::BadRequest();
 	if (tmp.compare("HTTP/1.1\r")) {
-		cerr << " http version "  << tmp << endl;
+//		cerr << " http version "  << tmp << endl;
 		throw WSException::HTTPVersionNotAvailable();
 	}
 	setProtocol(tmp);
