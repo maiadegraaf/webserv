@@ -54,16 +54,16 @@ void	ServerIO::loopEvent( ) {
 		_eventFd = event.ident;
 		if (event.flags & EV_ERROR)
 			cerr << "client got deleted" << endl;
-		if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
+		else if (_sockFdIdxMap.find(_eventFd) != _sockFdIdxMap.end())
 			this->connectNewClient();
-		else if (event.flags & EV_EOF)
+		else if (event.flags & EV_EOF) {
 			this->disconnectClient(event);
-//		else if (_eventCheck[_eventFd] == true) {
+			break ;
+		}
 		else if (event.filter == EVFILT_READ)
 			this->incomingRequest(event);
 		else if (event.filter == EVFILT_WRITE)
 			this->outgoingResponse(event);
-//		}
 	}
 }
 

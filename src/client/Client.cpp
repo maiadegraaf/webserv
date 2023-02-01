@@ -164,9 +164,10 @@ void Client::responseSend() {
 	if (_response.getHasBody()) {
 //		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
-			_response.sendHeader();
-			this->setClientMode(response);
-			return ;
+			if (_response.sendHeader() == false)
+				return setClientMode(disconnect);
+//			this->setClientMode(response);
+			return this->setClientMode(response);
 		}
 		this->setClientMode(_response.sendBody());
 		if (this->getClientMode() != request)

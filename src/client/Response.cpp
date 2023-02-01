@@ -13,7 +13,6 @@ Response::Response(const string& filePath, const string& message, const string& 
 	: _sockFD(newSockFD), _fileFd(-1), _head("HTTP/1.1 "), _filePath(filePath), _fileSize(fileSize), _offset(0), _contentType(contentType), _hasBody(true), _sendHeader(false) {
 	appendToHeadNL(message);
 	appendObjectToHead("Content-Type: ", contentType);
-//	cerr << "\033[1;31m" << to_string(getFileSize()) << "\033[0m" << endl;
 	appendObjectToHead("Content-Length: ", to_string(getFileSize()));
 	appendToHead("\r\n");
 }
@@ -56,11 +55,13 @@ void Response::output() {
 	cout << "filePath : " << _filePath << std::endl;
 }
 
-void	Response::sendHeader() {
-	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0)
+bool	Response::sendHeader() {
+	if (send(getSockFD(), _head.c_str(), _head.size(), 0) < 0) {
 		perror("send header failed");
-	else
-		setSendHeader(true);
+		return false;
+	}
+	setSendHeader(true);
+	return true;
 }
 
 clientMode 	Response::sendBody() {
@@ -106,15 +107,6 @@ bool Response::exec(char **envp)
 
 string Response::CGIResponse(char **envp)
 {
-//	string	tmp;
-//	int		front;
-//	if (_contentType == "php")
-//		front = 4;
-//	else
-//		front = 5;
-//	string subFilePath = getFilePath().substr(front, getFilePath().length());
-//	subFilePath = subFilePath.substr(0, subFilePath.find_last_of('/'));
-//	tmp =  subFilePath + "/tmpFile" + ".html";
 	string tmp = "obj/.tmpfile.html";
 	char *filename = const_cast<char *>(tmp.c_str());
 	cout << getFilePath() << endl;
