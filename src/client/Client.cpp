@@ -157,25 +157,8 @@ void Client::responseSend() {
 				return setClientMode(disconnect);
 			return this->setClientMode(response);
 		}
-//		if ((size_t)_response.getFileSize() > getMaxSize())
-//		{
-////			cerr << "TOO LARGE" << endl;
-////			try {
-////				throw WSException::PayloadTooLarge();
-////			}
-////			catch (exception &e) {
-////				string		tmpMessage(e.what());
-////                cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
-////				string		filePath(getRoot() + '/');
-////				int 		errorNr = atoi(tmpMessage.c_str());
-////				filePath.append(getErrorPageValue(errorNr));
-////				Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
-////				_response = error;
-////				this->resetRequest();
-////				_requestBuffer.clear();
-////				return false;
-////			}
-//		}
+		if ((size_t)_response.getFileSize() > getMaxSize())
+			return this->payloadTooLarge();
 		this->setClientMode(_response.sendBody());
 		if (this->getClientMode() != request)
 			return ;
@@ -190,6 +173,25 @@ void Client::responseSend() {
 	}
 	return this->setClientMode(request);
 }
+
+void	Client::payloadTooLarge() {
+	try {
+		throw WSException::PayloadTooLarge();
+	}
+	catch (exception &e) {
+		string		tmpMessage(e.what());
+		cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
+		string		filePath(getRoot() + '/');
+		int 		errorNr = atoi(tmpMessage.c_str());
+		filePath.append(getErrorPageValue(errorNr));
+		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
+		_response = error;
+		this->resetRequest();
+		_requestBuffer.clear();
+		setClientMode(response);
+	}
+}
+
 
 void	Client::resetRequest() {
 	Request	newRequest;

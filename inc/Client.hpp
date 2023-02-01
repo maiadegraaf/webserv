@@ -102,6 +102,7 @@ class Client {
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
 		void		setPostResponse(string contentType);
+		void		payloadTooLarge();
 
     Location handleMethod();
 };
