@@ -148,9 +148,11 @@ void	Request::setHeaderContent(vector<string> hostNames) {
 			value = value.substr(0, value.find(':'));
 			for (size_t j = 0; j < hostNames.size(); j++)
 			{
-				cerr << value << " : " << hostNames[j] << endl;
+				if (value == "127.0.0.1" || value == "localhost") {
+					found = true;
+					break;
+				}
 				if (value == hostNames[j]) {
-					cerr << "bONJouR hi" << endl;
 					found = true;
 					break;
 				}

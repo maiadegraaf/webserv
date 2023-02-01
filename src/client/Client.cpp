@@ -157,21 +157,22 @@ bool	Client::responseSend() {
 		}
 		if ((size_t)_response.getFileSize() > getMaxSize())
 		{
-			try {
-				throw WSException::PayloadTooLarge();
-			}
-			catch (exception &e) {
-				string		tmpMessage(e.what());
-                cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
-				string		filePath(getRoot() + '/');
-				int 		errorNr = atoi(tmpMessage.c_str());
-				filePath.append(getErrorPageValue(errorNr));
-				Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
-				_response = error;
-				this->resetRequest();
-				_requestBuffer.clear();
-				return false;
-			}
+//			cerr << "TOO LARGE" << endl;
+//			try {
+//				throw WSException::PayloadTooLarge();
+//			}
+//			catch (exception &e) {
+//				string		tmpMessage(e.what());
+//                cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
+//				string		filePath(getRoot() + '/');
+//				int 		errorNr = atoi(tmpMessage.c_str());
+//				filePath.append(getErrorPageValue(errorNr));
+//				Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
+//				_response = error;
+//				this->resetRequest();
+//				_requestBuffer.clear();
+//				return false;
+//			}
 		}
 		if (_response.sendBody() == false)
 			return true;
