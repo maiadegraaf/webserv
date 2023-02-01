@@ -29,10 +29,10 @@ void Server::setup() {
 	_location = _conf->getLocation();
 	this->setupSockFd();
 	this->setAddr();
-	this->bindSocket();
-	this->listenSocket();
 	this->setupSocketOpt();
 	this->setupNonBlock();
+	this->bindSocket();
+	this->listenSocket();
 	_len = sizeof(_client_addr);
 }
 
@@ -71,7 +71,7 @@ void Server::setAddr() {
 }
 
 void	Server::bindSocket() {
-	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, (socklen_t)sizeof(_servAddr)) != 0) {
+	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, (socklen_t)sizeof(_servAddr)) < 0) {
 		cerr << "Error binding socket to local address" << endl;
 		close(getSockFd());
 		exit(-1);

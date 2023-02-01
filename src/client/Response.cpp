@@ -102,6 +102,7 @@ bool Response::exec(char **envp)
             execve(cmd.c_str(), split, envp);
     }
 	perror("exec fail");
+	exit(EXIT_FAILURE);
 	return (EXIT_FAILURE);
 }
 
@@ -109,8 +110,6 @@ string Response::CGIResponse(char **envp)
 {
 	string tmp = "obj/.tmpfile.html";
 	char *filename = const_cast<char *>(tmp.c_str());
-	cout << getFilePath() << endl;
-	cout << "filename = " << filename << endl;
 	int	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd < 0)
 	{

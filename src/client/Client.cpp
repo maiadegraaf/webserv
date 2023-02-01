@@ -124,6 +124,8 @@ void	Client::handleRequest(char** envp) {
     else {
         throw WSException::MethodNotAllowed();
     }
+	if ((size_t)_response.getFileSize() > getMaxSize())
+		throw WSException::PayloadTooLarge();
 	this->resetRequest();
 }
 
@@ -157,12 +159,10 @@ void Client::responseSend() {
 				return setClientMode(disconnect);
 			return this->setClientMode(response);
 		}
-		if ((size_t)_response.getFileSize() > getMaxSize())
-			return this->payloadTooLarge();
 		this->setClientMode(_response.sendBody());
 		if (this->getClientMode() != request)
 			return ;
-		if (_response.getContentType() == "php") {
+		if (_response.getFilePath() == "obj/.tmpfile.html") {
 			if (remove(_response.getFilePath().c_str()) < 0)
 				perror(_response.getFilePath().c_str());
 		}
@@ -173,25 +173,6 @@ void Client::responseSend() {
 	}
 	return this->setClientMode(request);
 }
-
-void	Client::payloadTooLarge() {
-	try {
-		throw WSException::PayloadTooLarge();
-	}
-	catch (exception &e) {
-		string		tmpMessage(e.what());
-		cerr << _response.getFilePath() << ": FILE TOO LARGE" << endl;
-		string		filePath(getRoot() + '/');
-		int 		errorNr = atoi(tmpMessage.c_str());
-		filePath.append(getErrorPageValue(errorNr));
-		Response	error(tmpMessage, filePath, getSockFd(), getContentType("html"));
-		_response = error;
-		this->resetRequest();
-		_requestBuffer.clear();
-		setClientMode(response);
-	}
-}
-
 
 void	Client::resetRequest() {
 	Request	newRequest;
