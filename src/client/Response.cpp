@@ -63,28 +63,29 @@ void	Response::sendHeader() {
 		setSendHeader(true);
 }
 
-bool	Response::sendBody() {
+clientMode 	Response::sendBody() {
 	off_t	len;
-	if (getFileFd() < 0) {
-		int tmpFd = open(getFilePath().c_str(), O_RDONLY);
+	if (this->getFileFd() < 0) {
+		int tmpFd = open(this->getFilePath().c_str(), O_RDONLY);
 		if (tmpFd < 0) {
 			perror("open file failed");
-			return false;
+			return disconnect;
 		}
 		this->setFileFd(tmpFd);
 	}
 	if (sendfile(this->getFileFd(), this->getSockFD(), _offset, &len, NULL, 0) < 0) {
 		if (len + _offset < _fileSize) {
 			_offset += len;
-			return false;
+			return response;
 		}
-		else
+		else {
 			perror("sendbody failed in sendfile");
-			// again something
+			return disconnect;
+		}
 	}
 	close(this->getFileFd());
 	this->setFileFd(-1);
-	return true;
+	return request;
 }
 
 bool Response::exec(char **envp)

@@ -34,7 +34,6 @@ class ServerIO
 		map<int, size_t>			_sockFdIdxMap;
 		struct kevent				_events[2];
         char**                      _envp;
-		map<int, bool>				_eventCheck;
 
 	/* *********
  	* Getters *
@@ -51,10 +50,10 @@ class ServerIO
 		void	initKq();
 		void 	newEvent();
 		void	loopEvent();
-		void	disconnectClient(struct kevent event);
+		void	disconnectClient(const struct kevent &event);
 		void 	connectNewClient();
-		void 	incomingRequest(struct kevent event);
-		void 	outgoingResponse(struct kevent event);
+		void 	incomingRequest(const struct kevent &event);
+		void 	outgoingResponse(const struct kevent &event);
 
 
 		void	output();

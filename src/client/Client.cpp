@@ -28,7 +28,7 @@ void	Client::output() {
 void	Client::requestReceived(char** envp) {
 	try {
 		this->fillRequestBuffer();
-		if (this->getClientMode() == request)
+		if (this->getClientMode() != response)
 			return ;
 //		cerr << "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
@@ -57,15 +57,17 @@ void	Client::fillRequestBuffer() {
 
 	rc = recv(getSockFd(), buffer, sizeof(buffer), 0);
 //	cerr << "this is last" << rc << endl;
-	if (rc < 0)
-		throw WSException::InternalServerError();
-	if (rc == 0)
+//	if (rc < 0)
+//		throw WSException::InternalServerError();
+	if (rc == 0 || rc < 0) {
+		perror("client dicsconnected recv = 0");
+		this->setClientMode(disconnect);
 		return ;
+	}
 	tmp.assign(buffer, rc);
 	_requestBuffer.append(tmp);
-	if (rc < 200) {
+	if (rc < 200)
 		this->setClientMode(response);
-	}
 }
 
 map<e_method, bool> setDefaultMethods()
@@ -157,26 +159,30 @@ void	Client::setPostResponse(string contentType) {
 	_response = clientResponse;
 }
 
-bool	Client::responseSend() {
+void Client::responseSend() {
 //	cerr << "HasBody: " << _response.getHasBody() << endl;
 	if (_response.getHasBody()) {
 //		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
 			_response.sendHeader();
-			return true;
+			this->setClientMode(response);
+			return ;
 		}
-		if (_response.sendBody() == false)
-			return true;
+		this->setClientMode(_response.sendBody());
+		if (this->getClientMode() != request)
+			return ;
 		if (_response.getContentType() == "php") {
             if (remove(_response.getFilePath().c_str()) < 0)
                 perror(_response.getFilePath().c_str());
 		}
-		return false;
+		this->setClientMode(request);
+		return ;
 	}
 	if (!_response.getHasBody()) {
 		_response.sendHeader();
 	}
-	return false;
+	this->setClientMode(request);
+	return ;
 }
 
 void	Client::resetRequest() {

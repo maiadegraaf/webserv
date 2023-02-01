@@ -58,16 +58,16 @@ void	ServerIO::loopEvent( ) {
 			this->connectNewClient();
 		else if (event.flags & EV_EOF)
 			this->disconnectClient(event);
-		else if (_eventCheck[_eventFd] == true) {
-			if (event.filter == EVFILT_READ)
-				this->incomingRequest(event);
-			else if (event.filter == EVFILT_WRITE)
-				this->outgoingResponse(event);
-		}
+//		else if (_eventCheck[_eventFd] == true) {
+		else if (event.filter == EVFILT_READ)
+			this->incomingRequest(event);
+		else if (event.filter == EVFILT_WRITE)
+			this->outgoingResponse(event);
+//		}
 	}
 }
 
-void	ServerIO::disconnectClient(struct kevent event) {
+void	ServerIO::disconnectClient(const struct kevent &event) {
 //	cerr << "client disconnected" << endl;
 //	struct kevent newEvent[2];
 //	EV_SET(&newEvent[0], event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
@@ -76,10 +76,9 @@ void	ServerIO::disconnectClient(struct kevent event) {
 //		perror("delete error in server");
 //		return ;
 //	}
-	_eventCheck[event.ident] = false;
-	close(event.ident);
 	Client *client = static_cast<Client *>(event.udata);
 	delete client;
+	close(event.ident);
 //	cerr << "client disconnected with fd: " << event.ident << endl;
 }
 
@@ -89,12 +88,11 @@ void	ServerIO::connectNewClient() {
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
-	_eventCheck[_server[idx].getAcceptFd()] = true;
 //	cerr << "new client accept fd: " << _server[idx].getAcceptFd() << endl;
 }
 
 
-void	ServerIO::incomingRequest(struct kevent event) {
+void	ServerIO::incomingRequest(const struct kevent &event) {
 //	cerr << "this is incomming request fd fd: " << event.ident << endl;
 	Client *client = static_cast<Client *>(event.udata);
 	if (!client) {
@@ -103,10 +101,12 @@ void	ServerIO::incomingRequest(struct kevent event) {
 	}
 	else if (client->getClientMode() == request) {
 		client->requestReceived(_envp);
+		if (client->getClientMode() == disconnect)
+			this->disconnectClient(event);
 	}
 }
 
-void	ServerIO::outgoingResponse(struct kevent event) {
+void	ServerIO::outgoingResponse(const struct kevent &event) {
 //	cerr << "this is outging response fd: " << event.ident << endl;
 	Client	*client = static_cast<Client *>(event.udata);
 	if (!client) {
@@ -114,8 +114,9 @@ void	ServerIO::outgoingResponse(struct kevent event) {
 		return ;
 	}
 	else if (client->getClientMode() == response) {
-		if (client->responseSend() == false) // nog maken
-			client->setClientMode(request);
+		client->responseSend();
+		if (client->getClientMode() == disconnect)
+			this->disconnectClient(event);
 	}
 }
 

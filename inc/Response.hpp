@@ -13,6 +13,12 @@
 #include "WSException.hpp"
 
 
+typedef enum e_clientMode {
+	request,
+	response,
+	disconnect
+} clientMode;
+
 //using namespace std;
 
 class Response
@@ -90,9 +96,9 @@ class Response
 	 * Output *
 	 * ********/
 	public:
-		void	output();
-		void 	sendHeader();
-		bool 	sendBody();
+		void		output();
+		void 		sendHeader();
+		clientMode 	sendBody();
 //		bool	sendResponse();
 //		bool 	sendCGI();
 
