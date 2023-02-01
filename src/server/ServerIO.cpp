@@ -96,7 +96,6 @@ void	ServerIO::incomingRequest(const struct kevent &event) {
 }
 
 void	ServerIO::outgoingResponse(const struct kevent &event) {
-//	cerr << "this is outging response fd: " << event.ident << endl;
 	Client	*client = static_cast<Client *>(event.udata);
 	if (!client) {
 		perror("outgoing unknown response");

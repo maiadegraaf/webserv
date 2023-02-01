@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cstdlib>
 #include "WSException.hpp"
+#include "Config.hpp"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ class Request
 	private:
 		string				_buffer;
 		stringstream 		*_ss;
+		Config				*_conf;
 		string				_method;
 		string				_dir;
 		string				_protocol;
@@ -67,10 +69,10 @@ class Request
 	//		void	setInput(string input);
 		bool	appendBuffer(string recvBuffer);
 		void	setAttributes();
-		void	setHeaderContent();
+		void	setHeaderContent(vector<string> hostNames);
 		void 	parseBufferBody();
-		void 	parseBuffer();
-		void 	setupHeader();
+		void 	parseBuffer(vector<string> hostNames);
+		void 	setupHeader(vector<string> hostNames);
 		bool	checkIfBody();
 		bool	checkIfHeader();
 

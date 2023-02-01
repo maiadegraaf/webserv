@@ -21,7 +21,6 @@ INCLUDES		=	Config.hpp \
                     ServerIO.hpp \
                     WSException.hpp \
                     webserv.h \
-					CGIResponse.hpp \
 					Location.hpp \
                     Utils.h
 
@@ -36,12 +35,11 @@ SRC				=	main.cpp \
                     config/Config.cpp \
                     config/ConfigParser.cpp \
                     config/Location.cpp \
-                    utils/utils_Maia.cpp \
-                    utils/Utils.cpp \
+                    utils/utils.cpp \
+                    utils/contentType.cpp \
                     client/Request.cpp \
                     client/postHandler.cpp \
                     client/Response.cpp \
-                    client/CGIResponse.cpp \
                     client/Client.cpp \
                     utils/errorMap.cpp
 

@@ -29,6 +29,9 @@ class WSException {
 		class HTTPVersionNotAvailable : public std::exception {
 			public: const char *what() const throw() 			{ return "505 HTTP Version Not Available"; }
 		};
+		class disconnectClient : public std::exception {
+			public : const char *what() const throw()			{ return "disconnect"; }
+		};
 };
 
 #endif
