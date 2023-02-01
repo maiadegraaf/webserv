@@ -102,6 +102,7 @@ bool Response::exec(char **envp)
             execve(cmd.c_str(), split, envp);
     }
 	perror("exec fail");
+	exit(EXIT_FAILURE);
 	return (EXIT_FAILURE);
 }
 
