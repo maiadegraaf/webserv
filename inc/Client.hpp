@@ -11,11 +11,6 @@
 //class Response;
 
 // Class definition
-typedef enum e_clientMode {
-	request,
-	response
-} clientMode;
-
 
 class Client {
 	/* *******************
@@ -90,7 +85,7 @@ class Client {
 		void 		handleRequest(char** envp);
 		void 		testFilePath(string filePath);
 		void		setResponse(string filePath, string contentType);
-		bool 		responseSend();
+		void 		responseSend();
 		void 		resetRequest();
 		void 		clientRequest();
 		string		receiveStrRequest();
@@ -107,6 +102,7 @@ class Client {
 		void		createFileStorePost(int i);
 		void 		decryptWwwForm(string &data);
 		void		setPostResponse(string contentType);
+		void		payloadTooLarge();
 
     Location handleMethod();
 };

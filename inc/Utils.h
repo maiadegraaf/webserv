@@ -8,6 +8,13 @@
 
 using namespace std;
 
+
+typedef enum e_clientMode {
+	request,
+	response,
+	disconnect
+} 			clientMode;
+
 map<string, string> returnContentType( void );
 
 ifstream::pos_type fileSize(const char* filename);
