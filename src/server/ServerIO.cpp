@@ -93,9 +93,9 @@ void	ServerIO::incomingRequest(struct kevent event) {
 	if (event.flags & EV_EOF)//|| client->getClientMode() == response)
 		this->disconnectClient(udata);
 	else if (client->getClientMode() == request) {
-		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
+//		cerr << "\nServerIO::incomingRequest() : new request comming in" << endl;
 		client->requestReceived(_envp);
-		cerr <<  endl;
+//		cerr <<  endl;
 	}
 }
 
