@@ -54,14 +54,14 @@ bool Request::checkIfHeader() {
 	return false;
 }
 
-void	Request::parseBuffer() {
+void	Request::parseBuffer(vector<string> hostNames) {
 	string			tmp;
 
 	while (getline(*_ss, tmp)) {
 		if (tmp.empty())
 			continue ;
 		if (tmp.compare("\r") == 0) {
-			this->setupHeader();
+			this->setupHeader(hostNames);
 			if (checkIfHeader() == true) {
 				break;
 			}
@@ -73,11 +73,11 @@ void	Request::parseBuffer() {
 	}
 }
 
-void	Request::setupHeader() {
+void	Request::setupHeader(vector<string> hostNames) {
 	string 	tmp;
 
 	this->setAttributes();
-	this->setHeaderContent();
+	this->setHeaderContent(hostNames);
 }
 
 void	Request::parseBufferBody() {
@@ -115,7 +115,7 @@ void	Request::setAttributes() {
 	setProtocol(tmp);
 }
 
-void	Request::setHeaderContent() {
+void	Request::setHeaderContent(vector<string> hostNames) {
 	string	key;
 	string	nextKey;
 	string	value;
@@ -142,6 +142,25 @@ void	Request::setHeaderContent() {
 		}
 		value.erase(remove( value.begin(), value.end(), '\r' ),value.end());
 		setHeaderValue(key, value);
+		if (key.compare("Host") == 0)
+		{
+			bool found = false;
+			value = value.substr(0, value.find(':'));
+			for (size_t j = 0; j < hostNames.size(); j++)
+			{
+				cerr << value << " : " << hostNames[j] << endl;
+				if (value == hostNames[j]) {
+					cerr << "bONJouR hi" << endl;
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				cerr << "not found" << endl;
+				throw WSException::disconnectClient();
+			}
+		}
 		i++;
 	}
 }
