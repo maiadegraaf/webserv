@@ -28,11 +28,11 @@ void Server::setup() {
 	_contentType = returnContentType();
 	_location = _conf->getLocation();
 	this->setupSockFd();
-	this->setupSocketOpt();
-	this->setupNonBlock();
 	this->setAddr();
 	this->bindSocket();
 	this->listenSocket();
+	this->setupSocketOpt();
+	this->setupNonBlock();
 	_len = sizeof(_client_addr);
 }
 
@@ -67,10 +67,11 @@ void Server::setAddr() {
 	_servAddr.sin_family = AF_INET;
 	_servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	_servAddr.sin_port = htons(_conf->getAddress());
+	memset(_servAddr.sin_zero, '\0', sizeof(_servAddr.sin_zero));
 }
 
 void	Server::bindSocket() {
-	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, sizeof(_servAddr)) < 0) {
+	if (bind(getSockFd(), (struct sockaddr*) &_servAddr, (socklen_t)sizeof(_servAddr)) != 0) {
 		cerr << "Error binding socket to local address" << endl;
 		close(getSockFd());
 		exit(-1);
@@ -78,12 +79,31 @@ void	Server::bindSocket() {
 }
 
 void	Server::listenSocket() {
-	if (listen(getSockFd(), 32) < 0) {
+	if (listen(getSockFd(), SOMAXCONN) < 0) {
 		cerr << "Listen failed" << endl;
 		close(getSockFd());
 		exit(-1);
 	}
 }
+
+
+//ListeningSocket::ListeningSocket( int port ) : _port(port), _enable(1) {
+//
+//	init_address();
+//	_addrLen = sizeof(_address);
+//	_fd = socket(AF_INET, SOCK_STREAM, 0);
+//	if (_fd == ERROR)
+//		throw(error(SOCKET, port));
+//	if (setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, &_enable, sizeof(_enable)) < 0)
+//		throw(error(SETSOCKOPT, port));
+//	if (bind(_fd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
+//		throw(error(BIND, port));
+//	if (listen(_fd, SOMAXCONN) < 0)
+//		throw(error(LISTEN, port));
+//	if (fcntl(_fd, F_SETFL, O_NONBLOCK) == ERROR)
+//		throw(error(FCNTL, port));
+//}
+
 
 void	Server::output() {
 	//cout << "acceptFd: " << getAcceptFd() << endl;

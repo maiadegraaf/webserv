@@ -68,18 +68,9 @@ void	ServerIO::loopEvent( ) {
 }
 
 void	ServerIO::disconnectClient(const struct kevent &event) {
-//	cerr << "client disconnected" << endl;
-//	struct kevent newEvent[2];
-//	EV_SET(&newEvent[0], event.ident, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-//	EV_SET(&newEvent[1], event.ident, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-//	if (kevent(getKq(), newEvent, 2, NULL, 0, NULL) < 0) {
-//		perror("delete error in server");
-//		return ;
-//	}
 	Client *client = static_cast<Client *>(event.udata);
 	delete client;
 	close(event.ident);
-//	cerr << "client disconnected with fd: " << event.ident << endl;
 }
 
 void	ServerIO::connectNewClient() {
@@ -88,12 +79,10 @@ void	ServerIO::connectNewClient() {
 	idx = _sockFdIdxMap[_eventFd];
 	_server[idx].clientNewAcceptFd(_eventFd);
 	_server[idx].bindServerAcceptFdWithClient();
-//	cerr << "new client accept fd: " << _server[idx].getAcceptFd() << endl;
 }
 
 
 void	ServerIO::incomingRequest(const struct kevent &event) {
-//	cerr << "this is incomming request fd fd: " << event.ident << endl;
 	Client *client = static_cast<Client *>(event.udata);
 	if (!client) {
 		perror("client is empty, no request");

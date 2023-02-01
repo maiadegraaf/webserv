@@ -81,7 +81,7 @@ re: fclean all
 
 siege:
 	@echo $(CYAN)"Running Siege"$(END)
-	siege -R siege_test/siege.conf #> siege_test/test_output.txt
+	siege -R siege_test/siege.conf > siege_test/test_output.txt
 	@echo $(PURPLE)"Siege Success [OK]"$(END)
 
 .PHONY : all, clean, fclean, re, siege
