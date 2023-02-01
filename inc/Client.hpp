@@ -28,8 +28,8 @@ class Client {
 		Client& operator=( const Client &rhs);
 		Client()
 			: _sockFd(-1), _requestBuffer(""), _maxSize(0) 										{}
-		Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages, \
-		map<string, string> newContentType, size_t newMaxSize);
+		Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
+	size_t newMaxSize, vector<string> hostNames);
 
 	/* ************
 	 * Attributes *
@@ -48,6 +48,7 @@ class Client {
 		Request								_request;
 		Response							_response;
 		clientMode 							_clientMode;
+		vector<string>						_hostNames;
 		bool								_endOfRequest,
 											_isParsing; // weg
 

@@ -1,9 +1,9 @@
 #include "Client.hpp"
 
 Client::Client(int newSockFd, map<string, Location> newLocation, string newRoot, map<int, string> newErrorPages,  map<string, string> newContentType, \
-size_t newMaxSize)
+size_t newMaxSize, vector<string> hostNames)
 	: _sockFd(newSockFd), _len(-1), _contentType(newContentType), _location(newLocation), \
-	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request) , _endOfRequest(false), _isParsing(false) {
+	_requestBuffer(""), _root(newRoot), _errorPages(newErrorPages), _maxSize(newMaxSize), _clientMode(request) , _hostNames(hostNames), _endOfRequest(false), _isParsing(false) {
 }
 
 Client&	Client::operator=( const Client& rhs ) {
@@ -16,6 +16,7 @@ Client&	Client::operator=( const Client& rhs ) {
 	this->_request = rhs._request;
 	this->_response = rhs._response;
 	this->_clientMode = rhs._clientMode;
+	this->_hostNames = rhs._hostNames;
 	return *this;
 }
 
@@ -33,12 +34,16 @@ void	Client::requestReceived(char** envp) {
 //		cerr <<test_this: " <<endl; "test_this: " <<endl;
 		stringstream ss(getRequestBuffer());
 		_request.setSS(&ss);
-		_request.parseBuffer();
+		_request.parseBuffer(_hostNames);
 		this->handleRequest(envp);
 		_requestBuffer.clear();
 		this->resetRequest();
 	} catch (exception &e) {
 		string		tmpMessage(e.what());
+//		if (tmpMessage.compare("disconnect") == 0) {
+//			this->setClientMode(disconnect);
+//			return ;
+//		}
 		string		filePath(getRoot() + '/');
 		int 		errorNr = atoi(tmpMessage.c_str());
 		filePath.append(getErrorPageValue(errorNr));
@@ -150,8 +155,9 @@ bool	Client::responseSend() {
 			_response.sendHeader();
 			return true;
 		}
-//		if ((size_t)_response.getFileSize() > getMaxSize())
-//		{
+		if ((size_t)_response.getFileSize() > getMaxSize())
+		{
+//			cerr << "TOO LARGE" << endl;
 //			try {
 //				throw WSException::PayloadTooLarge();
 //			}
@@ -167,7 +173,7 @@ bool	Client::responseSend() {
 //				_requestBuffer.clear();
 //				return false;
 //			}
-//		}
+		}
 		if (_response.sendBody() == false)
 			return true;
 		if (_response.getFilePath() == "obj/.tmpfile.html") {
