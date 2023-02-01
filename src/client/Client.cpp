@@ -162,28 +162,24 @@ void	Client::setPostResponse(string contentType) {
 void Client::responseSend() {
 //	cerr << "HasBody: " << _response.getHasBody() << endl;
 	if (_response.getHasBody()) {
-//		cerr << "SendHeader: " << _response.getSendHeader() << endl;
 		if (!_response.getSendHeader()) {
 			if (_response.sendHeader() == false)
 				return setClientMode(disconnect);
-//			this->setClientMode(response);
 			return this->setClientMode(response);
 		}
 		this->setClientMode(_response.sendBody());
 		if (this->getClientMode() != request)
 			return ;
 		if (_response.getContentType() == "php") {
-            if (remove(_response.getFilePath().c_str()) < 0)
-                perror(_response.getFilePath().c_str());
+			if (remove(_response.getFilePath().c_str()) < 0)
+				perror(_response.getFilePath().c_str());
 		}
-		this->setClientMode(request);
-		return ;
+		return this->setClientMode(request);
 	}
 	if (!_response.getHasBody()) {
 		_response.sendHeader();
 	}
-	this->setClientMode(request);
-	return ;
+	return this->setClientMode(request);
 }
 
 void	Client::resetRequest() {
